@@ -1,0 +1,4466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Control de Proyectos Macros - Grupo Guía</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #06b6d4;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --sidebar-bg: #1a1d29;
+            --sidebar-hover: #252937;
+            --bg-main: #f9fafb;
+            --card-bg: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        /* TEMAS */
+        [data-theme="dark"] {
+            --gray-50: #1f2937;
+            --gray-100: #374151;
+            --gray-200: #4b5563;
+            --gray-300: #6b7280;
+            --gray-400: #9ca3af;
+            --gray-500: #d1d5db;
+            --gray-600: #e5e7eb;
+            --gray-700: #f3f4f6;
+            --gray-800: #f9fafb;
+            --gray-900: #ffffff;
+            --sidebar-bg: #0f1419;
+            --sidebar-hover: #1a1f2e;
+            --bg-main: #111827;
+            --card-bg: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --border-color: #374151;
+        }
+
+        [data-theme="ocean"] {
+            --primary: #0891b2;
+            --primary-dark: #0e7490;
+            --secondary: #06b6d4;
+            --sidebar-bg: #0c4a6e;
+            --sidebar-hover: #075985;
+        }
+
+        [data-theme="forest"] {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --secondary: #10b981;
+            --sidebar-bg: #064e3b;
+            --sidebar-hover: #065f46;
+        }
+
+        [data-theme="sunset"] {
+            --primary: #ea580c;
+            --primary-dark: #c2410c;
+            --secondary: #f59e0b;
+            --sidebar-bg: #7c2d12;
+            --sidebar-hover: #9a3412;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            overflow: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* LAYOUT */
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* MOBILE MENU */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--sidebar-bg);
+            color: white;
+            z-index: 1001;
+            align-items: center;
+            padding: 0 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .mobile-menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .mobile-header-title {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .mobile-search-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar-bg);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: white;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* BÚSQUEDA GLOBAL */
+        .search-global-container {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .search-global-input {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-global-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .search-global-input:focus {
+            outline: none;
+            background: rgba(255,255,255,0.15);
+            border-color: var(--primary);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-left: 3px solid transparent;
+            position: relative;
+            user-select: none;
+        }
+
+        .nav-item:hover {
+            background: var(--sidebar-hover);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--sidebar-hover);
+            color: white;
+            border-left-color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-badge {
+            position: absolute;
+            right: 20px;
+            background: var(--danger);
+            color: white;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .config-btn {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .config-btn:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .version-text {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+            text-align: center;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--bg-main);
+            transition: background-color 0.3s ease;
+        }
+
+        .content-wrapper {
+            padding: 20px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .content-header {
+            margin-bottom: 16px;
+        }
+
+        .content-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .content-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* ALARMAS */
+        .alertas-container {
+            background: linear-gradient(135deg, #fee2e2 0%, #fef3c7 100%);
+            border-left: 4px solid var(--danger);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1);
+        }
+
+        .alertas-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .alertas-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .alertas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 12px;
+        }
+
+        .alerta-item {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .alerta-info {
+            flex: 1;
+        }
+
+        .alerta-accion {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .alerta-meta {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        .alerta-dias {
+            background: var(--danger);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* TOOLBAR */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            background: var(--card-bg);
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .toolbar-left, .toolbar-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+
+        .btn-success {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .select-filter {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            min-width: 180px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            width: 280px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        /* CARDS GRID */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .card-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .card-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .card-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-top: 6px;
+        }
+
+        .stat-value.primary { color: var(--primary); }
+        .stat-value.success { color: var(--secondary); }
+        .stat-value.danger { color: var(--danger); }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 16px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--info) 100%);
+            transition: width 0.3s;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        /* TABLE */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            height: 12px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 6px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 6px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+
+        thead {
+            background: var(--gray-50);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        /* No wrap para todas las columnas excepto ACCIÓN */
+        td:not(:nth-child(3)) {
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        .badge {
+            display: inline-block;
+            width: 80px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* COLORES MÁS VIVOS PARA PRIORIDADES */
+        .badge-alta { 
+            background: #dc2626; 
+            color: white; 
+        }
+        .badge-media { 
+            background: #f59e0b; 
+            color: white; 
+        }
+        .badge-baja { 
+            background: #10b981; 
+            color: white; 
+        }
+
+        .estado-badge {
+            display: inline-block;
+            width: 110px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* COLORES MÁS VIVOS PARA ESTADOS */
+        .estado-no-iniciado { 
+            background: #6b7280; 
+            color: white; 
+        }
+        .estado-pendiente { 
+            background: #f59e0b; 
+            color: white; 
+        }
+        .estado-en-progreso { 
+            background: #3b82f6; 
+            color: white; 
+        }
+        .estado-completada { 
+            background: #10b981; 
+            color: white; 
+        }
+        .estado-bloqueada { 
+            background: #dc2626; 
+            color: white; 
+        }
+        .estado-retrasada { 
+            background: #ea580c; 
+            color: white; 
+        }
+        .estado-pausada { 
+            background: #8b5cf6; 
+            color: white; 
+        }
+
+        .avance-badge {
+            display: inline-block;
+            width: 70px;
+            padding: 6px 10px;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .proyecto-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 6px;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .btn-icon:hover {
+            color: var(--text-primary);
+        }
+
+        /* DASHBOARD STATS */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+            transition: background-color 0.3s ease;
+        }
+
+        .stat-card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-card-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        /* CHARTS */
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        /* ANÁLISIS - CENTRO DE INTELIGENCIA */
+        .analisis-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+            grid-auto-rows: 280px !important;
+        }
+
+        .panel-analisis {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-top: 2px solid var(--primary);
+            transition: box-shadow 0.3s ease;
+            height: 280px !important;
+            min-height: 280px !important;
+            max-height: 280px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+        }
+
+        .panel-analisis:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        .panel-icon {
+            font-size: 1.25rem;
+            line-height: 1;
+        }
+
+        .panel-title-container {
+            flex: 1;
+        }
+
+        .panel-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .panel-subtitle {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+        }
+
+        .panel-body {
+            margin-top: 6px;
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .panel-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .panel-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .panel-body::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 3px;
+        }
+
+        .panel-body::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-400);
+        }
+
+        .metric-big {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+        }
+
+        .trend-down {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .trend-neutral {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--gray-500);
+        }
+
+        .health-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px;
+            background: var(--gray-50);
+            border-radius: 6px;
+            margin-bottom: 5px;
+        }
+
+        .health-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .health-dot.green {
+            background: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        .health-dot.yellow {
+            background: var(--warning);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+
+        .health-dot.red {
+            background: var(--danger);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+
+        .health-text {
+            flex: 1;
+        }
+
+        .health-project-name {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            margin-bottom: 1px;
+        }
+
+        .health-score {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+        }
+
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .risk-table td {
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.75rem;
+        }
+
+        .risk-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .risk-project {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .risk-value {
+            text-align: right;
+            font-weight: 700;
+        }
+
+        .risk-critical {
+            color: var(--danger);
+        }
+
+        .risk-warning {
+            color: var(--warning);
+        }
+
+        .carga-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .carga-bar:last-child {
+            border-bottom: none;
+        }
+
+        .carga-nombre {
+            width: 120px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .carga-bar-container {
+            flex: 1;
+            height: 20px;
+            background: var(--gray-100);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carga-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 6px;
+        }
+
+        .carga-bar-fill.sobrecarga {
+            background: linear-gradient(90deg, var(--danger), #b91c1c);
+        }
+
+        .carga-count {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .proyeccion-item {
+            padding: 6px;
+            background: var(--gray-50);
+            border-radius: 6px;
+            margin-bottom: 5px;
+        }
+
+        .proyeccion-proyecto {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .proyeccion-progress-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
+        .proyeccion-progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .proyeccion-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), #059669);
+            transition: width 0.3s ease;
+        }
+
+        .proyeccion-percent {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 35px;
+            text-align: right;
+        }
+
+        .proyeccion-dias {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        .impacto-matrix {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .impacto-cell {
+            aspect-ratio: 1;
+            background: var(--gray-50);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .impacto-cell:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .impacto-cell.critico {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: var(--danger);
+        }
+
+        .impacto-cell.alto {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--warning);
+        }
+
+        .impacto-cell.medio {
+            background: rgba(6, 182, 212, 0.15);
+            border-color: var(--info);
+        }
+
+        .impacto-count {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .impacto-label {
+            font-size: 0.55rem;
+            color: var(--text-secondary);
+            margin-top: 3px;
+            text-align: center;
+        }
+
+        .mini-chart {
+            height: 50px;
+            margin-top: 6px;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease-out;
+            transition: background-color 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 28px 32px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 28px 32px;
+            max-height: calc(90vh - 200px);
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 20px 32px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* FILE UPLOAD */
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 48px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary);
+            background: var(--gray-50);
+        }
+
+        .file-upload-icon {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-text {
+            font-size: 1.125rem;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .empty-subtext {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+
+        /* VIEW CONTENT */
+        .view-content {
+            display: none;
+        }
+
+        .view-content.active {
+            display: block;
+        }
+
+        /* ACCIONES LIST EN MODAL */
+        .acciones-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .accion-item {
+            background: var(--gray-50);
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .accion-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .accion-item-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+        }
+
+        .accion-item-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        /* MODAL BÚSQUEDA */
+        .search-results {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .search-result-item {
+            background: var(--gray-50);
+            padding: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid var(--primary);
+        }
+
+        .search-result-item:hover {
+            background: var(--gray-100);
+            transform: translateX(4px);
+        }
+
+        .search-result-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .search-result-context {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .search-result-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .search-highlight {
+            background: #fef08a;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* TEMA SELECTOR */
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .theme-option {
+            padding: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            background: var(--card-bg);
+        }
+
+        .theme-option:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .theme-option.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .theme-option-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .theme-option-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* RESPONSIVE - TABLET */
+        @media (max-width: 1024px) {
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+
+            .analisis-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: 280px !important;
+            }
+        }
+
+        /* RESPONSIVE - MÓVIL */
+        @media (max-width: 768px) {
+            .mobile-header {
+                display: flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -240px;
+                top: 0;
+                bottom: 0;
+                z-index: 1002;
+                box-shadow: 4px 0 12px rgba(0,0,0,0.3);
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                margin-top: 60px;
+            }
+
+            .content-wrapper {
+                padding: 16px;
+            }
+
+            .content-title {
+                font-size: 1.5rem;
+            }
+
+            .cards-grid,
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 12px 16px;
+            }
+
+            .toolbar-left,
+            .toolbar-right {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .search-box,
+            .select-filter {
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            table {
+                min-width: 100%;
+                font-size: 0.8125rem;
+            }
+
+            th, td {
+                padding: 10px 8px;
+            }
+
+            .alertas-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 20px 0;
+                border-radius: 12px;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 20px;
+            }
+
+            .chart-container {
+                padding: 16px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .search-global-container {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-wrapper {
+                padding: 12px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .stat-card-value {
+                font-size: 2rem;
+            }
+
+            .modal {
+                padding: 0;
+            }
+
+            .modal-content {
+                border-radius: 0;
+                max-height: 100vh;
+            }
+
+            .panel-analisis {
+                padding: 16px;
+                height: 280px !important;
+                min-height: 280px !important;
+                max-height: 280px !important;
+            }
+
+            .metric-big {
+                font-size: 2.25rem;
+            }
+
+            .carga-nombre {
+                width: 100px;
+                font-size: 0.75rem;
+            }
+
+            .impacto-label {
+                font-size: 0.5rem;
+            }
+        }
+
+        /* OVERLAY MÓVIL */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+        }
+
+        /* TOUCH IMPROVEMENTS */
+        @media (hover: none) and (pointer: coarse) {
+            .btn, .nav-item, .card, .btn-icon {
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .btn:active {
+                transform: scale(0.98);
+            }
+
+            .card:active {
+                transform: scale(0.99);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- MOBILE HEADER -->
+    <div class="mobile-header">
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+        <div class="mobile-header-title">Control Proyectos Macros</div>
+        <button class="mobile-search-btn" onclick="abrirBusquedaGlobal()">🔍</button>
+    </div>
+
+    <!-- MOBILE OVERLAY -->
+    <div class="mobile-overlay" onclick="closeMobileMenu()"></div>
+
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Control Proyectos</div>
+                <div class="sidebar-subtitle">Grupo Guía - Macros</div>
+            </div>
+
+            <!-- BÚSQUEDA GLOBAL -->
+            <div class="search-global-container">
+                <input 
+                    type="text" 
+                    class="search-global-input" 
+                    id="searchGlobal" 
+                    placeholder="🔍 Buscar en todo..."
+                    oninput="buscarGlobal()"
+                >
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-item active" onclick="showView('dashboard', event)" data-view="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                    <span class="nav-badge" id="badgeVencidas" style="display: none;">0</span>
+                </div>
+                <div class="nav-item" onclick="showView('acciones', event)" data-view="acciones">
+                    <span class="nav-icon">✅</span>
+                    <span>Acciones</span>
+                </div>
+                <div class="nav-item" onclick="showView('proyectos', event)" data-view="proyectos">
+                    <span class="nav-icon">📁</span>
+                    <span>Proyectos</span>
+                </div>
+                <div class="nav-item" onclick="showView('responsables', event)" data-view="responsables">
+                    <span class="nav-icon">👥</span>
+                    <span>Responsables</span>
+                </div>
+                <div class="nav-item" onclick="showView('analisis', event)" data-view="analisis">
+                    <span class="nav-icon">🎯</span>
+                    <span>Análisis</span>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="config-btn" onclick="abrirConfiguracion()">
+                    <span>⚙️</span>
+                    <span>Configuración</span>
+                </button>
+                <button class="config-btn" onclick="exportarBackupCompleto()" style="background: rgba(16, 185, 129, 0.2); border-color: var(--secondary);">
+                    <span>💾</span>
+                    <span>Exportar Backup</span>
+                </button>
+                <button class="config-btn" onclick="document.getElementById('importBackupFile').click()" style="background: rgba(6, 182, 212, 0.2); border-color: var(--info);">
+                    <span>📥</span>
+                    <span>Importar Backup</span>
+                </button>
+                <input type="file" id="importBackupFile" accept=".json" style="display: none;" onchange="importarBackupCompleto(event)">
+                <button class="btn btn-danger" onclick="resetData()" style="width: 100%; margin-bottom: 12px;">🗑 Reset Data</button>
+                <div class="version-text">v4.1 FINAL - 2026</div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- DASHBOARD -->
+            <div id="dashboard" class="view-content active">
+                <div class="content-wrapper">
+                    <div class="content-header">
+                        <h1 class="content-title">Dashboard Ejecutivo</h1>
+                        <p class="content-subtitle">Resumen general de proyectos y acciones</p>
+                    </div>
+
+                    <div id="alertasContainer"></div>
+
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <select class="select-filter" id="dashboardProyectoFilter" onchange="renderDashboard()">
+                                <option value="">Todos los proyectos</option>
+                            </select>
+                        </div>
+                        <div class="toolbar-right">
+                            <button class="btn btn-secondary" onclick="abrirImportarExcel()">⬆ Importar Excel</button>
+                            <button class="btn btn-primary" onclick="abrirModalProyecto()">+ Nuevo Proyecto</button>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-stats" id="dashboardStats"></div>
+
+                    <div class="charts-row">
+                        <div class="chart-container">
+                            <div class="chart-title">Distribución por Estado</div>
+                            <canvas id="chartEstado" width="400" height="300"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-title">Distribución por Área</div>
+                            <canvas id="chartArea" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACCIONES -->
+            <div id="acciones" class="view-content">
+                <div class="content-wrapper">
+                    <div class="content-header">
+                        <h1 class="content-title">Acciones</h1>
+                        <p class="content-subtitle">Gestión y seguimiento de acciones ejecutivas</p>
+                    </div>
+
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <select class="select-filter" id="accionesProyectoFilter" onchange="actualizarFiltrosCascada('acciones')">
+                                <option value="">Todos los proyectos</option>
+                            </select>
+                            <select class="select-filter" id="accionesEstadoFilter" onchange="renderAcciones()">
+                                <option value="">Todos los estados</option>
+                            </select>
+                            <select class="select-filter" id="accionesPrioridadFilter" onchange="renderAcciones()">
+                                <option value="">Todas las prioridades</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Media">Media</option>
+                                <option value="Baja">Baja</option>
+                            </select>
+                            <select class="select-filter" id="accionesResponsableFilter" onchange="renderAcciones()">
+                                <option value="">Todos los responsables</option>
+                            </select>
+                        </div>
+                        <div class="toolbar-right">
+                            <input type="text" class="search-box" id="accionesSearch" placeholder="Buscar acciones..." oninput="renderAcciones()">
+                            <button class="btn btn-secondary" onclick="sincronizarDesdeCalendar()">🔄 Sincronizar Calendar</button>
+                            <button class="btn btn-secondary" onclick="exportarPDFAcciones()">📄 Exportar PDF</button>
+                            <button class="btn btn-success" onclick="abrirModalAccion()">+ Acción</button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 110px;">PROYECTO</th>
+                                        <th style="width: 100px;">TEMA</th>
+                                        <th style="min-width: 220px;">ACCIÓN</th>
+                                        <th style="width: 110px;">RESPONSABLE</th>
+                                        <th style="width: 110px;">ÁREA</th>
+                                        <th style="width: 85px;">PRIORIDAD</th>
+                                        <th style="width: 100px;">ESTADO</th>
+                                        <th style="width: 75px;">AVANCE</th>
+                                        <th style="width: 100px;">DEADLINE</th>
+                                        <th style="width: 45px;">EDIT</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="accionesTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROYECTOS -->
+            <div id="proyectos" class="view-content">
+                <div class="content-wrapper">
+                    <div class="content-header">
+                        <h1 class="content-title">Proyectos</h1>
+                        <p class="content-subtitle">Gestión de proyectos y minutas</p>
+                    </div>
+
+                    <div class="toolbar">
+                        <div class="toolbar-left"></div>
+                        <div class="toolbar-right">
+                            <button class="btn btn-secondary" onclick="abrirImportarExcel()">⬆ Importar Excel</button>
+                            <button class="btn btn-primary" onclick="abrirModalProyecto()">+ Nuevo Proyecto</button>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid" id="projectsGrid"></div>
+                </div>
+            </div>
+
+            <!-- RESPONSABLES -->
+            <div id="responsables" class="view-content">
+                <div class="content-wrapper">
+                    <div class="content-header">
+                        <h1 class="content-title">Responsables</h1>
+                        <p class="content-subtitle">Seguimiento por responsable y área</p>
+                    </div>
+
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <select class="select-filter" id="responsablesProyectoFilter" onchange="renderResponsables()">
+                                <option value="">Todos los proyectos</option>
+                            </select>
+                        </div>
+                        <div class="toolbar-right">
+                            <button class="btn btn-secondary" onclick="exportarPDFResponsables()">📄 Exportar PDF</button>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid" id="responsablesGrid"></div>
+                </div>
+            </div>
+
+            <!-- ANÁLISIS - CENTRO DE INTELIGENCIA -->
+            <div id="analisis" class="view-content">
+                <div class="content-wrapper">
+                    <div class="content-header">
+                        <h1 class="content-title">Centro de Análisis</h1>
+                        <p class="content-subtitle">Inteligencia ejecutiva y métricas estratégicas</p>
+                    </div>
+
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <select class="select-filter" id="analisisProyectoFilter" onchange="renderAnalisis()">
+                                <option value="">Todos los proyectos</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="analisis-grid">
+                        <!-- Panel 1: Salud de Proyectos -->
+                        <div class="panel-analisis">
+                            <div class="panel-header">
+                                <div class="panel-icon">🏥</div>
+                                <div class="panel-title-container">
+                                    <div class="panel-title">Salud de Proyectos</div>
+                                    <div class="panel-subtitle">Health score en tiempo real</div>
+                                </div>
+                            </div>
+                            <div class="panel-body" id="panelSalud"></div>
+                        </div>
+
+                        <!-- Panel 2: Velocidad de Ejecución -->
+                        <div class="panel-analisis">
+                            <div class="panel-header">
+                                <div class="panel-icon">⚡</div>
+                                <div class="panel-title-container">
+                                    <div class="panel-title">Velocidad de Ejecución</div>
+                                    <div class="panel-subtitle">Acciones completadas por semana</div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div id="metricaVelocidad"></div>
+                                <div class="mini-chart">
+                                    <canvas id="chartVelocidad"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel 3: Análisis de Riesgos -->
+                        <div class="panel-analisis">
+                            <div class="panel-header">
+                                <div class="panel-icon">⚠️</div>
+                                <div class="panel-title-container">
+                                    <div class="panel-title">Análisis de Riesgos</div>
+                                    <div class="panel-subtitle">Proyectos con mayor exposición</div>
+                                </div>
+                            </div>
+                            <div class="panel-body" id="panelRiesgos"></div>
+                        </div>
+
+                        <!-- Panel 4: Distribución de Carga -->
+                        <div class="panel-analisis">
+                            <div class="panel-header">
+                                <div class="panel-icon">👥</div>
+                                <div class="panel-title-container">
+                                    <div class="panel-title">Distribución de Carga</div>
+                                    <div class="panel-subtitle">Acciones activas por responsable</div>
+                                </div>
+                            </div>
+                            <div class="panel-body" id="panelCarga"></div>
+                        </div>
+
+                        <!-- Panel 5: Proyección de Completitud -->
+                        <div class="panel-analisis">
+                            <div class="panel-header">
+                                <div class="panel-icon">📅</div>
+                                <div class="panel-title-container">
+                                    <div class="panel-title">Proyección de Completitud</div>
+                                    <div class="panel-subtitle">Estimación basada en velocidad actual</div>
+                                </div>
+                            </div>
+                            <div class="panel-body" id="panelProyeccion"></div>
+                        </div>
+
+                        <!-- Panel 6: Impacto Crítico -->
+                        <div class="panel-analisis">
+                            <div class="panel-header">
+                                <div class="panel-icon">🎯</div>
+                                <div class="panel-title-container">
+                                    <div class="panel-title">Impacto Crítico</div>
+                                    <div class="panel-subtitle">Acciones bloqueadas por tipo de impacto</div>
+                                </div>
+                            </div>
+                            <div class="panel-body" id="panelImpacto"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PROYECTO -->
+    <div id="modalProyecto" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Crear Nuevo Proyecto</h2>
+            </div>
+            <form id="formProyecto">
+                <input type="hidden" id="proyectoId">
+                <div class="modal-body">
+                    <div class="form-group full-width">
+                        <label class="form-label">Nombre del Proyecto *</label>
+                        <input type="text" class="form-input" id="proyectoNombre" required placeholder="Ej: KULKANA Macrolotes 2026">
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Desarrollo</label>
+                            <input type="text" class="form-input" id="proyectoDesarrollo" placeholder="Escribe el nombre del desarrollo...">
+                            <small style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 4px; display: block;">Ejemplos: Kulkana, Capital Norte, GARVI, Terrasoles, etc.</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Responsable</label>
+                            <input type="text" class="form-input" id="proyectoResponsable" placeholder="Nombre del responsable">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalProyecto()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Crear Proyecto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL ACCIÓN -->
+    <div id="modalAccion" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="accionModalTitle">Editar Acción</h2>
+            </div>
+            <form id="formAccion">
+                <input type="hidden" id="accionId">
+                <div class="modal-body">
+                    <div class="form-group full-width">
+                        <label class="form-label">Proyecto *</label>
+                        <select class="form-select" id="accionProyectoId" required>
+                            <option value="">Selecciona un proyecto...</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Tema</label>
+                        <input type="text" class="form-input" id="accionTema" placeholder="Tema o categoría de la acción">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Acción Ejecutiva *</label>
+                        <textarea class="form-textarea" id="accionTexto" required placeholder="Describe la acción concreta a realizar..."></textarea>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Responsable Directo *</label>
+                            <input type="text" class="form-input" id="accionResponsable" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Área</label>
+                            <select class="form-select" id="accionArea">
+                                <option value="">Selecciona...</option>
+                                <option value="Dirección/PMO">Dirección/PMO</option>
+                                <option value="Dirección/Producto">Dirección/Producto</option>
+                                <option value="Dirección Comercial">Dirección Comercial</option>
+                                <option value="Comercial">Comercial</option>
+                                <option value="Comercial/PMO">Comercial/PMO</option>
+                                <option value="Comercial/Operación">Comercial/Operación</option>
+                                <option value="Comercial/Marketing">Comercial/Marketing</option>
+                                <option value="Legal">Legal</option>
+                                <option value="Legal/Comercial">Legal/Comercial</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Macrolotes">Macrolotes</option>
+                                <option value="PMO">PMO</option>
+                                <option value="Operación">Operación</option>
+                                <option value="Producto">Producto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Prioridad</label>
+                            <select class="form-select" id="accionPrioridad">
+                                <option value="Alta">Alta</option>
+                                <option value="Media">Media</option>
+                                <option value="Baja">Baja</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Estado</label>
+                            <select class="form-select" id="accionEstado">
+                                <option value="No iniciado">No iniciado</option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="En progreso">En progreso</option>
+                                <option value="Completada">Completada</option>
+                                <option value="Bloqueada">Bloqueada</option>
+                                <option value="Retrasada">Retrasada</option>
+                                <option value="Pausada">Pausada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Avance (%)</label>
+                            <input type="number" class="form-input" id="accionAvance" min="0" max="100" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fecha Compromiso</label>
+                            <input type="date" class="form-input" id="accionFechaCompromiso">
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Observaciones</label>
+                        <textarea class="form-textarea" id="accionObservaciones" style="min-height: 80px;" placeholder="Notas, comentarios o detalles adicionales..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="eliminarAccion()" style="margin-right: auto;">Eliminar</button>
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalAccion()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL RESPONSABLE DETALLE -->
+    <div id="modalResponsableDetalle" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="responsableDetalleTitle"></h2>
+            </div>
+            <div class="modal-body">
+                <div id="responsableDetalleContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalResponsableDetalle()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL BÚSQUEDA GLOBAL -->
+    <div id="modalBusquedaGlobal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🔍 Resultados de Búsqueda</h2>
+            </div>
+            <div class="modal-body">
+                <div id="busquedaGlobalResultados"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarBusquedaGlobal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIGURACIÓN -->
+    <div id="modalConfiguracion" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">⚙️ Configuración</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group full-width">
+                    <label class="form-label">Tema de Colores</label>
+                    <div class="theme-selector">
+                        <div class="theme-option" data-theme="light" onclick="cambiarTema('light')">
+                            <div class="theme-option-icon">☀️</div>
+                            <div class="theme-option-name">Light</div>
+                        </div>
+                        <div class="theme-option" data-theme="dark" onclick="cambiarTema('dark')">
+                            <div class="theme-option-icon">🌙</div>
+                            <div class="theme-option-name">Dark</div>
+                        </div>
+                        <div class="theme-option" data-theme="ocean" onclick="cambiarTema('ocean')">
+                            <div class="theme-option-icon">🌊</div>
+                            <div class="theme-option-name">Ocean</div>
+                        </div>
+                        <div class="theme-option" data-theme="forest" onclick="cambiarTema('forest')">
+                            <div class="theme-option-icon">🌲</div>
+                            <div class="theme-option-name">Forest</div>
+                        </div>
+                        <div class="theme-option" data-theme="sunset" onclick="cambiarTema('sunset')">
+                            <div class="theme-option-icon">🔥</div>
+                            <div class="theme-option-name">Sunset</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group full-width" style="margin-top: 24px;">
+                    <label class="form-label">🔗 Google Calendar - URL del Script</label>
+                    <input type="text" class="form-input" id="calendarScriptUrlInput" placeholder="https://script.google.com/macros/s/...">
+                    <small style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 4px; display: block;">Pega aquí la URL de tu Google Apps Script desplegado como Web App</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="cerrarConfiguracion()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL IMPORTAR EXCEL -->
+    <div id="modalImportar" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Importar Excel</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">¿Dónde deseas importar el Excel?</label>
+                    <select class="form-select" id="importarTipoProyecto" onchange="toggleProyectoExistente()">
+                        <option value="nuevo">Crear proyecto nuevo</option>
+                        <option value="existente">Agregar a proyecto existente</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="selectProyectoExistente" style="display: none;">
+                    <label class="form-label">Selecciona el proyecto *</label>
+                    <select class="form-select" id="proyectoExistenteSelect">
+                        <option value="">Selecciona un proyecto...</option>
+                    </select>
+                </div>
+
+                <div class="file-upload-area" onclick="document.getElementById('excelFile').click()" style="margin-top: 24px;">
+                    <div class="file-upload-icon">📊</div>
+                    <p style="font-size: 1.125rem; font-weight: 600; margin-bottom: 8px;">Click para seleccionar archivo Excel</p>
+                    <p style="color: var(--text-secondary); font-size: 0.9375rem;">El sistema detectará automáticamente las columnas</p>
+                </div>
+                <input type="file" id="excelFile" class="file-input" accept=".xlsx,.xls,.csv" onchange="procesarExcel(event)">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarImportarExcel()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        // DATOS GLOBALES
+        let proyectos = JSON.parse(localStorage.getItem('ccProyectos')) || [];
+        let acciones = JSON.parse(localStorage.getItem('ccAcciones')) || [];
+        
+        // GOOGLE CALENDAR SYNC
+        let calendarScriptUrl = localStorage.getItem('ccCalendarScriptUrl') || '';
+
+        // LIMPIAR TODO excepto texto alfanumérico de ESTADOS Y PRIORIDADES
+        acciones = acciones.map(a => {
+            if (a.estatus) {
+                // Mantener solo letras, números y espacios
+                a.estatus = a.estatus.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+            }
+            if (a.prioridad) {
+                // Mantener solo letras, números y espacios
+                a.prioridad = a.prioridad.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+            }
+            return a;
+        });
+        
+        // Guardar datos limpios inmediatamente
+        localStorage.setItem('ccAcciones', JSON.stringify(acciones));
+        let charts = {};
+        let searchTimeout;
+
+        // TEMA
+        function cargarTema() {
+            const tema = localStorage.getItem('ccTema') || 'light';
+            document.documentElement.setAttribute('data-theme', tema);
+            actualizarTemaActivo(tema);
+        }
+
+        function cambiarTema(tema) {
+            document.documentElement.setAttribute('data-theme', tema);
+            localStorage.setItem('ccTema', tema);
+            actualizarTemaActivo(tema);
+        }
+
+        function actualizarTemaActivo(tema) {
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.classList.remove('active');
+                if (opt.getAttribute('data-theme') === tema) {
+                    opt.classList.add('active');
+                }
+            });
+        }
+
+        // CONFIGURACIÓN
+        function abrirConfiguracion() {
+            document.getElementById('modalConfiguracion').classList.add('active');
+            const tema = localStorage.getItem('ccTema') || 'light';
+            actualizarTemaActivo(tema);
+            
+            // Cargar URL del script de Calendar
+            document.getElementById('calendarScriptUrlInput').value = calendarScriptUrl;
+        }
+
+        function cerrarConfiguracion() {
+            // Guardar URL del script de Calendar
+            const url = document.getElementById('calendarScriptUrlInput').value.trim();
+            calendarScriptUrl = url;
+            localStorage.setItem('ccCalendarScriptUrl', url);
+            
+            document.getElementById('modalConfiguracion').classList.remove('active');
+        }
+
+        // MOBILE MENU
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.mobile-overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.mobile-overlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        // BÚSQUEDA GLOBAL
+        function buscarGlobal() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const term = document.getElementById('searchGlobal').value.toLowerCase().trim();
+                
+                if (term.length < 2) return;
+                
+                const resultados = [];
+
+                // Buscar en proyectos
+                proyectos.forEach(p => {
+                    if ((p.nombre || '').toLowerCase().includes(term) ||
+                        (p.desarrollo || '').toLowerCase().includes(term) ||
+                        (p.responsable || '').toLowerCase().includes(term)) {
+                        resultados.push({
+                            tipo: 'Proyecto',
+                            titulo: p.nombre,
+                            contexto: `${p.desarrollo || ''} • ${p.responsable || ''}`,
+                            id: p.id,
+                            vista: 'proyectos'
+                        });
+                    }
+                });
+
+                // Buscar en acciones
+                acciones.forEach(a => {
+                    const proyecto = proyectos.find(p => p.id === a.proyectoId);
+                    if ((a.accionEjecutiva || '').toLowerCase().includes(term) ||
+                        (a.tema || '').toLowerCase().includes(term) ||
+                        (a.responsable || '').toLowerCase().includes(term) ||
+                        (a.area || '').toLowerCase().includes(term) ||
+                        (a.observaciones || '').toLowerCase().includes(term)) {
+                        resultados.push({
+                            tipo: 'Acción',
+                            titulo: a.accionEjecutiva || 'Sin descripción',
+                            contexto: `${proyecto?.nombre || 'Sin proyecto'} • ${a.responsable || 'Sin responsable'} • ${a.estatus || 'Sin estado'}`,
+                            id: a.id,
+                            vista: 'acciones'
+                        });
+                    }
+                });
+
+                if (resultados.length > 0) {
+                    mostrarResultadosBusqueda(resultados, term);
+                }
+            }, 300);
+        }
+
+        function mostrarResultadosBusqueda(resultados, term) {
+            const container = document.getElementById('busquedaGlobalResultados');
+            
+            const highlightTerm = (text) => {
+                const regex = new RegExp(`(${term})`, 'gi');
+                return text.replace(regex, '<span class="search-highlight">$1</span>');
+            };
+
+            let html = '<div class="search-results">';
+            
+            resultados.slice(0, 20).forEach(r => {
+                html += `
+                    <div class="search-result-item" onclick="irAResultado('${r.vista}', ${r.id})">
+                        <div class="search-result-title">${highlightTerm(r.titulo)}</div>
+                        <div class="search-result-context">${highlightTerm(r.contexto)}</div>
+                        <div class="search-result-meta">
+                            <span class="card-badge">${r.tipo}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (resultados.length > 20) {
+                html += `<div style="text-align: center; padding: 16px; color: var(--text-secondary);">
+                    ... y ${resultados.length - 20} resultados más
+                </div>`;
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+            
+            document.getElementById('modalBusquedaGlobal').classList.add('active');
+        }
+
+        function irAResultado(vista, id) {
+            cerrarBusquedaGlobal();
+            closeMobileMenu();
+            
+            // Cambiar a la vista
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.view-content').forEach(view => view.classList.remove('active'));
+            
+            const navItem = document.querySelector(`.nav-item[data-view="${vista}"]`);
+            if (navItem) navItem.classList.add('active');
+            
+            const viewContent = document.getElementById(vista);
+            if (viewContent) viewContent.classList.add('active');
+
+            // Si es acción, abrir modal
+            if (vista === 'acciones') {
+                setTimeout(() => abrirModalAccion(id), 300);
+            }
+        }
+
+        function abrirBusquedaGlobal() {
+            const term = document.getElementById('searchGlobal').value;
+            if (term.length >= 2) {
+                buscarGlobal();
+            } else {
+                alert('Escribe al menos 2 caracteres para buscar');
+            }
+        }
+
+        function cerrarBusquedaGlobal() {
+            document.getElementById('modalBusquedaGlobal').classList.remove('active');
+        }
+
+        // INICIALIZAR
+        // LIMPIEZA PROFUNDA DE TODOS LOS DATOS AL CARGAR
+        function limpiezaProfundaDatos() {
+            acciones = acciones.map(a => {
+                if (a.estatus) {
+                    a.estatus = a.estatus.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                }
+                if (a.prioridad) {
+                    a.prioridad = a.prioridad.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                }
+                return a;
+            });
+            localStorage.setItem('ccAcciones', JSON.stringify(acciones));
+        }
+
+        window.onload = function() {
+            limpiezaProfundaDatos();
+            cargarTema();
+            actualizarFiltros();
+            actualizarBadgeVencidas();
+            renderDashboard();
+            renderProyectos();
+            renderAcciones();
+            renderResponsables();
+            renderAnalisis();
+        };
+
+        // NAVEGACIÓN
+        function showView(viewName, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            closeMobileMenu();
+            
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.view-content').forEach(view => view.classList.remove('active'));
+            
+            const navItem = document.querySelector(`.nav-item[data-view="${viewName}"]`);
+            if (navItem) navItem.classList.add('active');
+            
+            const viewContent = document.getElementById(viewName);
+            if (viewContent) viewContent.classList.add('active');
+
+            if (viewName === 'dashboard') renderDashboard();
+            if (viewName === 'acciones') renderAcciones();
+            if (viewName === 'proyectos') renderProyectos();
+            if (viewName === 'responsables') renderResponsables();
+            if (viewName === 'analisis') renderAnalisis();
+        }
+
+        // SISTEMA DE ALARMAS
+        function calcularAlarmas() {
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            const proximos7dias = new Date(hoy);
+            proximos7dias.setDate(proximos7dias.getDate() + 7);
+
+            const vencidas = [];
+            const proximas = [];
+
+            acciones.forEach(a => {
+                if (!a.fechaCompromiso || a.estatus === 'Completada') return;
+                
+                const fecha = new Date(a.fechaCompromiso);
+                fecha.setHours(0, 0, 0, 0);
+                
+                if (fecha < hoy) {
+                    vencidas.push(a);
+                } else if (fecha <= proximos7dias) {
+                    const diasRestantes = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24));
+                    proximas.push({...a, diasRestantes});
+                }
+            });
+
+            return { vencidas, proximas };
+        }
+
+        function actualizarBadgeVencidas() {
+            const { vencidas } = calcularAlarmas();
+            const badge = document.getElementById('badgeVencidas');
+            
+            if (vencidas.length > 0) {
+                badge.textContent = vencidas.length;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function renderAlertas() {
+            const { vencidas, proximas } = calcularAlarmas();
+            const container = document.getElementById('alertasContainer');
+
+            if (vencidas.length === 0 && proximas.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '<div class="alertas-container">';
+            html += '<div class="alertas-header">';
+            html += '<span style="font-size: 1.5rem;">🔔</span>';
+            html += '<div class="alertas-title">';
+            
+            if (vencidas.length > 0) {
+                html += `${vencidas.length} acción${vencidas.length > 1 ? 'es' : ''} vencida${vencidas.length > 1 ? 's' : ''}`;
+            }
+            if (vencidas.length > 0 && proximas.length > 0) {
+                html += ' • ';
+            }
+            if (proximas.length > 0) {
+                html += `${proximas.length} próxima${proximas.length > 1 ? 's' : ''} a vencer`;
+            }
+            
+            html += '</div></div>';
+            html += '<div class="alertas-grid">';
+
+            vencidas.slice(0, 5).forEach(a => {
+                const proyecto = proyectos.find(p => p.id === a.proyectoId);
+                const diasVencidos = Math.ceil((new Date() - new Date(a.fechaCompromiso)) / (1000 * 60 * 60 * 24));
+                
+                html += '<div class="alerta-item">';
+                html += '<div class="alerta-info">';
+                html += `<div class="alerta-accion">${a.accionEjecutiva?.substring(0, 60) || 'Sin descripción'}...</div>`;
+                html += `<div class="alerta-meta">${a.responsable || 'Sin responsable'} • ${proyecto?.nombre || 'Sin proyecto'}</div>`;
+                html += '</div>';
+                html += `<span class="alerta-dias">-${diasVencidos}d</span>`;
+                html += '</div>';
+            });
+
+            proximas.slice(0, 5).forEach(a => {
+                const proyecto = proyectos.find(p => p.id === a.proyectoId);
+                
+                html += '<div class="alerta-item">';
+                html += '<div class="alerta-info">';
+                html += `<div class="alerta-accion">${a.accionEjecutiva?.substring(0, 60) || 'Sin descripción'}...</div>`;
+                html += `<div class="alerta-meta">${a.responsable || 'Sin responsable'} • ${proyecto?.nombre || 'Sin proyecto'}</div>`;
+                html += '</div>';
+                html += `<span class="alerta-dias" style="background: var(--warning);">${a.diasRestantes}d</span>`;
+                html += '</div>';
+            });
+
+            html += '</div></div>';
+            container.innerHTML = html;
+        }
+
+        // FILTROS EN CASCADA
+        function actualizarFiltrosCascada(vista) {
+            const proyectoFilterId = vista === 'acciones' ? 'accionesProyectoFilter' : 'responsablesProyectoFilter';
+            const proyectoSeleccionado = document.getElementById(proyectoFilterId).value;
+
+            if (vista === 'acciones') {
+                const estadoFilter = document.getElementById('accionesEstadoFilter');
+                const estadoActual = estadoFilter.value;
+                
+                let accionesFiltradas = proyectoSeleccionado 
+                    ? acciones.filter(a => a.proyectoId == proyectoSeleccionado)
+                    : acciones;
+
+                // Limpiar TODO excepto texto alfanumérico antes de crear filtro
+                const estadosUnicos = [...new Set(accionesFiltradas.map(a => {
+                    const estatusLimpio = (a.estatus || '').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                    return estatusLimpio;
+                }).filter(e => e))];
+                
+                estadoFilter.innerHTML = '<option value="">Todos los estados</option>';
+                estadosUnicos.forEach(estado => {
+                    estadoFilter.innerHTML += `<option value="${estado}">${estado}</option>`;
+                });
+                
+                if (estadosUnicos.includes(estadoActual)) {
+                    estadoFilter.value = estadoActual;
+                }
+
+                const respFilter = document.getElementById('accionesResponsableFilter');
+                const respActual = respFilter.value;
+                
+                const responsablesUnicos = [...new Set(accionesFiltradas.map(a => a.responsable).filter(r => r))];
+                
+                respFilter.innerHTML = '<option value="">Todos los responsables</option>';
+                responsablesUnicos.forEach(resp => {
+                    respFilter.innerHTML += `<option value="${resp}">${resp}</option>`;
+                });
+                
+                if (responsablesUnicos.includes(respActual)) {
+                    respFilter.value = respActual;
+                }
+            }
+
+            if (vista === 'acciones') renderAcciones();
+            if (vista === 'responsables') renderResponsables();
+        }
+
+        // PROYECTOS
+        function abrirModalProyecto() {
+            document.getElementById('modalProyecto').classList.add('active');
+            document.querySelector('#modalProyecto .modal-title').textContent = 'Crear Nuevo Proyecto';
+            document.getElementById('formProyecto').reset();
+            document.getElementById('proyectoId').value = '';
+        }
+
+        function cerrarModalProyecto() {
+            document.getElementById('modalProyecto').classList.remove('active');
+            document.getElementById('formProyecto').reset();
+        }
+
+        function editarProyecto(id) {
+            const proyecto = proyectos.find(p => p.id === id);
+            if (!proyecto) return;
+
+            document.querySelector('#modalProyecto .modal-title').textContent = 'Editar Proyecto';
+            document.getElementById('proyectoId').value = proyecto.id;
+            document.getElementById('proyectoNombre').value = proyecto.nombre;
+            document.getElementById('proyectoDesarrollo').value = proyecto.desarrollo || '';
+            document.getElementById('proyectoResponsable').value = proyecto.responsable || '';
+            document.getElementById('modalProyecto').classList.add('active');
+        }
+
+        function eliminarProyecto(id) {
+            const proyecto = proyectos.find(p => p.id === id);
+            const accionesProyecto = acciones.filter(a => a.proyectoId === id).length;
+            
+            const mensaje = accionesProyecto > 0 
+                ? `¿Eliminar proyecto "${proyecto.nombre}" y sus ${accionesProyecto} acciones?`
+                : `¿Eliminar proyecto "${proyecto.nombre}"?`;
+            
+            if (!confirm(mensaje)) return;
+            
+            proyectos = proyectos.filter(p => p.id !== id);
+            acciones = acciones.filter(a => a.proyectoId !== id);
+            guardarDatos();
+            renderProyectos();
+            renderAcciones();
+            renderDashboard();
+            renderResponsables();
+            actualizarFiltros();
+            actualizarBadgeVencidas();
+        }
+
+        function exportarProyectoExcel(proyectoId) {
+            const proyecto = proyectos.find(p => p.id === proyectoId);
+            if (!proyecto) return;
+
+            const accsProyecto = acciones.filter(a => a.proyectoId === proyectoId);
+            
+            if (accsProyecto.length === 0) {
+                alert('Este proyecto no tiene acciones para exportar');
+                return;
+            }
+
+            const datosExcel = accsProyecto.map(a => ({
+                'Proyecto': proyecto.nombre,
+                'Tema': a.tema || '',
+                'Acción Ejecutiva': a.accionEjecutiva || '',
+                'Responsable': a.responsable || '',
+                'Área': a.area || '',
+                'Prioridad': a.prioridad || '',
+                'Estado': a.estatus || '',
+                'Avance %': a.avance || 0,
+                'Fecha Compromiso': a.fechaCompromiso || '',
+                'Observaciones': a.observaciones || ''
+            }));
+
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(datosExcel);
+
+            ws['!cols'] = [
+                { wch: 25 }, { wch: 20 }, { wch: 50 }, { wch: 20 }, { wch: 20 },
+                { wch: 12 }, { wch: 15 }, { wch: 10 }, { wch: 15 }, { wch: 30 }
+            ];
+
+            XLSX.utils.book_append_sheet(wb, ws, 'Acciones');
+
+            const nombreArchivo = `${proyecto.nombre.replace(/[^a-z0-9]/gi, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, nombreArchivo);
+        }
+
+        document.getElementById('formProyecto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('proyectoId').value;
+            const proyecto = {
+                id: id ? parseInt(id) : Date.now(),
+                nombre: document.getElementById('proyectoNombre').value,
+                desarrollo: document.getElementById('proyectoDesarrollo').value,
+                responsable: document.getElementById('proyectoResponsable').value,
+                fechaCreacion: id ? proyectos.find(p => p.id === parseInt(id)).fechaCreacion : new Date().toISOString()
+            };
+
+            if (id) {
+                const index = proyectos.findIndex(p => p.id === parseInt(id));
+                if (index !== -1) proyectos[index] = proyecto;
+            } else {
+                proyectos.push(proyecto);
+            }
+
+            guardarDatos();
+            renderProyectos();
+            actualizarFiltros();
+            cerrarModalProyecto();
+        });
+
+        function renderProyectos() {
+            const grid = document.getElementById('projectsGrid');
+            
+            if (proyectos.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">📁</div>
+                        <div class="empty-text">No hay proyectos todavía</div>
+                        <p class="empty-subtext">Crea tu primer proyecto, importa un Excel o carga datos de prueba</p>
+                        <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="abrirModalProyecto()">+ Nuevo Proyecto</button>
+                            <button class="btn btn-secondary" onclick="abrirImportarExcel()">⬆ Importar Excel</button>
+                            <button class="btn btn-success" onclick="cargarDatosDemo()">🎲 Cargar Datos Demo</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = proyectos.map(p => {
+                const accsProyecto = acciones.filter(a => a.proyectoId === p.id);
+                const total = accsProyecto.length;
+                const completadas = accsProyecto.filter(a => a.estatus === 'Completada').length;
+                const vencidas = accsProyecto.filter(a => {
+                    if (!a.fechaCompromiso || a.estatus === 'Completada') return false;
+                    return new Date(a.fechaCompromiso) < new Date();
+                }).length;
+                const avance = total > 0 ? Math.round(accsProyecto.reduce((sum, a) => sum + (a.avance || 0), 0) / total) : 0;
+
+                return `
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">${p.nombre}</div>
+                                <div class="card-meta">
+                                    ${p.desarrollo ? `<span class="card-badge">${p.desarrollo}</span>` : ''}
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 5px;">
+                                <button class="btn-icon" onclick="event.stopPropagation(); exportarProyectoExcel(${p.id})" title="Exportar Excel">📥</button>
+                                <button class="btn-icon" onclick="event.stopPropagation(); editarProyecto(${p.id})" title="Editar">✏️</button>
+                                <button class="btn-icon" onclick="event.stopPropagation(); eliminarProyecto(${p.id})" title="Eliminar">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-value primary">${total}</span>
+                                <span class="stat-label">Acciones</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value success">${completadas}</span>
+                                <span class="stat-label">Completadas</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value danger">${vencidas}</span>
+                                <span class="stat-label">Vencidas</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${avance}%"></div>
+                        </div>
+                        <div class="progress-text">${avance}% completado</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ACCIONES
+        function abrirModalAccion(id = null) {
+            const modal = document.getElementById('modalAccion');
+            const title = document.getElementById('accionModalTitle');
+            const selectProyecto = document.getElementById('accionProyectoId');
+            
+            // Popular selector de proyectos
+            selectProyecto.innerHTML = '<option value="">Selecciona un proyecto...</option>' + 
+                proyectos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+            
+            if (id) {
+                const accion = acciones.find(a => a.id === id);
+                if (!accion) return;
+                
+                title.textContent = 'Editar Acción';
+                document.getElementById('accionId').value = accion.id;
+                document.getElementById('accionProyectoId').value = accion.proyectoId || '';
+                document.getElementById('accionTema').value = accion.tema || '';
+                document.getElementById('accionTexto').value = accion.accionEjecutiva || '';
+                document.getElementById('accionResponsable').value = accion.responsable || '';
+                document.getElementById('accionArea').value = accion.area || '';
+                document.getElementById('accionPrioridad').value = accion.prioridad || 'Media';
+                document.getElementById('accionEstado').value = accion.estatus || 'No iniciado';
+                document.getElementById('accionAvance').value = accion.avance || 0;
+                document.getElementById('accionFechaCompromiso').value = accion.fechaCompromiso || '';
+                document.getElementById('accionObservaciones').value = accion.observaciones || '';
+            } else {
+                title.textContent = 'Nueva Acción';
+                document.getElementById('formAccion').reset();
+                document.getElementById('accionId').value = '';
+                // Popular selector de proyectos nuevamente después del reset
+                selectProyecto.innerHTML = '<option value="">Selecciona un proyecto...</option>' + 
+                    proyectos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function cerrarModalAccion() {
+            document.getElementById('modalAccion').classList.remove('active');
+            document.getElementById('formAccion').reset();
+        }
+
+        document.getElementById('formAccion').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('accionId').value;
+            const proyectoIdOriginal = document.getElementById('accionProyectoId').value;
+            
+            // Obtener valores y limpiarlos
+            let prioridad = document.getElementById('accionPrioridad').value;
+            let estatus = document.getElementById('accionEstado').value;
+            
+            // Limpiar cualquier carácter no alfanumérico
+            prioridad = prioridad.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+            estatus = estatus.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+            
+            // Preservar calendarEventId si ya existe
+            const accionExistente = id ? acciones.find(a => a.id === parseInt(id)) : null;
+            
+            const accion = {
+                id: id ? parseInt(id) : Date.now(),
+                proyectoId: proyectoIdOriginal ? parseInt(proyectoIdOriginal) : (proyectos[0]?.id || null),
+                tema: document.getElementById('accionTema').value,
+                accionEjecutiva: document.getElementById('accionTexto').value,
+                responsable: document.getElementById('accionResponsable').value,
+                area: document.getElementById('accionArea').value,
+                prioridad: prioridad,
+                estatus: estatus,
+                avance: parseInt(document.getElementById('accionAvance').value) || 0,
+                fechaCompromiso: document.getElementById('accionFechaCompromiso').value,
+                observaciones: document.getElementById('accionObservaciones').value,
+                tipo: 'Estratégica',
+                calendarEventId: accionExistente?.calendarEventId || null,
+                fechaModificacion: new Date().toISOString(),
+                fechaCreacion: id ? (acciones.find(a => a.id === parseInt(id))?.fechaCreacion || new Date().toISOString()) : new Date().toISOString()
+            };
+
+            if (id) {
+                const index = acciones.findIndex(a => a.id === parseInt(id));
+                if (index !== -1) acciones[index] = accion;
+            } else {
+                acciones.push(accion);
+            }
+
+            guardarDatos();
+            
+            // Sincronizar con Calendar automáticamente si tiene deadline
+            if (calendarScriptUrl && accion.fechaCompromiso) {
+                try {
+                    const eventId = await sincronizarAccionConCalendar(accion);
+                    if (eventId && eventId !== accion.calendarEventId) {
+                        accion.calendarEventId = eventId;
+                        if (id) {
+                            const index = acciones.findIndex(a => a.id === parseInt(id));
+                            if (index !== -1) acciones[index] = accion;
+                        }
+                        guardarDatos();
+                    }
+                } catch (error) {
+                    console.error('Error sincronizando con Calendar:', error);
+                }
+            }
+            
+            renderAcciones();
+            renderDashboard();
+            renderResponsables();
+            renderProyectos();
+            renderAnalisis();
+            actualizarBadgeVencidas();
+            cerrarModalAccion();
+        });
+
+        function eliminarAccion() {
+            const id = document.getElementById('accionId').value;
+            if (!id || !confirm('¿Eliminar esta acción?')) return;
+            
+            // Buscar la acción antes de eliminarla para obtener el eventId
+            const accion = acciones.find(a => a.id === parseInt(id));
+            
+            // Eliminar evento de Calendar si existe
+            if (accion && accion.calendarEventId) {
+                eliminarEventoCalendar(accion.calendarEventId);
+            }
+            
+            acciones = acciones.filter(a => a.id !== parseInt(id));
+            guardarDatos();
+            renderAcciones();
+            renderDashboard();
+            renderResponsables();
+            renderProyectos();
+            renderAnalisis();
+            actualizarBadgeVencidas();
+            cerrarModalAccion();
+        }
+
+        // Función para formatear fechas (convierte números seriales de Excel a formato legible)
+        function formatearFecha(fecha) {
+            if (!fecha) return '-';
+            
+            // Si es un número (serial de Excel como 46104)
+            if (!isNaN(fecha) && !fecha.toString().includes('-')) {
+                const diasDesde1900 = parseInt(fecha) - 1;
+                const fechaBase = new Date(1899, 11, 31);
+                fechaBase.setDate(fechaBase.getDate() + diasDesde1900);
+                
+                const year = fechaBase.getFullYear();
+                const month = String(fechaBase.getMonth() + 1).padStart(2, '0');
+                const day = String(fechaBase.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+            
+            // Si ya es una fecha en formato texto, devolverla
+            return fecha.toString();
+        }
+
+        function renderAcciones() {
+            const filtroProyecto = document.getElementById('accionesProyectoFilter').value;
+            const filtroEstado = document.getElementById('accionesEstadoFilter').value;
+            const filtroPrioridad = document.getElementById('accionesPrioridadFilter').value;
+            const filtroResponsable = document.getElementById('accionesResponsableFilter').value;
+            const searchTerm = document.getElementById('accionesSearch').value.toLowerCase();
+
+            let acsFiltradas = acciones;
+            if (filtroProyecto) acsFiltradas = acsFiltradas.filter(a => a.proyectoId == filtroProyecto);
+            
+            // Limpiar emojis del filtro de estado
+            if (filtroEstado) {
+                acsFiltradas = acsFiltradas.filter(a => {
+                    const estatusLimpio = (a.estatus || '').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                    return estatusLimpio === filtroEstado;
+                });
+            }
+            
+            if (filtroPrioridad) acsFiltradas = acsFiltradas.filter(a => a.prioridad === filtroPrioridad);
+            if (filtroResponsable) acsFiltradas = acsFiltradas.filter(a => a.responsable === filtroResponsable);
+            if (searchTerm) {
+                acsFiltradas = acsFiltradas.filter(a => 
+                    (a.tema || '').toLowerCase().includes(searchTerm) ||
+                    (a.accionEjecutiva || '').toLowerCase().includes(searchTerm) ||
+                    (a.responsable || '').toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Ordenar: VENCIDAS PRIMERO (cronológico), luego NO VENCIDAS (cronológico), luego SIN FECHA
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            
+            acsFiltradas.sort((a, b) => {
+                // Determinar si están vencidas
+                const aVencida = a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoy && a.estatus !== 'Completada';
+                const bVencida = b.fechaCompromiso && new Date(formatearFecha(b.fechaCompromiso)) < hoy && b.estatus !== 'Completada';
+                
+                // Si una está vencida y la otra no, vencida va primero
+                if (aVencida && !bVencida) return -1;
+                if (!aVencida && bVencida) return 1;
+                
+                // Si ambas tienen/no tienen fecha, ordenar cronológicamente
+                if (!a.fechaCompromiso && !b.fechaCompromiso) return 0;
+                if (!a.fechaCompromiso) return 1; // sin fecha al final
+                if (!b.fechaCompromiso) return -1;
+                
+                return new Date(formatearFecha(a.fechaCompromiso)) - new Date(formatearFecha(b.fechaCompromiso));
+            });
+
+            const tbody = document.getElementById('accionesTableBody');
+            
+            if (acsFiltradas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 60px; color: var(--text-secondary);">No hay acciones para mostrar</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = acsFiltradas.map(a => {
+                const esVencida = a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < new Date() && a.estatus !== 'Completada';
+                
+                // Limpiar TODO excepto texto alfanumérico
+                const estatusLimpio = (a.estatus || 'No iniciado').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                const estadoClass = estatusLimpio.toLowerCase().replace(/ /g, '-');
+                
+                // Limpiar TODO excepto texto alfanumérico
+                const prioridadLimpia = (a.prioridad || 'Media').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                
+                const proyecto = proyectos.find(p => p.id === a.proyectoId);
+                const nombreProyecto = proyecto ? proyecto.nombre : 'Sin proyecto';
+                
+                return `
+                    <tr onclick="abrirModalAccion(${a.id})">
+                        <td><span class="proyecto-badge" title="${nombreProyecto}">${nombreProyecto}</span></td>
+                        <td><strong>${a.tema || 'Seguimiento'}</strong></td>
+                        <td style="max-width: 280px;">${a.accionEjecutiva || '-'}</td>
+                        <td>${a.responsable || '-'}</td>
+                        <td>${a.area || '-'}</td>
+                        <td><span class="badge badge-${prioridadLimpia.toLowerCase()}">${prioridadLimpia}</span></td>
+                        <td><span class="estado-badge estado-${estadoClass}">${estatusLimpio}</span></td>
+                        <td><span class="avance-badge">${a.avance || 0}%</span></td>
+                        <td style="${esVencida ? 'color: var(--danger); font-weight: 600;' : ''}">${formatearFecha(a.fechaCompromiso)} ${esVencida ? '🔴' : ''}</td>
+                        <td>
+                            <button class="btn-icon" onclick="event.stopPropagation(); abrirModalAccion(${a.id})" title="Editar">✏️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // RESPONSABLES
+        function renderResponsables() {
+            const grid = document.getElementById('responsablesGrid');
+            const filtroProyecto = document.getElementById('responsablesProyectoFilter').value;
+            
+            let accionesFiltradas = filtroProyecto 
+                ? acciones.filter(a => a.proyectoId == filtroProyecto)
+                : acciones;
+            
+            const responsablesMap = {};
+            accionesFiltradas.forEach(a => {
+                const resp = a.responsable || 'Sin asignar';
+                if (!responsablesMap[resp]) responsablesMap[resp] = [];
+                responsablesMap[resp].push(a);
+            });
+
+            if (Object.keys(responsablesMap).length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">👥</div>
+                        <div class="empty-text">No hay responsables todavía</div>
+                        <p class="empty-subtext">Las acciones asignadas aparecerán aquí</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = Object.entries(responsablesMap).map(([resp, accs]) => {
+                const total = accs.length;
+                const completadas = accs.filter(a => a.estatus === 'Completada').length;
+                const vencidas = accs.filter(a => {
+                    if (!a.fechaCompromiso || a.estatus === 'Completada') return false;
+                    return new Date(a.fechaCompromiso) < new Date();
+                }).length;
+                const avance = total > 0 ? Math.round(accs.reduce((sum, a) => sum + (a.avance || 0), 0) / total) : 0;
+
+                return `
+                    <div class="card" onclick="abrirDetalleResponsable('${resp.replace(/'/g, "\\'")}', ${filtroProyecto || 'null'})">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">👤 ${resp}</div>
+                            </div>
+                        </div>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-value primary">${total}</span>
+                                <span class="stat-label">Total</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value success">${completadas}</span>
+                                <span class="stat-label">Completadas</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value danger">${vencidas}</span>
+                                <span class="stat-label">Vencidas</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${avance}%"></div>
+                        </div>
+                        <div class="progress-text">${avance}% avance promedio</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function abrirDetalleResponsable(responsable, proyectoId) {
+            let accs = acciones.filter(a => a.responsable === responsable);
+            if (proyectoId) {
+                accs = accs.filter(a => a.proyectoId == proyectoId);
+            }
+
+            const modal = document.getElementById('modalResponsableDetalle');
+            const title = document.getElementById('responsableDetalleTitle');
+            const content = document.getElementById('responsableDetalleContent');
+
+            title.textContent = `Acciones de ${responsable}`;
+
+            let html = '<div class="acciones-list">';
+            
+            accs.forEach(a => {
+                const proyecto = proyectos.find(p => p.id === a.proyectoId);
+                
+                // Limpiar TODO excepto texto alfanumérico
+                const estatusLimpio = (a.estatus || 'No iniciado').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                const estadoClass = estatusLimpio.toLowerCase().replace(/ /g, '-');
+                
+                // Limpiar TODO excepto texto alfanumérico
+                const prioridadLimpia = (a.prioridad || 'Media').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                
+                const esVencida = a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < new Date() && a.estatus !== 'Completada';
+
+                html += '<div class="accion-item">';
+                html += '<div class="accion-item-header">';
+                html += `<div class="accion-item-title">${a.accionEjecutiva || 'Sin descripción'}</div>`;
+                html += '</div>';
+                html += '<div class="accion-item-meta">';
+                if (proyecto) html += `<span class="card-badge">${proyecto.nombre}</span>`;
+                if (a.tema) html += `<span class="card-badge">${a.tema}</span>`;
+                html += `<span class="estado-badge estado-${estadoClass}">${estatusLimpio}</span>`;
+                html += `<span class="badge badge-${prioridadLimpia.toLowerCase()}">${prioridadLimpia}</span>`;
+                if (a.fechaCompromiso) {
+                    html += `<span class="card-badge" style="${esVencida ? 'background: var(--danger); color: white;' : ''}">${esVencida ? '🔴 ' : ''}${formatearFecha(a.fechaCompromiso)}</span>`;
+                }
+                html += `<span class="avance-badge">${a.avance || 0}%</span>`;
+                html += '</div>';
+                html += '</div>';
+            });
+
+            html += '</div>';
+            content.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function cerrarModalResponsableDetalle() {
+            document.getElementById('modalResponsableDetalle').classList.remove('active');
+        }
+
+        // DASHBOARD
+        function renderDashboard() {
+            renderAlertas();
+            
+            const filtroProyecto = document.getElementById('dashboardProyectoFilter').value;
+            const acsFiltradas = filtroProyecto ? acciones.filter(a => a.proyectoId == filtroProyecto) : acciones;
+
+            const total = acsFiltradas.length;
+            const completadas = acsFiltradas.filter(a => a.estatus === 'Completada').length;
+            const vencidas = acsFiltradas.filter(a => {
+                if (!a.fechaCompromiso || a.estatus === 'Completada') return false;
+                return new Date(a.fechaCompromiso) < new Date();
+            }).length;
+            const bloqueadas = acsFiltradas.filter(a => a.estatus === 'Bloqueada').length;
+            const avance = total > 0 ? Math.round(acsFiltradas.reduce((sum, a) => sum + (a.avance || 0), 0) / total) : 0;
+
+            const grid = document.getElementById('dashboardStats');
+            grid.innerHTML = `
+                <div class="stat-card" style="border-left-color: var(--primary);">
+                    <div class="stat-card-value" style="color: var(--primary);">${total}</div>
+                    <div class="stat-card-label">Acciones</div>
+                </div>
+                <div class="stat-card" style="border-left-color: var(--info);">
+                    <div class="stat-card-value" style="color: var(--info);">${avance}%</div>
+                    <div class="stat-card-label">Avance Promedio</div>
+                </div>
+                <div class="stat-card" style="border-left-color: var(--danger);">
+                    <div class="stat-card-value" style="color: var(--danger);">${vencidas}</div>
+                    <div class="stat-card-label">Vencidas</div>
+                </div>
+                <div class="stat-card" style="border-left-color: var(--warning);">
+                    <div class="stat-card-value" style="color: var(--warning);">${bloqueadas}</div>
+                    <div class="stat-card-label">Bloqueadas</div>
+                </div>
+            `;
+
+            const ctxEstado = document.getElementById('chartEstado');
+            if (charts.estado) charts.estado.destroy();
+            charts.estado = new Chart(ctxEstado, {
+                type: 'doughnut',
+                data: {
+                    labels: ['No iniciado', 'En progreso', 'Completada', 'Bloqueada', 'Retrasada', 'Pausada'],
+                    datasets: [{
+                        data: [
+                            acsFiltradas.filter(a => a.estatus === 'No iniciado').length,
+                            acsFiltradas.filter(a => a.estatus === 'En progreso').length,
+                            completadas,
+                            bloqueadas,
+                            acsFiltradas.filter(a => a.estatus === 'Retrasada').length,
+                            acsFiltradas.filter(a => a.estatus === 'Pausada').length
+                        ],
+                        backgroundColor: ['#6b7280', '#3b82f6', '#10b981', '#dc2626', '#ea580c', '#8b5cf6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 15, font: { size: 12 } } }
+                    }
+                }
+            });
+
+            const areasMap = {};
+            acsFiltradas.forEach(a => {
+                const area = a.area || 'Sin área';
+                areasMap[area] = (areasMap[area] || 0) + 1;
+            });
+
+            const ctxArea = document.getElementById('chartArea');
+            if (charts.area) charts.area.destroy();
+            charts.area = new Chart(ctxArea, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(areasMap).slice(0, 10),
+                    datasets: [{
+                        label: 'Acciones',
+                        data: Object.values(areasMap).slice(0, 10),
+                        backgroundColor: '#3b82f6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { precision: 0 } }
+                    }
+                }
+            });
+        }
+
+        // TENDENCIAS
+        // ==========================================
+        // ANÁLISIS - CENTRO DE INTELIGENCIA
+        // ==========================================
+
+        function renderAnalisis() {
+            renderSaludProyectos();
+            renderVelocidadEjecucion();
+            renderAnalisisRiesgos();
+            renderDistribucionCarga();
+            renderProyeccionCompletitud();
+            renderImpactoCritico();
+        }
+
+        // Panel 1: Salud de Proyectos
+        function renderSaludProyectos() {
+            const filtroProyecto = document.getElementById('analisisProyectoFilter').value;
+            const proysFiltrados = filtroProyecto ? proyectos.filter(p => p.id == filtroProyecto) : proyectos;
+            
+            const html = proysFiltrados.map(proy => {
+                const acsProy = acciones.filter(a => a.proyectoId == proy.id);
+                const total = acsProy.length;
+                if (total === 0) return '';
+
+                const bloqueadas = acsProy.filter(a => a.estatus === 'Bloqueada').length;
+                const retrasadas = acsProy.filter(a => a.estatus === 'Retrasada').length;
+                const completadas = acsProy.filter(a => a.estatus === 'Completada').length;
+                
+                // Cálculo de health score (0-100)
+                const pctCompletadas = (completadas / total) * 100;
+                const pctBloqueadas = (bloqueadas / total) * 100;
+                const pctRetrasadas = (retrasadas / total) * 100;
+                
+                const healthScore = Math.max(0, 100 - (pctBloqueadas * 2) - (pctRetrasadas * 1.5) + (pctCompletadas * 0.3));
+                
+                let healthClass, healthLabel;
+                if (healthScore >= 70) {
+                    healthClass = 'green';
+                    healthLabel = 'Saludable';
+                } else if (healthScore >= 40) {
+                    healthClass = 'yellow';
+                    healthLabel = 'Atención';
+                } else {
+                    healthClass = 'red';
+                    healthLabel = 'Riesgo Alto';
+                }
+
+                return `
+                    <div class="health-indicator">
+                        <div class="health-dot ${healthClass}"></div>
+                        <div class="health-text">
+                            <div class="health-project-name">${proy.nombre}</div>
+                            <div class="health-score">${healthLabel} · Score: ${Math.round(healthScore)}/100</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('panelSalud').innerHTML = html || '<p style="color: var(--text-secondary); font-size: 0.875rem;">Sin proyectos para analizar</p>';
+        }
+
+        // Panel 2: Velocidad de Ejecución
+        function renderVelocidadEjecucion() {
+            const filtroProyecto = document.getElementById('analisisProyectoFilter').value;
+            const acsFiltradas = filtroProyecto ? acciones.filter(a => a.proyectoId == filtroProyecto) : acciones;
+            
+            // Agrupar completadas por semana
+            const semanasMap = {};
+            acsFiltradas.filter(a => a.estatus === 'Completada').forEach(a => {
+                if (!a.fechaModificacion && !a.fechaCreacion) return;
+                
+                const fecha = new Date(a.fechaModificacion || a.fechaCreacion);
+                const semana = getWeekNumber(fecha);
+                const key = `${fecha.getFullYear()}-S${semana}`;
+                
+                semanasMap[key] = (semanasMap[key] || 0) + 1;
+            });
+
+            const semanas = Object.keys(semanasMap).sort().slice(-8);
+            const valores = semanas.map(s => semanasMap[s] || 0);
+            
+            // Calcular tendencia
+            const promedio = valores.length > 0 ? valores.reduce((a, b) => a + b, 0) / valores.length : 0;
+            const ultimaSemana = valores[valores.length - 1] || 0;
+            const penultimaSemana = valores[valores.length - 2] || 0;
+            
+            let tendencia = '';
+            let tendenciaClass = 'neutral';
+            let tendenciaIcon = '→';
+            
+            if (ultimaSemana > penultimaSemana) {
+                const incremento = Math.round(((ultimaSemana - penultimaSemana) / (penultimaSemana || 1)) * 100);
+                tendencia = `+${incremento}% vs semana anterior`;
+                tendenciaClass = 'up';
+                tendenciaIcon = '↑';
+            } else if (ultimaSemana < penultimaSemana) {
+                const decremento = Math.round(((penultimaSemana - ultimaSemana) / (penultimaSemana || 1)) * 100);
+                tendencia = `-${decremento}% vs semana anterior`;
+                tendenciaClass = 'down';
+                tendenciaIcon = '↓';
+            } else {
+                tendencia = 'Sin cambios';
+            }
+
+            document.getElementById('metricaVelocidad').innerHTML = `
+                <div class="metric-big">${ultimaSemana}</div>
+                <div class="metric-label">Acciones completadas esta semana</div>
+                <span class="trend-indicator trend-${tendenciaClass}">${tendenciaIcon} ${tendencia}</span>
+            `;
+
+            // Gráfico de línea
+            const ctxVelocidad = document.getElementById('chartVelocidad');
+            if (charts.velocidad) charts.velocidad.destroy();
+            
+            charts.velocidad = new Chart(ctxVelocidad, {
+                type: 'line',
+                data: {
+                    labels: semanas,
+                    datasets: [{
+                        data: valores,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#10b981'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { precision: 0, color: 'var(--text-secondary)' },
+                            grid: { color: 'var(--border-color)' }
+                        },
+                        x: { 
+                            ticks: { color: 'var(--text-secondary)' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Panel 3: Análisis de Riesgos
+        function renderAnalisisRiesgos() {
+            const filtroProyecto = document.getElementById('analisisProyectoFilter').value;
+            const proysFiltrados = filtroProyecto ? proyectos.filter(p => p.id == filtroProyecto) : proyectos;
+            
+            const riesgos = proysFiltrados.map(proy => {
+                const acsProy = acciones.filter(a => a.proyectoId == proy.id);
+                const bloqueadas = acsProy.filter(a => a.estatus === 'Bloqueada').length;
+                const retrasadas = acsProy.filter(a => a.estatus === 'Retrasada').length;
+                
+                // Calcular impacto financiero total de acciones bloqueadas
+                const impactoFinanciero = acsProy
+                    .filter(a => a.estatus === 'Bloqueada')
+                    .reduce((sum, a) => sum + (parseInt(a.impactoFinanciero) || 0), 0);
+                
+                return {
+                    proyecto: proy.nombre,
+                    bloqueadas,
+                    retrasadas,
+                    impactoFinanciero,
+                    riesgoScore: bloqueadas * 3 + retrasadas * 1.5
+                };
+            }).filter(r => r.riesgoScore > 0)
+              .sort((a, b) => b.riesgoScore - a.riesgoScore)
+              .slice(0, 5);
+
+            const html = riesgos.length > 0 ? `
+                <table class="risk-table">
+                    ${riesgos.map(r => `
+                        <tr>
+                            <td class="risk-project">${r.proyecto}</td>
+                            <td class="risk-value ${r.bloqueadas >= 3 ? 'risk-critical' : 'risk-warning'}">
+                                ${r.bloqueadas} bloqueadas
+                            </td>
+                        </tr>
+                    `).join('')}
+                </table>
+            ` : '<p style="color: var(--text-secondary); font-size: 0.875rem;">✅ Sin riesgos críticos detectados</p>';
+
+            document.getElementById('panelRiesgos').innerHTML = html;
+        }
+
+        // Panel 4: Distribución de Carga
+        function renderDistribucionCarga() {
+            const filtroProyecto = document.getElementById('analisisProyectoFilter').value;
+            const acsFiltradas = filtroProyecto ? acciones.filter(a => a.proyectoId == filtroProyecto) : acciones;
+            
+            const activas = acsFiltradas.filter(a => a.estatus !== 'Completada');
+            const cargaMap = {};
+            
+            activas.forEach(a => {
+                const resp = a.responsable || 'Sin asignar';
+                cargaMap[resp] = (cargaMap[resp] || 0) + 1;
+            });
+
+            const cargas = Object.entries(cargaMap)
+                .map(([nombre, count]) => ({ nombre, count }))
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 8);
+
+            const maxCarga = Math.max(...cargas.map(c => c.count), 1);
+
+            const html = cargas.length > 0 ? cargas.map(c => {
+                const porcentaje = (c.count / maxCarga) * 100;
+                const sobrecarga = c.count > 10;
+                
+                return `
+                    <div class="carga-bar">
+                        <div class="carga-nombre" title="${c.nombre}">${c.nombre}</div>
+                        <div class="carga-bar-container">
+                            <div class="carga-bar-fill ${sobrecarga ? 'sobrecarga' : ''}" style="width: ${porcentaje}%">
+                                <span class="carga-count">${c.count}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('') : '<p style="color: var(--text-secondary); font-size: 0.875rem;">Sin acciones activas</p>';
+
+            document.getElementById('panelCarga').innerHTML = html;
+        }
+
+        // Panel 5: Proyección de Completitud
+        function renderProyeccionCompletitud() {
+            const filtroProyecto = document.getElementById('analisisProyectoFilter').value;
+            const proysFiltrados = filtroProyecto ? proyectos.filter(p => p.id == filtroProyecto) : proyectos;
+            
+            const proyecciones = proysFiltrados.map(proy => {
+                const acsProy = acciones.filter(a => a.proyectoId == proy.id);
+                const total = acsProy.length;
+                if (total === 0) return null;
+
+                const completadas = acsProy.filter(a => a.estatus === 'Completada').length;
+                const porcentaje = Math.round((completadas / total) * 100);
+                
+                // Calcular velocidad (completadas en últimas 4 semanas)
+                const hace4Semanas = new Date();
+                hace4Semanas.setDate(hace4Semanas.getDate() - 28);
+                
+                const completadasRecientes = acsProy.filter(a => {
+                    if (a.estatus !== 'Completada') return false;
+                    const fecha = new Date(a.fechaModificacion || a.fechaCreacion);
+                    return fecha >= hace4Semanas;
+                }).length;
+
+                const velocidadSemanal = completadasRecientes / 4;
+                const restantes = total - completadas;
+                const semanasEstimadas = velocidadSemanal > 0 ? Math.ceil(restantes / velocidadSemanal) : 999;
+                const diasEstimados = semanasEstimadas * 7;
+
+                let estimacionTexto = '';
+                if (porcentaje === 100) {
+                    estimacionTexto = '🎉 Proyecto completado';
+                } else if (semanasEstimadas > 52) {
+                    estimacionTexto = 'Velocidad insuficiente para proyectar';
+                } else {
+                    estimacionTexto = `Estimado: ${diasEstimados} días`;
+                }
+
+                return {
+                    proyecto: proy.nombre,
+                    porcentaje,
+                    estimacion: estimacionTexto
+                };
+            }).filter(p => p !== null);
+
+            const html = proyecciones.length > 0 ? proyecciones.map(p => `
+                <div class="proyeccion-item">
+                    <div class="proyeccion-proyecto">${p.proyecto}</div>
+                    <div class="proyeccion-progress-container">
+                        <div class="proyeccion-progress-bar">
+                            <div class="proyeccion-progress-fill" style="width: ${p.porcentaje}%"></div>
+                        </div>
+                        <div class="proyeccion-percent">${p.porcentaje}%</div>
+                    </div>
+                    <div class="proyeccion-dias">${p.estimacion}</div>
+                </div>
+            `).join('') : '<p style="color: var(--text-secondary); font-size: 0.875rem;">Sin proyectos activos</p>';
+
+            document.getElementById('panelProyeccion').innerHTML = html;
+        }
+
+        // Panel 6: Impacto Crítico
+        function renderImpactoCritico() {
+            const filtroProyecto = document.getElementById('analisisProyectoFilter').value;
+            const acsFiltradas = filtroProyecto ? acciones.filter(a => a.proyectoId == filtroProyecto) : acciones;
+            
+            const bloqueadas = acsFiltradas.filter(a => a.estatus === 'Bloqueada');
+            
+            // Clasificar por impacto (financiero, estratégico, reputacional)
+            const impactos = {
+                financieroAlto: bloqueadas.filter(a => parseInt(a.impactoFinanciero) >= 8).length,
+                financieroMedio: bloqueadas.filter(a => {
+                    const imp = parseInt(a.impactoFinanciero);
+                    return imp >= 4 && imp < 8;
+                }).length,
+                estrategicoAlto: bloqueadas.filter(a => parseInt(a.impactoEstrategico) >= 8).length,
+                estrategicoMedio: bloqueadas.filter(a => {
+                    const imp = parseInt(a.impactoEstrategico);
+                    return imp >= 4 && imp < 8;
+                }).length,
+                reputacionalAlto: bloqueadas.filter(a => parseInt(a.impactoReputacional) >= 8).length,
+                reputacionalMedio: bloqueadas.filter(a => {
+                    const imp = parseInt(a.impactoReputacional);
+                    return imp >= 4 && imp < 8;
+                }).length
+            };
+
+            document.getElementById('panelImpacto').innerHTML = `
+                <div class="impacto-matrix">
+                    <div class="impacto-cell ${impactos.financieroAlto > 0 ? 'critico' : ''}">
+                        <div class="impacto-count">${impactos.financieroAlto}</div>
+                        <div class="impacto-label">Financiero<br>Alto</div>
+                    </div>
+                    <div class="impacto-cell ${impactos.estrategicoAlto > 0 ? 'critico' : ''}">
+                        <div class="impacto-count">${impactos.estrategicoAlto}</div>
+                        <div class="impacto-label">Estratégico<br>Alto</div>
+                    </div>
+                    <div class="impacto-cell ${impactos.reputacionalAlto > 0 ? 'critico' : ''}">
+                        <div class="impacto-count">${impactos.reputacionalAlto}</div>
+                        <div class="impacto-label">Reputacional<br>Alto</div>
+                    </div>
+                    <div class="impacto-cell ${impactos.financieroMedio > 0 ? 'alto' : ''}">
+                        <div class="impacto-count">${impactos.financieroMedio}</div>
+                        <div class="impacto-label">Financiero<br>Medio</div>
+                    </div>
+                    <div class="impacto-cell ${impactos.estrategicoMedio > 0 ? 'alto' : ''}">
+                        <div class="impacto-count">${impactos.estrategicoMedio}</div>
+                        <div class="impacto-label">Estratégico<br>Medio</div>
+                    </div>
+                    <div class="impacto-cell ${impactos.reputacionalMedio > 0 ? 'alto' : ''}">
+                        <div class="impacto-count">${impactos.reputacionalMedio}</div>
+                        <div class="impacto-label">Reputacional<br>Medio</div>
+                    </div>
+                </div>
+                <div style="margin-top: 16px; font-size: 0.75rem; color: var(--text-secondary); text-align: center;">
+                    ${bloqueadas.length} acciones bloqueadas en total
+                </div>
+            `;
+        }
+
+        function getWeekNumber(date) {
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+        }
+
+        // IMPORTAR EXCEL
+        function abrirImportarExcel() {
+            document.getElementById('modalImportar').classList.add('active');
+            document.getElementById('importarTipoProyecto').value = 'nuevo';
+            toggleProyectoExistente();
+            actualizarProyectosExistentes();
+        }
+
+        function cerrarImportarExcel() {
+            document.getElementById('modalImportar').classList.remove('active');
+        }
+
+        function toggleProyectoExistente() {
+            const tipo = document.getElementById('importarTipoProyecto').value;
+            const selectContainer = document.getElementById('selectProyectoExistente');
+            selectContainer.style.display = tipo === 'existente' ? 'block' : 'none';
+        }
+
+        function actualizarProyectosExistentes() {
+            const select = document.getElementById('proyectoExistenteSelect');
+            select.innerHTML = '<option value="">Selecciona un proyecto...</option>';
+            proyectos.forEach(p => {
+                select.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
+            });
+        }
+
+        function procesarExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const tipoImport = document.getElementById('importarTipoProyecto').value;
+            const proyectoExistenteId = document.getElementById('proyectoExistenteSelect').value;
+
+            if (tipoImport === 'existente' && !proyectoExistenteId) {
+                alert('Por favor selecciona un proyecto existente');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet, {defval: ''});
+
+                if (jsonData.length === 0) {
+                    alert('El archivo Excel está vacío');
+                    return;
+                }
+
+                let proyectoId;
+                let nombreProyecto = file.name.replace(/\.(xlsx|xls|csv)$/i, '');
+
+                if (tipoImport === 'nuevo') {
+                    const proyecto = {
+                        id: Date.now(),
+                        nombre: nombreProyecto,
+                        desarrollo: 'Importado',
+                        responsable: 'Por asignar',
+                        fechaCreacion: new Date().toISOString()
+                    };
+                    proyectos.push(proyecto);
+                    proyectoId = proyecto.id;
+                } else {
+                    proyectoId = parseInt(proyectoExistenteId);
+                }
+
+                const mapearCampo = (row, posibles) => {
+                    for (let campo of posibles) {
+                        if (row[campo] !== undefined && row[campo] !== '') return row[campo];
+                    }
+                    return '';
+                };
+
+                jsonData.forEach((row, index) => {
+                    let estatusImportado = mapearCampo(row, ['Estatus', 'Estado']) || 'No iniciado';
+                    let prioridadImportada = mapearCampo(row, ['Prioridad']) || 'Media';
+                    
+                    // Limpiar TODO excepto texto alfanumérico
+                    estatusImportado = estatusImportado.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                    prioridadImportada = prioridadImportada.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                    
+                    const accion = {
+                        id: Date.now() + index,
+                        proyectoId: proyectoId,
+                        tipo: mapearCampo(row, ['Tipo', 'tipo']) || 'Estratégica',
+                        tema: mapearCampo(row, ['Tema', 'tema']),
+                        accionEjecutiva: mapearCampo(row, ['Acción Ejecutiva', 'Acción', 'accion']),
+                        area: mapearCampo(row, ['Área', 'Area']),
+                        responsable: mapearCampo(row, ['Responsable Directo', 'Responsable']),
+                        prioridad: prioridadImportada,
+                        fechaCompromiso: mapearCampo(row, ['Fecha Compromiso', 'Fecha Límite']),
+                        estatus: estatusImportado,
+                        avance: parseInt(mapearCampo(row, ['% Avance', 'Avance'])) || 0,
+                        observaciones: mapearCampo(row, ['Comentarios', 'Observaciones']),
+                        fechaCreacion: new Date().toISOString()
+                    };
+                    acciones.push(accion);
+                });
+
+                guardarDatos();
+                renderProyectos();
+                renderAcciones();
+                renderDashboard();
+                renderResponsables();
+                renderAnalisis();
+                actualizarFiltros();
+                actualizarBadgeVencidas();
+                cerrarImportarExcel();
+                
+                const mensaje = tipoImport === 'nuevo' 
+                    ? `✅ Proyecto "${nombreProyecto}" creado con ${jsonData.length} acciones`
+                    : `✅ ${jsonData.length} acciones agregadas al proyecto`;
+                alert(mensaje);
+                
+                document.querySelector('.nav-item').click();
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        // BACKUP COMPLETO
+        function exportarBackupCompleto() {
+            const backup = {
+                version: '4.0',
+                fecha: new Date().toISOString(),
+                proyectos: proyectos,
+                acciones: acciones,
+                tema: localStorage.getItem('ccTema') || 'light'
+            };
+
+            const dataStr = JSON.stringify(backup, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            const fecha = new Date().toISOString().split('T')[0];
+            link.download = `centro_control_backup_${fecha}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            alert('✅ Backup exportado exitosamente');
+        }
+
+        function importarBackupCompleto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backup = JSON.parse(e.target.result);
+                    
+                    if (!backup.proyectos || !backup.acciones) {
+                        alert('❌ Archivo de backup inválido');
+                        return;
+                    }
+
+                    const tieneProyectos = proyectos.length > 0;
+                    const tieneAcciones = acciones.length > 0;
+
+                    let mensaje = '¿Cómo deseas importar el backup?\n\n';
+                    if (tieneProyectos || tieneAcciones) {
+                        mensaje += '• OK = REEMPLAZAR todos los datos actuales\n';
+                        mensaje += '• CANCELAR = Volver\n\n';
+                        mensaje += `El backup contiene:\n- ${backup.proyectos.length} proyectos\n- ${backup.acciones.length} acciones`;
+                    } else {
+                        mensaje += `Importar:\n- ${backup.proyectos.length} proyectos\n- ${backup.acciones.length} acciones`;
+                    }
+
+                    if (!confirm(mensaje)) {
+                        event.target.value = '';
+                        return;
+                    }
+
+                    proyectos = backup.proyectos;
+                    acciones = backup.acciones;
+                    
+                    // Limpiar TODO excepto texto alfanumérico
+                    acciones = acciones.map(a => {
+                        if (a.estatus) {
+                            a.estatus = a.estatus.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                        }
+                        if (a.prioridad) {
+                            a.prioridad = a.prioridad.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                        }
+                        return a;
+                    });
+                    
+                    if (backup.tema) {
+                        localStorage.setItem('ccTema', backup.tema);
+                        cambiarTema(backup.tema);
+                    }
+
+                    guardarDatos();
+                    renderProyectos();
+                    renderAcciones();
+                    renderDashboard();
+                    renderResponsables();
+                    renderAnalisis();
+                    actualizarFiltros();
+                    actualizarBadgeVencidas();
+
+                    alert('✅ Backup importado exitosamente');
+                    event.target.value = '';
+                } catch (error) {
+                    console.error('Error al importar backup:', error);
+                    alert('❌ Error al leer el archivo de backup');
+                    event.target.value = '';
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        // DATOS DEMO
+        function cargarDatosDemo() {
+            if (proyectos.length > 0 || acciones.length > 0) {
+                if (!confirm('Ya tienes datos. ¿Deseas agregar los datos demo de todas formas?')) {
+                    return;
+                }
+            }
+
+            const proyectosDemo = [
+                {
+                    id: Date.now(),
+                    nombre: 'KULKANA Macrolotes 2026',
+                    desarrollo: 'Kulkana',
+                    responsable: 'Juan Pérez',
+                    fechaCreacion: new Date().toISOString()
+                },
+                {
+                    id: Date.now() + 1,
+                    nombre: 'Capital Norte - Expansión Q2',
+                    desarrollo: 'Capital Norte',
+                    responsable: 'María González',
+                    fechaCreacion: new Date().toISOString()
+                },
+                {
+                    id: Date.now() + 2,
+                    nombre: 'Terrasoles Infraestructura',
+                    desarrollo: 'Terrasoles',
+                    responsable: 'Carlos Martínez',
+                    fechaCreacion: new Date().toISOString()
+                }
+            ];
+
+            const hoy = new Date();
+            const manana = new Date(hoy);
+            manana.setDate(manana.getDate() + 1);
+            const proximaSemana = new Date(hoy);
+            proximaSemana.setDate(proximaSemana.getDate() + 7);
+            const ayer = new Date(hoy);
+            ayer.setDate(ayer.getDate() - 1);
+
+            const accionesDemo = [
+                {
+                    id: Date.now() + 100,
+                    proyectoId: proyectosDemo[0].id,
+                    tema: 'Permisos',
+                    accionEjecutiva: 'Gestionar permisos de construcción ante autoridades locales',
+                    responsable: 'Juan Pérez',
+                    area: 'Legal',
+                    prioridad: 'Alta',
+                    estatus: 'En progreso',
+                    avance: 65,
+                    fechaCompromiso: proximaSemana.toISOString().split('T')[0],
+                    observaciones: 'Reunión agendada con municipio',
+                    tipo: 'Estratégica',
+                    fechaCreacion: new Date().toISOString(),
+                    fechaModificacion: new Date().toISOString()
+                },
+                {
+                    id: Date.now() + 101,
+                    proyectoId: proyectosDemo[0].id,
+                    tema: 'Comercialización',
+                    accionEjecutiva: 'Lanzar campaña de pre-venta para macrolotes',
+                    responsable: 'Ana López',
+                    area: 'Comercial/Marketing',
+                    prioridad: 'Alta',
+                    estatus: 'No iniciado',
+                    avance: 0,
+                    fechaCompromiso: manana.toISOString().split('T')[0],
+                    observaciones: 'Pendiente aprobación de presupuesto',
+                    tipo: 'Estratégica',
+                    fechaCreacion: new Date().toISOString(),
+                    fechaModificacion: new Date().toISOString()
+                },
+                {
+                    id: Date.now() + 102,
+                    proyectoId: proyectosDemo[0].id,
+                    tema: 'Infraestructura',
+                    accionEjecutiva: 'Completar diseño de vialidades y áreas comunes',
+                    responsable: 'Roberto Silva',
+                    area: 'PMO',
+                    prioridad: 'Media',
+                    estatus: 'Completada',
+                    avance: 100,
+                    fechaCompromiso: ayer.toISOString().split('T')[0],
+                    observaciones: 'Planos entregados y aprobados',
+                    tipo: 'Estratégica',
+                    fechaCreacion: new Date().toISOString(),
+                    fechaModificacion: new Date().toISOString()
+                }
+            ];
+
+            proyectos = [...proyectos, ...proyectosDemo];
+            acciones = [...acciones, ...accionesDemo];
+
+            guardarDatos();
+            renderProyectos();
+            renderAcciones();
+            renderDashboard();
+            renderResponsables();
+            renderAnalisis();
+            actualizarFiltros();
+            actualizarBadgeVencidas();
+
+            alert('✅ Datos demo cargados exitosamente\n\n3 proyectos y 3 acciones agregados');
+        }
+
+        // UTILS
+        function actualizarFiltros() {
+            const selects = [
+                document.getElementById('dashboardProyectoFilter'),
+                document.getElementById('accionesProyectoFilter'),
+                document.getElementById('responsablesProyectoFilter'),
+                document.getElementById('analisisProyectoFilter')
+            ];
+            
+            selects.forEach(select => {
+                const valorActual = select.value;
+                select.innerHTML = '<option value="">Todos los proyectos</option>';
+                proyectos.forEach(p => {
+                    select.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
+                });
+                select.value = valorActual;
+            });
+
+            actualizarFiltrosCascada('acciones');
+        }
+
+        function guardarDatos() {
+            localStorage.setItem('ccProyectos', JSON.stringify(proyectos));
+            localStorage.setItem('ccAcciones', JSON.stringify(acciones));
+        }
+
+        function resetData() {
+            if (!confirm('⚠️ ¿ELIMINAR TODOS LOS PROYECTOS Y ACCIONES?\n\nEsta acción no se puede deshacer.')) return;
+            
+            proyectos = [];
+            acciones = [];
+            localStorage.removeItem('ccProyectos');
+            localStorage.removeItem('ccAcciones');
+            
+            renderProyectos();
+            renderAcciones();
+            renderDashboard();
+            renderResponsables();
+            renderAnalisis();
+            actualizarFiltros();
+            actualizarBadgeVencidas();
+            
+            alert('✅ Todos los datos han sido eliminados');
+        }
+
+        // ==========================================
+        // GOOGLE CALENDAR SYNC - FUNCIONES
+        // ==========================================
+        
+        async function sincronizarAccionConCalendar(accion) {
+            if (!calendarScriptUrl) {
+                console.log('URL del script no configurada');
+                return null;
+            }
+            
+            if (!accion.fechaCompromiso) {
+                console.log('Acción sin deadline, no se sincroniza');
+                return null;
+            }
+            
+            try {
+                const proyecto = proyectos.find(p => p.id === accion.proyectoId);
+                
+                const data = {
+                    action: 'createOrUpdateEvent',
+                    data: {
+                        id: accion.id,
+                        proyecto: proyecto ? proyecto.nombre : 'Sin Proyecto',
+                        tema: accion.tema,
+                        accion: accion.accionEjecutiva,
+                        responsable: accion.responsable,
+                        area: accion.area,
+                        prioridad: accion.prioridad,
+                        estado: accion.estatus,
+                        avance: accion.avance,
+                        deadline: accion.fechaCompromiso,
+                        observaciones: accion.observaciones,
+                        eventId: accion.calendarEventId || null
+                    }
+                };
+                
+                const response = await fetch(calendarScriptUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.eventId) {
+                    return result.data.eventId;
+                }
+                
+                return null;
+                
+            } catch (error) {
+                console.error('Error sincronizando con Calendar:', error);
+                return null;
+            }
+        }
+        
+        async function sincronizarDesdeCalendar() {
+            if (!calendarScriptUrl) {
+                alert('⚠️ Configura primero la URL del Google Apps Script\n\nVe a Configuración > Google Calendar');
+                return;
+            }
+            
+            // Filtrar solo acciones con deadline y eventId
+            const accionesConCalendar = acciones.filter(a => a.fechaCompromiso && a.calendarEventId);
+            
+            if (accionesConCalendar.length === 0) {
+                alert('No hay acciones sincronizadas con Calendar');
+                return;
+            }
+            
+            try {
+                const btn = event.target;
+                btn.disabled = true;
+                btn.textContent = '🔄 Sincronizando...';
+                
+                const data = {
+                    action: 'syncFromCalendar',
+                    data: accionesConCalendar.map(a => ({
+                        id: a.id,
+                        eventId: a.calendarEventId,
+                        deadline: a.fechaCompromiso
+                    }))
+                };
+                
+                const response = await fetch(calendarScriptUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.cambios) {
+                    const cambios = result.data.cambios;
+                    
+                    if (cambios.length === 0) {
+                        alert('✅ Todo sincronizado - No hay cambios');
+                    } else {
+                        // Aplicar cambios
+                        let actualizadas = 0;
+                        let eliminadas = 0;
+                        
+                        cambios.forEach(cambio => {
+                            const accion = acciones.find(a => a.id === cambio.id);
+                            if (!accion) return;
+                            
+                            if (cambio.type === 'updated') {
+                                accion.fechaCompromiso = cambio.newDeadline;
+                                actualizadas++;
+                            } else if (cambio.type === 'deleted') {
+                                accion.calendarEventId = null;
+                                eliminadas++;
+                            }
+                        });
+                        
+                        guardarDatos();
+                        renderAcciones();
+                        renderDashboard();
+                        renderResponsables();
+                        actualizarBadgeVencidas();
+                        
+                        let mensaje = '✅ Sincronización completada\n\n';
+                        if (actualizadas > 0) mensaje += `📅 ${actualizadas} fecha(s) actualizada(s)\n`;
+                        if (eliminadas > 0) mensaje += `🗑️ ${eliminadas} evento(s) eliminado(s) en Calendar\n`;
+                        
+                        alert(mensaje);
+                    }
+                } else {
+                    alert('❌ Error: ' + (result.message || 'No se pudo sincronizar'));
+                }
+                
+            } catch (error) {
+                console.error('Error sincronizando desde Calendar:', error);
+                alert('❌ Error al sincronizar desde Calendar\n\nVerifica la URL del script en Configuración');
+            } finally {
+                const btn = document.querySelector('.btn[onclick="sincronizarDesdeCalendar()"]');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = '🔄 Sincronizar Calendar';
+                }
+            }
+        }
+        
+        async function eliminarEventoCalendar(eventId) {
+            if (!calendarScriptUrl || !eventId) return;
+            
+            try {
+                const data = {
+                    action: 'deleteEvent',
+                    eventId: eventId
+                };
+                
+                await fetch(calendarScriptUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+            } catch (error) {
+                console.error('Error eliminando evento de Calendar:', error);
+            }
+        }
+
+        // ==========================================
+        // EXPORTAR PDF - FUNCIONES
+        // ==========================================
+        
+        function exportarPDFAcciones() {
+            const { jsPDF } = window.jspdf;
+            
+            // Filtrar acciones según filtros actuales
+            const filtroProyecto = document.getElementById('accionesProyectoFilter').value;
+            const filtroEstado = document.getElementById('accionesEstadoFilter').value;
+            const filtroPrioridad = document.getElementById('accionesPrioridadFilter').value;
+            const filtroResponsable = document.getElementById('accionesResponsableFilter').value;
+            const searchTerm = document.getElementById('accionesSearch').value.toLowerCase();
+
+            let acsFiltradas = acciones.filter(a => a.estatus !== 'Completada'); // Solo acciones activas
+            
+            if (filtroProyecto) acsFiltradas = acsFiltradas.filter(a => a.proyectoId == filtroProyecto);
+            if (filtroEstado) {
+                acsFiltradas = acsFiltradas.filter(a => {
+                    const estatusLimpio = (a.estatus || '').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                    return estatusLimpio === filtroEstado;
+                });
+            }
+            if (filtroPrioridad) acsFiltradas = acsFiltradas.filter(a => a.prioridad === filtroPrioridad);
+            if (filtroResponsable) acsFiltradas = acsFiltradas.filter(a => a.responsable === filtroResponsable);
+            if (searchTerm) {
+                acsFiltradas = acsFiltradas.filter(a => 
+                    (a.tema || '').toLowerCase().includes(searchTerm) ||
+                    (a.accionEjecutiva || '').toLowerCase().includes(searchTerm) ||
+                    (a.responsable || '').toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (acsFiltradas.length === 0) {
+                alert('No hay acciones activas para exportar con los filtros aplicados');
+                return;
+            }
+
+            // Crear PDF
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'letter'
+            });
+
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            
+            // Colores corporativos
+            const colorNavy = [10, 37, 64];  // #0A2540
+            const colorGold = [245, 166, 35]; // #F5A623
+            const colorWhite = [255, 255, 255];
+            const colorGray = [128, 128, 128];
+
+            // Header con colores corporativos
+            doc.setFillColor(...colorNavy);
+            doc.rect(0, 0, pageWidth, 35, 'F');
+
+            // Logo/Título
+            doc.setFontSize(24);
+            doc.setTextColor(...colorGold);
+            doc.setFont('helvetica', 'bold');
+            doc.text('GUÍA', 15, 15);
+            
+            doc.setTextColor(...colorWhite);
+            doc.setFontSize(16);
+            doc.text('MACROLOTES', 15, 23);
+
+            // Título del reporte
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Reporte de Acciones Activas', 15, 31);
+
+            // Fecha
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            const fecha = new Date().toLocaleDateString('es-MX', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            doc.text(fecha, pageWidth - 15, 31, { align: 'right' });
+
+            // Preparar datos para la tabla
+            const tableData = acsFiltradas.map(a => {
+                const proyecto = proyectos.find(p => p.id === a.proyectoId);
+                const fechaFormateada = formatearFecha(a.fechaCompromiso);
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                
+                let diasRestantes = '-';
+                if (a.fechaCompromiso) {
+                    const fecha = new Date(fechaFormateada);
+                    fecha.setHours(0, 0, 0, 0);
+                    const diff = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24));
+                    diasRestantes = diff >= 0 ? `${diff}d` : `${Math.abs(diff)}d vencido`;
+                }
+
+                return [
+                    proyecto ? proyecto.nombre : 'Sin proyecto',
+                    a.tema || '-',
+                    a.accionEjecutiva || '-',
+                    a.responsable || '-',
+                    a.area || '-',
+                    a.prioridad || '-',
+                    a.estatus || '-',
+                    `${a.avance || 0}%`,
+                    fechaFormateada,
+                    diasRestantes,
+                    a.observaciones || '-'
+                ];
+            });
+
+            // Generar tabla
+            doc.autoTable({
+                startY: 40,
+                head: [['Proyecto', 'Tema', 'Acción', 'Responsable', 'Área', 'Prioridad', 'Estado', 'Avance', 'Deadline', 'Días', 'Observaciones']],
+                body: tableData,
+                theme: 'grid',
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 2,
+                    lineColor: [200, 200, 200],
+                    lineWidth: 0.1
+                },
+                headStyles: {
+                    fillColor: colorNavy,
+                    textColor: colorWhite,
+                    fontStyle: 'bold',
+                    halign: 'center'
+                },
+                columnStyles: {
+                    0: { cellWidth: 25 },
+                    1: { cellWidth: 20 },
+                    2: { cellWidth: 45 },
+                    3: { cellWidth: 22 },
+                    4: { cellWidth: 20 },
+                    5: { cellWidth: 15, halign: 'center' },
+                    6: { cellWidth: 18, halign: 'center' },
+                    7: { cellWidth: 12, halign: 'center' },
+                    8: { cellWidth: 18, halign: 'center' },
+                    9: { cellWidth: 15, halign: 'center' },
+                    10: { cellWidth: 30 }
+                },
+                didDrawPage: function(data) {
+                    // Footer en cada página
+                    const pageCount = doc.internal.getNumberOfPages();
+                    const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+                    
+                    doc.setFontSize(8);
+                    doc.setTextColor(...colorGray);
+                    doc.text(`Página ${currentPage} de ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                    doc.text('Grupo Guía - Control de Proyectos Macros', pageWidth / 2, pageHeight - 6, { align: 'center' });
+                }
+            });
+
+            // Guardar PDF
+            const nombreArchivo = `Acciones_Activas_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(nombreArchivo);
+        }
+
+        function exportarPDFResponsables() {
+            const { jsPDF } = window.jspdf;
+            
+            // Filtrar acciones según proyecto seleccionado
+            const filtroProyecto = document.getElementById('responsablesProyectoFilter').value;
+            let accionesFiltradas = acciones.filter(a => a.estatus !== 'Completada'); // Solo acciones activas
+            
+            if (filtroProyecto) {
+                accionesFiltradas = accionesFiltradas.filter(a => a.proyectoId == filtroProyecto);
+            }
+
+            if (accionesFiltradas.length === 0) {
+                alert('No hay acciones activas para exportar');
+                return;
+            }
+
+            // Agrupar por responsable
+            const responsablesMap = {};
+            accionesFiltradas.forEach(a => {
+                const resp = a.responsable || 'Sin asignar';
+                if (!responsablesMap[resp]) responsablesMap[resp] = [];
+                responsablesMap[resp].push(a);
+            });
+
+            // Crear PDF
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'letter'
+            });
+
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            
+            // Colores corporativos
+            const colorNavy = [10, 37, 64];
+            const colorGold = [245, 166, 35];
+            const colorWhite = [255, 255, 255];
+            const colorGray = [128, 128, 128];
+
+            let currentY = 40;
+            let isFirstPage = true;
+
+            Object.entries(responsablesMap).forEach(([responsable, accs], index) => {
+                // Header (solo primera página o si necesitamos nueva página)
+                if (isFirstPage || currentY > pageHeight - 60) {
+                    if (!isFirstPage) {
+                        doc.addPage();
+                    }
+                    
+                    // Header con colores corporativos
+                    doc.setFillColor(...colorNavy);
+                    doc.rect(0, 0, pageWidth, 35, 'F');
+
+                    // Logo/Título
+                    doc.setFontSize(24);
+                    doc.setTextColor(...colorGold);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('GUÍA', 15, 15);
+                    
+                    doc.setTextColor(...colorWhite);
+                    doc.setFontSize(16);
+                    doc.text('MACROLOTES', 15, 23);
+
+                    // Título del reporte
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Reporte por Responsables', 15, 31);
+
+                    // Fecha
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'normal');
+                    const fecha = new Date().toLocaleDateString('es-MX', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    doc.text(fecha, pageWidth - 15, 31, { align: 'right' });
+
+                    currentY = 40;
+                    isFirstPage = false;
+                }
+
+                // Sección del responsable
+                doc.setFillColor(...colorGold);
+                doc.rect(15, currentY, pageWidth - 30, 8, 'F');
+                
+                doc.setFontSize(11);
+                doc.setTextColor(...colorWhite);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${responsable} (${accs.length} acciones)`, 17, currentY + 5.5);
+
+                currentY += 12;
+
+                // Preparar datos de acciones del responsable
+                const tableData = accs.map(a => {
+                    const proyecto = proyectos.find(p => p.id === a.proyectoId);
+                    const fechaFormateada = formatearFecha(a.fechaCompromiso);
+                    const hoy = new Date();
+                    hoy.setHours(0, 0, 0, 0);
+                    
+                    let diasRestantes = '-';
+                    if (a.fechaCompromiso) {
+                        const fecha = new Date(fechaFormateada);
+                        fecha.setHours(0, 0, 0, 0);
+                        const diff = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24));
+                        diasRestantes = diff >= 0 ? `${diff}d` : `${Math.abs(diff)}d vencido`;
+                    }
+
+                    return [
+                        proyecto ? proyecto.nombre : 'Sin proyecto',
+                        a.tema || '-',
+                        a.accionEjecutiva || '-',
+                        a.area || '-',
+                        a.prioridad || '-',
+                        a.estatus || '-',
+                        `${a.avance || 0}%`,
+                        fechaFormateada,
+                        diasRestantes,
+                        a.observaciones || '-'
+                    ];
+                });
+
+                // Tabla de acciones
+                doc.autoTable({
+                    startY: currentY,
+                    head: [['Proyecto', 'Tema', 'Acción', 'Área', 'Prioridad', 'Estado', 'Avance', 'Deadline', 'Días', 'Observaciones']],
+                    body: tableData,
+                    theme: 'grid',
+                    styles: {
+                        fontSize: 7,
+                        cellPadding: 2,
+                        lineColor: [200, 200, 200],
+                        lineWidth: 0.1
+                    },
+                    headStyles: {
+                        fillColor: colorNavy,
+                        textColor: colorWhite,
+                        fontStyle: 'bold',
+                        halign: 'center',
+                        fontSize: 7
+                    },
+                    columnStyles: {
+                        0: { cellWidth: 22 },
+                        1: { cellWidth: 18 },
+                        2: { cellWidth: 48 },
+                        3: { cellWidth: 18 },
+                        4: { cellWidth: 14, halign: 'center' },
+                        5: { cellWidth: 16, halign: 'center' },
+                        6: { cellWidth: 12, halign: 'center' },
+                        7: { cellWidth: 18, halign: 'center' },
+                        8: { cellWidth: 14, halign: 'center' },
+                        9: { cellWidth: 30 }
+                    },
+                    margin: { left: 15, right: 15 },
+                    didDrawPage: function(data) {
+                        // Footer en cada página
+                        const pageCount = doc.internal.getNumberOfPages();
+                        const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+                        
+                        doc.setFontSize(8);
+                        doc.setTextColor(...colorGray);
+                        doc.text(`Página ${currentPage} de ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                        doc.text('Grupo Guía - Control de Proyectos Macros', pageWidth / 2, pageHeight - 6, { align: 'center' });
+                    }
+                });
+
+                currentY = doc.lastAutoTable.finalY + 8;
+            });
+
+            // Guardar PDF
+            const nombreArchivo = `Responsables_Acciones_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(nombreArchivo);
+        }
+    </script>
+</body>
+</html>
