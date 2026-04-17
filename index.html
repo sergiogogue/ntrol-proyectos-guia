@@ -3989,7 +3989,7 @@ Ve a Configuración → Google Calendar`);
                 const accionesPendientes = acciones.filter(a => 
                     a.estatus !== 'Completada' && 
                     a.fechaCompromiso && 
-                    a.fechaCompromiso.trim() !== ''
+                    String(a.fechaCompromiso).trim() !== ''
                 );
                 
                 if (accionesPendientes.length === 0) {
