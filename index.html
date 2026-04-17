@@ -1719,10 +1719,11 @@
             </nav>
 
             <div class="sidebar-footer">
-                <button class="config-btn" onclick="sincronizarConCalendar()" style="background: rgba(6, 182, 212, 0.2); border-color: var(--info);">
-                    <span>🔄</span>
+                <button class="config-btn" onclick="sincronizarConCalendar()">
+                    <span class="icon">🔄</span>
                     <span>Sincronizar Calendar</span>
                 </button>
+
                 <button class="config-btn" onclick="abrirConfiguracion()">
                     <span>⚙️</span>
                     <span>Configuración</span>
@@ -1998,7 +1999,21 @@
                             <label class="form-label">Responsable</label>
                             <input type="text" class="form-input" id="proyectoResponsable" placeholder="Nombre del responsable">
                         </div>
-                    </div>
+                    
+                
+                <div class="form-group full-width">
+                    <label>📅 URL Script Google Calendar</label>
+                    <input 
+                        type="text" 
+                        id="calendarScriptUrl" 
+                        placeholder="https://script.google.com/macros/s/..."
+                        style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);"
+                    >
+                    <small style="color: var(--text-secondary); display: block; margin-top: 4px;">
+                        Pega aquí la URL de tu Google Apps Script para sincronización automática
+                    </small>
+                </div>
+</div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="cerrarModalProyecto()">Cancelar</button>
@@ -2136,13 +2151,6 @@
                 <h2 class="modal-title">⚙️ Configuración</h2>
             </div>
             <div class="modal-body">
-                <div class="form-group full-width" style="margin-bottom: 24px;">
-                    <label class="form-label">🔗 Google Calendar - URL del Script</label>
-                    <input type="text" class="form-input" id="calendarScriptUrl" placeholder="https://script.google.com/macros/s/..." style="font-family: 'Courier New', monospace; font-size: 0.8125rem;">
-                    <small style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 8px; display: block;">
-                        Pega aquí la URL de tu Google Apps Script desplegado como Web App
-                    </small>
-                </div>
                 <div class="form-group full-width">
                     <label class="form-label">Tema de Colores</label>
                     <div class="theme-selector">
@@ -2414,228 +2422,7 @@
             localStorage.setItem('ccAcciones', JSON.stringify(acciones));
         }
 
-
-        // ================================================
-        // CALENDAR SYNC - INTEGRACIÓN JSONP
-        // ================================================
-        
-/**
- * ================================================
- * CALENDAR SYNC - CLIENTE JSONP
- * ================================================
- */
-
-// Variables globales
-let CALENDAR_SCRIPT_URL = '';
-let syncInProgress = false;
-
-// ==========================================
-// JSONP HELPER
-// ==========================================
-
-function jsonpRequest(url, params, callback) {
-  return new Promise((resolve, reject) => {
-    const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
-    
-    // Crear función callback global
-    window[callbackName] = function(data) {
-      delete window[callbackName];
-      document.body.removeChild(script);
-      resolve(data);
-    };
-    
-    // Construir URL con parámetros
-    const queryParams = new URLSearchParams(params);
-    queryParams.append('callback', callbackName);
-    const fullUrl = url + '?' + queryParams.toString();
-    
-    // Crear script tag
-    const script = document.createElement('script');
-    script.src = fullUrl;
-    script.onerror = () => {
-      delete window[callbackName];
-      document.body.removeChild(script);
-      reject(new Error('Error al cargar script'));
-    };
-    
-    // Timeout de 30 segundos
-    setTimeout(() => {
-      if (window[callbackName]) {
-        delete window[callbackName];
-        document.body.removeChild(script);
-        reject(new Error('Timeout: El servidor no respondió'));
-      }
-    }, 30000);
-    
-    document.body.appendChild(script);
-  });
-}
-
-// ==========================================
-// TEST CONNECTION
-// ==========================================
-
-async function testCalendarConnection() {
-  const url = localStorage.getItem('calendarScriptUrl');
-  
-  if (!url) {
-    return { success: false, error: 'URL del script no configurada' };
-  }
-  
-  try {
-    const result = await jsonpRequest(url, { action: 'test' });
-    return result;
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-}
-
-// ==========================================
-// SINCRONIZAR CON CALENDAR
-// ==========================================
-
-async function sincronizarConCalendar() {
-  if (syncInProgress) {
-    alert('Ya hay una sincronización en progreso...');
-    return;
-  }
-  
-  const url = localStorage.getItem('calendarScriptUrl');
-  
-  if (!url || url.trim() === '') {
-    alert('⚠️ Configura la URL del script de Google Calendar primero
-
-Ve a Configuración → Google Calendar');
-    return;
-  }
-  
-  syncInProgress = true;
-  const btn = document.querySelector('[onclick*="sincronizarConCalendar"]');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = '🔄 Sincronizando...';
-  }
-  
-  try {
-    // Obtener acciones con deadlines
-    const accionesConDeadline = acciones.filter(a => a.fechaCompromiso && a.estatus !== 'Completada');
-    
-    if (accionesConDeadline.length === 0) {
-      alert('ℹ️ No hay acciones pendientes con fecha para sincronizar');
-      return;
-    }
-    
-    // Preparar datos para enviar
-    const accionesData = accionesConDeadline.map(a => {
-      const proyecto = proyectos.find(p => p.id === a.proyectoId);
-      return {
-        id: a.id,
-        proyectoNombre: proyecto?.nombre || 'Sin proyecto',
-        accionEjecutiva: a.accionEjecutiva || 'Sin descripción',
-        responsable: a.responsable || 'Sin asignar',
-        area: a.area,
-        prioridad: a.prioridad || 'Media',
-        fechaCompromiso: a.fechaCompromiso,
-        observaciones: a.observaciones,
-        calendarEventId: a.calendarEventId
-      };
-    });
-    
-    // Sincronizar vía JSONP
-    const result = await jsonpRequest(url, {
-      action: 'syncEvents',
-      acciones: JSON.stringify(accionesData)
-    });
-    
-    if (result.success) {
-      // Actualizar IDs de eventos en localStorage
-      result.events?.forEach(evt => {
-        const accion = acciones.find(a => a.id === evt.accionId);
-        if (accion) {
-          accion.calendarEventId = evt.calendarEventId;
-        }
-      });
-      
-      guardarDatos();
-      
-      alert(`✅ Sincronización exitosa
-
-${result.created || 0} eventos creados
-${result.updated || 0} eventos actualizados`);
-      
-      if (result.errors && result.errors.length > 0) {
-        console.warn('Algunos eventos tuvieron errores:', result.errors);
-      }
-    } else {
-      alert(`❌ Error en sincronización:
-
-${result.error || 'Error desconocido'}`);
-      console.error('Error de sincronización:', result);
-    }
-    
-  } catch (error) {
-    alert(`❌ Error al sincronizar:
-
-${error.message}
-
-Revisa la consola para más detalles`);
-    console.error('Error:', error);
-  } finally {
-    syncInProgress = false;
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = '🔄 Sincronizar Calendar';
-    }
-  }
-}
-
-// ==========================================
-// GUARDAR URL DEL SCRIPT
-// ==========================================
-
-function guardarCalendarScriptUrl(url) {
-  localStorage.setItem('calendarScriptUrl', url.trim());
-  CALENDAR_SCRIPT_URL = url.trim();
-}
-
-// ==========================================
-// CARGAR URL AL INICIO
-// ==========================================
-
-function cargarCalendarScriptUrl() {
-  const url = localStorage.getItem('calendarScriptUrl') || '';
-  CALENDAR_SCRIPT_URL = url;
-  return url;
-}
-
-
-        // ================================================
-        // EXTENDER FUNCIONES DE CONFIGURACIÓN
-        // ================================================
-        
-        const _abrirConfiguracionOriginal = window.abrirConfiguracion;
-        window.abrirConfiguracion = function() {
-            _abrirConfiguracionOriginal();
-            setTimeout(() => {
-                const url = cargarCalendarScriptUrl();
-                const input = document.getElementById('calendarScriptUrl');
-                if (input) input.value = url || '';
-            }, 100);
-        };
-        
-        const _cerrarConfiguracionOriginal = window.cerrarConfiguracion;
-        window.cerrarConfiguracion = function() {
-            const input = document.getElementById('calendarScriptUrl');
-            if (input) {
-                const url = input.value;
-                if (url && url.trim() !== '') {
-                    guardarCalendarScriptUrl(url);
-                }
-            }
-            _cerrarConfiguracionOriginal();
-        };
-
-                window.onload = function() {
+        window.onload = function() {
             limpiezaProfundaDatos();
             cargarTema();
             actualizarFiltros();
@@ -4136,6 +3923,155 @@ function cargarCalendarScriptUrl() {
             
             alert('✅ Todos los datos han sido eliminados');
         }
+
+        // ==================== GOOGLE CALENDAR INTEGRATION ====================
+        
+        let syncInProgress = false;
+        
+        // Helper para requests JSONP (evita CORS)
+        function jsonpRequest(url, params) {
+            return new Promise((resolve, reject) => {
+                const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                
+                window[callbackName] = function(data) {
+                    delete window[callbackName];
+                    const script = document.getElementById(callbackName);
+                    if (script) script.remove();
+                    resolve(data);
+                };
+                
+                const script = document.createElement('script');
+                script.id = callbackName;
+                script.src = url + '?' + new URLSearchParams({
+                    ...params,
+                    callback: callbackName
+                });
+                
+                script.onerror = () => {
+                    delete window[callbackName];
+                    script.remove();
+                    reject(new Error('Error al cargar el script'));
+                };
+                
+                document.body.appendChild(script);
+                
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        delete window[callbackName];
+                        script.remove();
+                        reject(new Error('Timeout: El servidor no respondió a tiempo'));
+                    }
+                }, 30000);
+            });
+        }
+        
+        // Sincronizar acciones con Google Calendar
+        async function sincronizarConCalendar() {
+            if (syncInProgress) {
+                alert('⏳ Ya hay una sincronización en progreso');
+                return;
+            }
+            
+            const url = localStorage.getItem('calendarScriptUrl');
+            
+            if (!url || url.trim() === '') {
+                alert(`⚠️ Configura la URL del script de Google Calendar primero
+
+Ve a Configuración → Google Calendar`);
+                return;
+            }
+            
+            syncInProgress = true;
+            const btn = document.querySelector('[onclick*="sincronizarConCalendar"]');
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '🔄 Sincronizando...';
+            }
+            
+            try {
+                const accionesPendientes = acciones.filter(a => 
+                    a.estatus !== 'Completada' && 
+                    a.fechaCompromiso && 
+                    a.fechaCompromiso.trim() !== ''
+                );
+                
+                if (accionesPendientes.length === 0) {
+                    alert('ℹ️ No hay acciones pendientes con fecha para sincronizar');
+                    return;
+                }
+                
+                const eventos = accionesPendientes.map(accion => {
+                    const proyecto = proyectos.find(p => p.id === accion.proyectoId);
+                    const nombreProyecto = proyecto ? proyecto.nombre : 'Sin proyecto';
+                    
+                    return {
+                        summary: `[${nombreProyecto}] ${accion.accionEjecutiva}`,
+                        description: `📋 Tipo: ${accion.tipo || 'N/A'}
+👤 Responsable: ${accion.responsable || 'N/A'}
+📂 Área: ${accion.area || 'N/A'}
+⚡ Prioridad: ${accion.prioridad || 'N/A'}
+📊 Avance: ${accion.avance || 0}%
+💬 Observaciones: ${accion.observaciones || 'N/A'}
+
+[Sistema: Centro de Control de Proyectos Macros GUIA]`,
+                        date: accion.fechaCompromiso,
+                        status: accion.estatus,
+                        eventId: `guia_accion_${accion.id}`
+                    };
+                });
+                
+                const result = await jsonpRequest(url, {
+                    action: 'syncEvents',
+                    events: JSON.stringify(eventos)
+                });
+                
+                if (result && result.success) {
+                    const msg = `✅ Sincronización completada
+
+📅 ${result.created || 0} eventos creados
+🔄 ${result.updated || 0} eventos actualizados`;
+                    alert(msg);
+                } else {
+                    throw new Error(result?.error || 'Error desconocido en la sincronización');
+                }
+                
+            } catch (error) {
+                console.error('Error en sincronización:', error);
+                alert(`❌ Error al sincronizar con Calendar:
+
+${error.message}`);
+            } finally {
+                syncInProgress = false;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = '🔄 Sincronizar Calendar';
+                }
+            }
+        }
+        
+        // Guardar URL del script al cambiar
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlInput = document.getElementById('calendarScriptUrl');
+            if (urlInput) {
+                // Cargar URL guardada
+                const savedUrl = localStorage.getItem('calendarScriptUrl');
+                if (savedUrl) {
+                    urlInput.value = savedUrl;
+                }
+                
+                // Guardar al cambiar
+                urlInput.addEventListener('change', function() {
+                    const url = this.value.trim();
+                    if (url) {
+                        localStorage.setItem('calendarScriptUrl', url);
+                        console.log('✅ URL de Calendar guardada');
+                    }
+                });
+            }
+        });
+        
+        // ==================== FIN CALENDAR INTEGRATION ====================
+
     </script>
 </body>
 </html>
