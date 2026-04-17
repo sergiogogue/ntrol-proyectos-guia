@@ -1718,10 +1718,6 @@
             </nav>
 
             <div class="sidebar-footer">
-                <button class="config-btn" onclick="sincronizarConCalendar()">
-                    <span>🔄</span>
-                    <span>Sincronizar Calendar</span>
-                </button>
                 <button class="config-btn" onclick="abrirConfiguracion()">
                     <span>⚙️</span>
                     <span>Configuración</span>
@@ -1735,8 +1731,12 @@
                     <span>Importar Backup</span>
                 </button>
                 <input type="file" id="importBackupFile" accept=".json" style="display: none;" onchange="importarBackupCompleto(event)">
+                <button class="config-btn" onclick="sincronizarCalendarMasivo()" style="background: rgba(59, 130, 246, 0.2); border-color: var(--primary);">
+                    <span>📅</span>
+                    <span id="btnSyncCalText">Sync Google Calendar</span>
+                </button>
                 <button class="btn btn-danger" onclick="resetData()" style="width: 100%; margin-bottom: 12px;">🗑 Reset Data</button>
-                <div class="version-text">v4.1 FINAL - 2026</div>
+                <div class="version-text">v4.2 + Calendar Sync</div>
             </div>
         </div>
 
@@ -2161,17 +2161,31 @@
                     </div>
                 </div>
 
-                <div class="form-group full-width" style="margin-top: 24px;">
-                    <label class="form-label">📅 Google Calendar Script URL</label>
-                    <input 
-                        type="text" 
-                        id="calendarScriptUrl" 
-                        class="form-input"
-                        placeholder="https://script.google.com/macros/s/..."
-                    >
-                    <small style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 4px; display: block;">
-                        Pega aquí la URL de tu Google Apps Script para sincronización automática
-                    </small>
+                <div class="form-group full-width" style="margin-top: 32px; padding-top: 24px; border-top: 2px solid var(--border-color);">
+                    <label class="form-label" style="font-size: 1rem; margin-bottom: 12px;">📅 Integración Google Calendar</label>
+                    
+                    <div style="background: var(--gray-50); padding: 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.6;">
+                        <strong style="color: var(--text-primary);">Sync híbrido activo:</strong><br>
+                        • Auto-sync al crear/editar acciones con fecha<br>
+                        • Solo sincroniza acciones NO completadas<br>
+                        • Al marcar Completada → se elimina del Calendar<br>
+                        • Botón "Sync Google Calendar" en sidebar = sync masivo
+                    </div>
+
+                    <label class="form-label" style="font-size: 0.875rem;">URL del Web App (Apps Script)</label>
+                    <input type="text" class="form-input" id="calendarWebAppUrl" placeholder="https://script.google.com/macros/s/.../exec" style="font-size: 0.8125rem; font-family: monospace;">
+                    
+                    <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-primary" onclick="guardarUrlCalendar()" style="flex: 1;">💾 Guardar URL</button>
+                        <button type="button" class="btn btn-secondary" onclick="testearConexionCalendar()" style="flex: 1;">🔍 Probar conexión</button>
+                    </div>
+
+                    <div id="estadoCalendar" style="margin-top: 12px; padding: 10px; border-radius: 6px; font-size: 0.8125rem; display: none;"></div>
+
+                    <label style="display: flex; align-items: center; gap: 8px; margin-top: 16px; cursor: pointer; font-size: 0.875rem;">
+                        <input type="checkbox" id="calendarActivo" onchange="toggleCalendarActivo()" style="width: 18px; height: 18px; cursor: pointer;">
+                        <span>Activar sincronización automática</span>
+                    </label>
                 </div>
             </div>
             <div class="modal-footer">
@@ -2267,6 +2281,10 @@
             document.getElementById('modalConfiguracion').classList.add('active');
             const tema = localStorage.getItem('ccTema') || 'light';
             actualizarTemaActivo(tema);
+            cargarConfigCalendar();
+            // Limpiar estado visual previo del módulo Calendar
+            const estado = document.getElementById('estadoCalendar');
+            if (estado) estado.style.display = 'none';
         }
 
         function cerrarConfiguracion() {
@@ -2429,6 +2447,7 @@
             renderAcciones();
             renderResponsables();
             renderAnalisis();
+            actualizarBotonSyncCalendar();
         };
 
         // NAVEGACIÓN
@@ -2863,13 +2882,21 @@
             renderAnalisis();
             actualizarBadgeVencidas();
             cerrarModalAccion();
+            
+            // Auto-sync con Google Calendar (silencioso, no bloquea UI)
+            autoSyncAccion(accion);
         });
 
         function eliminarAccion() {
             const id = document.getElementById('accionId').value;
             if (!id || !confirm('¿Eliminar esta acción?')) return;
             
-            acciones = acciones.filter(a => a.id !== parseInt(id));
+            const accionId = parseInt(id);
+            
+            // Eliminar evento de Calendar antes de borrar la acción
+            autoSyncEliminar(accionId);
+            
+            acciones = acciones.filter(a => a.id !== accionId);
             guardarDatos();
             renderAcciones();
             renderDashboard();
@@ -2969,6 +2996,10 @@
                 const proyecto = proyectos.find(p => p.id === a.proyectoId);
                 const nombreProyecto = proyecto ? proyecto.nombre : 'Sin proyecto';
                 
+                // Indicador de sincronizado con Calendar
+                const eventosMap = getEventosMap();
+                const sincronizado = eventosMap[a.id] ? ' 📅' : '';
+                
                 return `
                     <tr onclick="abrirModalAccion(${a.id})">
                         <td><span class="proyecto-badge" title="${nombreProyecto}">${nombreProyecto}</span></td>
@@ -2979,7 +3010,7 @@
                         <td><span class="badge badge-${prioridadLimpia.toLowerCase()}">${prioridadLimpia}</span></td>
                         <td><span class="estado-badge estado-${estadoClass}">${estatusLimpio}</span></td>
                         <td><span class="avance-badge">${a.avance || 0}%</span></td>
-                        <td style="${esVencida ? 'color: var(--danger); font-weight: 600;' : ''}">${formatearFecha(a.fechaCompromiso)} ${esVencida ? '🔴' : ''}</td>
+                        <td style="${esVencida ? 'color: var(--danger); font-weight: 600;' : ''}" title="${sincronizado ? 'Sincronizado con Google Calendar' : ''}">${formatearFecha(a.fechaCompromiso)} ${esVencida ? '🔴' : ''}${sincronizado}</td>
                         <td>
                             <button class="btn-icon" onclick="event.stopPropagation(); abrirModalAccion(${a.id})" title="Editar">✏️</button>
                         </td>
@@ -3678,11 +3709,14 @@
         // BACKUP COMPLETO
         function exportarBackupCompleto() {
             const backup = {
-                version: '4.0',
+                version: '4.2',
                 fecha: new Date().toISOString(),
                 proyectos: proyectos,
                 acciones: acciones,
-                tema: localStorage.getItem('ccTema') || 'light'
+                tema: localStorage.getItem('ccTema') || 'light',
+                calendarEventos: JSON.parse(localStorage.getItem(CALENDAR_CONFIG.eventosKey) || '{}'),
+                calendarUrl: localStorage.getItem(CALENDAR_CONFIG.urlKey) || '',
+                calendarActivo: localStorage.getItem(CALENDAR_CONFIG.activoKey) || 'false'
             };
 
             const dataStr = JSON.stringify(backup, null, 2);
@@ -3733,6 +3767,17 @@
                     proyectos = backup.proyectos;
                     acciones = backup.acciones;
                     
+                    // Restaurar mapa de eventos de Google Calendar (evita duplicados cross-device)
+                    if (backup.calendarEventos) {
+                        localStorage.setItem(CALENDAR_CONFIG.eventosKey, JSON.stringify(backup.calendarEventos));
+                    }
+                    if (backup.calendarUrl) {
+                        localStorage.setItem(CALENDAR_CONFIG.urlKey, backup.calendarUrl);
+                    }
+                    if (backup.calendarActivo) {
+                        localStorage.setItem(CALENDAR_CONFIG.activoKey, backup.calendarActivo);
+                    }
+                    
                     // Limpiar TODO excepto texto alfanumérico
                     acciones = acciones.map(a => {
                         if (a.estatus) {
@@ -3757,6 +3802,7 @@
                     renderAnalisis();
                     actualizarFiltros();
                     actualizarBadgeVencidas();
+                    actualizarBotonSyncCalendar();
 
                     alert('✅ Backup importado exitosamente');
                     event.target.value = '';
@@ -3902,6 +3948,342 @@
             localStorage.setItem('ccAcciones', JSON.stringify(acciones));
         }
 
+        // ==========================================
+        // 📅 GOOGLE CALENDAR SYNC - MÓDULO
+        // ==========================================
+        
+        const CALENDAR_CONFIG = {
+            urlKey: 'ccCalendarUrl',
+            activoKey: 'ccCalendarActivo',
+            eventosKey: 'ccCalendarEventos' // map accionId -> eventId
+        };
+
+        // Cargar configuración al iniciar
+        function cargarConfigCalendar() {
+            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey) || '';
+            const activo = localStorage.getItem(CALENDAR_CONFIG.activoKey) === 'true';
+            
+            const inputUrl = document.getElementById('calendarWebAppUrl');
+            const checkActivo = document.getElementById('calendarActivo');
+            
+            if (inputUrl) inputUrl.value = url;
+            if (checkActivo) checkActivo.checked = activo;
+            
+            actualizarBotonSyncCalendar();
+        }
+
+        function actualizarBotonSyncCalendar() {
+            const btn = document.getElementById('btnSyncCalText');
+            if (!btn) return;
+            
+            const activo = localStorage.getItem(CALENDAR_CONFIG.activoKey) === 'true';
+            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey);
+            
+            if (!url) {
+                btn.textContent = 'Configurar Calendar';
+            } else if (!activo) {
+                btn.textContent = 'Calendar (pausado)';
+            } else {
+                btn.textContent = 'Sync Google Calendar';
+            }
+        }
+
+        function guardarUrlCalendar() {
+            const url = document.getElementById('calendarWebAppUrl').value.trim();
+            
+            if (!url) {
+                mostrarEstadoCalendar('⚠️ Pega la URL del Web App', 'warning');
+                return;
+            }
+            
+            if (!url.includes('script.google.com/macros/s/') || !url.endsWith('/exec')) {
+                mostrarEstadoCalendar('❌ URL inválida. Debe terminar en /exec', 'error');
+                return;
+            }
+            
+            localStorage.setItem(CALENDAR_CONFIG.urlKey, url);
+            mostrarEstadoCalendar('✅ URL guardada correctamente', 'success');
+            actualizarBotonSyncCalendar();
+        }
+
+        function toggleCalendarActivo() {
+            const activo = document.getElementById('calendarActivo').checked;
+            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey);
+            
+            if (activo && !url) {
+                document.getElementById('calendarActivo').checked = false;
+                mostrarEstadoCalendar('⚠️ Primero guarda la URL del Web App', 'warning');
+                return;
+            }
+            
+            localStorage.setItem(CALENDAR_CONFIG.activoKey, activo ? 'true' : 'false');
+            mostrarEstadoCalendar(activo ? '✅ Sync automático activado' : '⏸ Sync automático pausado', activo ? 'success' : 'warning');
+            actualizarBotonSyncCalendar();
+            
+            // Si acaba de activar y hay acciones elegibles sin sincronizar, sugerir sync masivo
+            if (activo) {
+                const eventosMap = getEventosMap();
+                const elegibles = acciones.filter(debeSincronizarse);
+                const pendientesSync = elegibles.filter(a => !eventosMap[a.id]);
+                
+                if (pendientesSync.length > 0) {
+                    setTimeout(() => {
+                        if (confirm(`💡 Detecté ${pendientesSync.length} acción(es) elegible(s) sin sincronizar.\n\n¿Quieres hacer la sincronización masiva inicial ahora?`)) {
+                            cerrarConfiguracion();
+                            setTimeout(() => sincronizarCalendarMasivo(), 300);
+                        }
+                    }, 500);
+                }
+            }
+        }
+
+        function mostrarEstadoCalendar(mensaje, tipo) {
+            const estado = document.getElementById('estadoCalendar');
+            if (!estado) return;
+            
+            const colores = {
+                success: { bg: 'rgba(16, 185, 129, 0.1)', color: '#059669', border: '#10b981' },
+                error: { bg: 'rgba(239, 68, 68, 0.1)', color: '#dc2626', border: '#ef4444' },
+                warning: { bg: 'rgba(245, 158, 11, 0.1)', color: '#d97706', border: '#f59e0b' },
+                info: { bg: 'rgba(59, 130, 246, 0.1)', color: '#2563eb', border: '#3b82f6' }
+            };
+            
+            const c = colores[tipo] || colores.info;
+            estado.style.display = 'block';
+            estado.style.background = c.bg;
+            estado.style.color = c.color;
+            estado.style.borderLeft = `3px solid ${c.border}`;
+            estado.textContent = mensaje;
+            
+            if (tipo === 'success') {
+                setTimeout(() => { estado.style.display = 'none'; }, 4000);
+            }
+        }
+
+        async function testearConexionCalendar() {
+            const url = document.getElementById('calendarWebAppUrl').value.trim();
+            
+            if (!url) {
+                mostrarEstadoCalendar('⚠️ Pega la URL primero', 'warning');
+                return;
+            }
+            
+            mostrarEstadoCalendar('⏳ Probando conexión...', 'info');
+            
+            try {
+                const response = await fetch(url, { method: 'GET', redirect: 'follow' });
+                const data = await response.json();
+                
+                if (data.status && data.status.includes('activo')) {
+                    mostrarEstadoCalendar(`✅ Conexión exitosa (${data.version || 'v1.0'})`, 'success');
+                } else {
+                    mostrarEstadoCalendar('⚠️ Respuesta inesperada del servidor', 'warning');
+                }
+            } catch (error) {
+                mostrarEstadoCalendar('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        // Validador: ¿debe sincronizarse esta acción?
+        function debeSincronizarse(accion) {
+            if (!accion.fechaCompromiso) return false;
+            const estatusLimpio = (accion.estatus || '').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim().toLowerCase();
+            if (estatusLimpio === 'completada') return false;
+            return true;
+        }
+
+        // Obtener mapa de eventos sincronizados
+        function getEventosMap() {
+            return JSON.parse(localStorage.getItem(CALENDAR_CONFIG.eventosKey) || '{}');
+        }
+
+        function saveEventosMap(mapa) {
+            localStorage.setItem(CALENDAR_CONFIG.eventosKey, JSON.stringify(mapa));
+        }
+
+        // Preparar payload de acción para Calendar
+        function buildCalendarPayload(accion) {
+            const proyecto = proyectos.find(p => p.id === accion.proyectoId);
+            
+            // FIX TIMEZONE: añadir mediodía local para evitar desfase al crear all-day event
+            // Apps Script interpretaría "2026-05-20" como UTC midnight que puede caer en día anterior en MX
+            // Con "T12:00:00" se evita el corrimiento en cualquier timezone del continente
+            let fechaSegura = accion.fechaCompromiso;
+            if (fechaSegura && /^\d{4}-\d{2}-\d{2}$/.test(fechaSegura)) {
+                fechaSegura = fechaSegura + 'T12:00:00';
+            }
+            
+            return {
+                accionId: accion.id,
+                proyecto: proyecto ? proyecto.nombre : 'Sin proyecto',
+                accion: accion.accionEjecutiva || 'Sin descripción',
+                responsable: accion.responsable || '',
+                area: accion.area || '',
+                prioridad: accion.prioridad || '',
+                estatus: accion.estatus || '',
+                avance: accion.avance || 0,
+                fechaCompromiso: fechaSegura,
+                observaciones: accion.observaciones || ''
+            };
+        }
+
+        // Enviar solicitud al Apps Script
+        async function callCalendarApi(action, payload) {
+            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey);
+            if (!url) throw new Error('URL de Calendar no configurada');
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action, ...payload }),
+                redirect: 'follow'
+            });
+            
+            return await response.json();
+        }
+
+        // AUTO-SYNC: crear/actualizar evento al guardar acción
+        async function autoSyncAccion(accion) {
+            const activo = localStorage.getItem(CALENDAR_CONFIG.activoKey) === 'true';
+            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey);
+            
+            if (!activo || !url) return; // Sync desactivado
+            
+            const eventosMap = getEventosMap();
+            const eventIdExistente = eventosMap[accion.id];
+            
+            try {
+                // Caso 1: Acción no debe estar en Calendar pero hay evento → eliminarlo
+                if (!debeSincronizarse(accion) && eventIdExistente) {
+                    await callCalendarApi('delete', { eventId: eventIdExistente, accionId: accion.id });
+                    delete eventosMap[accion.id];
+                    saveEventosMap(eventosMap);
+                    return;
+                }
+                
+                // Caso 2: Acción no elegible y sin evento → nada que hacer
+                if (!debeSincronizarse(accion)) return;
+                
+                const payload = buildCalendarPayload(accion);
+                
+                // Caso 3: Ya existe evento → actualizar
+                if (eventIdExistente) {
+                    await callCalendarApi('update', { ...payload, eventId: eventIdExistente });
+                } 
+                // Caso 4: No existe evento → crear
+                else {
+                    const result = await callCalendarApi('create', payload);
+                    if (result.success && result.eventId) {
+                        eventosMap[accion.id] = result.eventId;
+                        saveEventosMap(eventosMap);
+                    }
+                }
+            } catch (error) {
+                console.warn('Calendar sync falló silenciosamente:', error.message);
+                // No interrumpimos el flujo del usuario — el dashboard sigue funcionando
+            }
+        }
+
+        // AUTO-SYNC: eliminar evento al borrar acción
+        async function autoSyncEliminar(accionId) {
+            const activo = localStorage.getItem(CALENDAR_CONFIG.activoKey) === 'true';
+            if (!activo) return;
+            
+            const eventosMap = getEventosMap();
+            const eventId = eventosMap[accionId];
+            if (!eventId) return;
+            
+            try {
+                await callCalendarApi('delete', { eventId, accionId });
+                delete eventosMap[accionId];
+                saveEventosMap(eventosMap);
+            } catch (error) {
+                console.warn('Error al eliminar evento:', error.message);
+            }
+        }
+
+        // SYNC MASIVO: botón del sidebar
+        async function sincronizarCalendarMasivo() {
+            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey);
+            
+            if (!url) {
+                alert('⚠️ Primero configura la URL del Web App en Configuración ⚙️');
+                abrirConfiguracion();
+                return;
+            }
+            
+            const elegibles = acciones.filter(debeSincronizarse);
+            
+            if (elegibles.length === 0) {
+                alert('ℹ️ No hay acciones elegibles para sincronizar\n\n(Deben tener fecha compromiso y NO estar completadas)');
+                return;
+            }
+            
+            const eventosMap = getEventosMap();
+            const nuevas = elegibles.filter(a => !eventosMap[a.id]);
+            const actualizar = elegibles.filter(a => eventosMap[a.id]);
+            
+            const mensaje = `📅 Sincronización masiva:\n\n` +
+                `• Nuevas a crear: ${nuevas.length}\n` +
+                `• Existentes a actualizar: ${actualizar.length}\n` +
+                `• Total: ${elegibles.length}\n\n` +
+                `¿Continuar?`;
+            
+            if (!confirm(mensaje)) return;
+            
+            const btn = document.getElementById('btnSyncCalText');
+            const textoOriginal = btn.textContent;
+            btn.textContent = '⏳ Sincronizando...';
+            
+            let exitos = 0, fallos = 0;
+            
+            // Procesar nuevas en lote
+            if (nuevas.length > 0) {
+                try {
+                    const payloads = nuevas.map(buildCalendarPayload);
+                    const result = await callCalendarApi('sync_batch', { acciones: payloads });
+                    
+                    if (result.success && result.resultados) {
+                        result.resultados.forEach(r => {
+                            if (r.success && r.eventId && r.accionId) {
+                                eventosMap[r.accionId] = r.eventId;
+                                exitos++;
+                            } else {
+                                fallos++;
+                            }
+                        });
+                        saveEventosMap(eventosMap);
+                    }
+                } catch (error) {
+                    fallos += nuevas.length;
+                    console.error('Error en lote:', error);
+                }
+            }
+            
+            // Procesar actualizaciones una por una
+            for (const accion of actualizar) {
+                try {
+                    const payload = buildCalendarPayload(accion);
+                    const result = await callCalendarApi('update', { ...payload, eventId: eventosMap[accion.id] });
+                    if (result.success) exitos++; else fallos++;
+                } catch (error) {
+                    fallos++;
+                }
+            }
+            
+            btn.textContent = textoOriginal;
+            actualizarBotonSyncCalendar();
+            
+            alert(`✅ Sincronización completa\n\n` +
+                  `• Exitosas: ${exitos}\n` +
+                  `• Con errores: ${fallos}\n\n` +
+                  `Revisa tu Google Calendar 📅`);
+        }
+
+        // ==========================================
+        // FIN MÓDULO GOOGLE CALENDAR
+        // ==========================================
+
         function resetData() {
             if (!confirm('⚠️ ¿ELIMINAR TODOS LOS PROYECTOS Y ACCIONES?\n\nEsta acción no se puede deshacer.')) return;
             
@@ -3920,149 +4302,6 @@
             
             alert('✅ Todos los datos han sido eliminados');
         }
-
-
-        // ==================== GOOGLE CALENDAR SYNC ====================
-        
-        let syncInProgress = false;
-        
-        // Helper JSONP para evitar CORS
-        function jsonpRequest(url, params) {
-            return new Promise((resolve, reject) => {
-                const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                
-                window[callbackName] = function(data) {
-                    delete window[callbackName];
-                    const script = document.getElementById(callbackName);
-                    if (script) script.remove();
-                    resolve(data);
-                };
-                
-                const script = document.createElement('script');
-                script.id = callbackName;
-                script.src = url + '?' + new URLSearchParams({
-                    ...params,
-                    callback: callbackName
-                });
-                
-                script.onerror = () => {
-                    delete window[callbackName];
-                    if (script.parentNode) script.remove();
-                    reject(new Error('No se pudo conectar con Google Calendar. Verifica que la URL sea correcta y que el script esté desplegado.'));
-                };
-                
-                document.body.appendChild(script);
-                
-                setTimeout(() => {
-                    if (window[callbackName]) {
-                        delete window[callbackName];
-                        if (script.parentNode) script.remove();
-                        reject(new Error('Timeout: El servidor de Google no respondió a tiempo'));
-                    }
-                }, 30000);
-            });
-        }
-        
-        // Función principal de sincronización
-        async function sincronizarConCalendar() {
-            if (syncInProgress) {
-                alert('⏳ Ya hay una sincronización en progreso');
-                return;
-            }
-            
-            const url = localStorage.getItem('calendarScriptUrl');
-            
-            if (!url || String(url).trim() === '') {
-                alert(`⚠️ Configura la URL del script de Google Calendar primero
-
-Ve a Configuración → Google Calendar`);
-                return;
-            }
-            
-            syncInProgress = true;
-            const btn = document.querySelector('[onclick*="sincronizarConCalendar"]');
-            if (btn) {
-                btn.disabled = true;
-                btn.textContent = '🔄 Sincronizando...';
-            }
-            
-            try {
-                // Filtrar acciones pendientes con fecha (CORREGIDO: String() para evitar error con números)
-                const accionesPendientes = acciones.filter(a => {
-                    if (a.estatus === 'Completada') return false;
-                    if (!a.fechaCompromiso) return false;
-                    const fechaStr = String(a.fechaCompromiso).trim();
-                    return fechaStr !== '';
-                });
-                
-                if (accionesPendientes.length === 0) {
-                    alert('ℹ️ No hay acciones pendientes con fecha para sincronizar');
-                    return;
-                }
-                
-                const accionesParaSync = accionesPendientes.map(accion => {
-                    const proyecto = proyectos.find(p => p.id === accion.proyectoId);
-                    const nombreProyecto = proyecto ? proyecto.nombre : 'Sin proyecto';
-                    
-                    return {
-                        id: accion.id,
-                        proyectoNombre: nombreProyecto,
-                        accionEjecutiva: accion.accionEjecutiva || 'Sin descripción',
-                        fechaCompromiso: String(accion.fechaCompromiso),
-                        responsable: accion.responsable || 'N/A',
-                        area: accion.area || 'N/A',
-                        prioridad: accion.prioridad || 'Media',
-                        observaciones: accion.observaciones || '',
-                        calendarEventId: accion.calendarEventId || null
-                    };
-                });
-                
-                const result = await jsonpRequest(url, {
-                    action: 'syncEvents',
-                    acciones: JSON.stringify(accionesParaSync)
-                });
-                
-                if (result && result.success) {
-                    alert(`✅ Sincronización completada
-
-📅 ${result.created || 0} eventos creados
-🔄 ${result.updated || 0} eventos actualizados`);
-                } else {
-                    throw new Error(result?.error || 'Error desconocido en la sincronización');
-                }
-                
-            } catch (error) {
-                console.error('Error en sincronización:', error);
-                alert(`❌ Error al sincronizar con Calendar:
-
-${error.message}`);
-            } finally {
-                syncInProgress = false;
-                if (btn) {
-                    btn.disabled = false;
-                    btn.textContent = '🔄 Sincronizar Calendar';
-                }
-            }
-        }
-        
-        // Cargar y guardar URL automáticamente
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlInput = document.getElementById('calendarScriptUrl');
-            if (urlInput) {
-                const savedUrl = localStorage.getItem('calendarScriptUrl');
-                if (savedUrl) urlInput.value = savedUrl;
-                
-                urlInput.addEventListener('change', function() {
-                    const url = String(this.value || '').trim();
-                    if (url) {
-                        localStorage.setItem('calendarScriptUrl', url);
-                        console.log('✅ URL de Calendar guardada');
-                    }
-                });
-            }
-        });
-        
-        // ==================== FIN CALENDAR SYNC ====================
     </script>
 </body>
 </html>
