@@ -3922,10 +3922,11 @@
         }
 
 
-        // ==================== GOOGLE CALENDAR INTEGRATION ====================
+        // ==================== GOOGLE CALENDAR SYNC ====================
         
         let syncInProgress = false;
         
+        // Helper JSONP para evitar CORS
         function jsonpRequest(url, params) {
             return new Promise((resolve, reject) => {
                 const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -3946,8 +3947,8 @@
                 
                 script.onerror = () => {
                     delete window[callbackName];
-                    script.remove();
-                    reject(new Error('Error al cargar el script'));
+                    if (script.parentNode) script.remove();
+                    reject(new Error('No se pudo conectar con Google Calendar. Verifica que la URL sea correcta y que el script esté desplegado.'));
                 };
                 
                 document.body.appendChild(script);
@@ -3955,13 +3956,14 @@
                 setTimeout(() => {
                     if (window[callbackName]) {
                         delete window[callbackName];
-                        script.remove();
-                        reject(new Error('Timeout: El servidor no respondió'));
+                        if (script.parentNode) script.remove();
+                        reject(new Error('Timeout: El servidor de Google no respondió a tiempo'));
                     }
                 }, 30000);
             });
         }
         
+        // Función principal de sincronización
         async function sincronizarConCalendar() {
             if (syncInProgress) {
                 alert('⏳ Ya hay una sincronización en progreso');
@@ -3970,7 +3972,7 @@
             
             const url = localStorage.getItem('calendarScriptUrl');
             
-            if (!url || url.trim() === '') {
+            if (!url || String(url).trim() === '') {
                 alert(`⚠️ Configura la URL del script de Google Calendar primero
 
 Ve a Configuración → Google Calendar`);
@@ -3985,11 +3987,13 @@ Ve a Configuración → Google Calendar`);
             }
             
             try {
-                const accionesPendientes = acciones.filter(a => 
-                    a.estatus !== 'Completada' && 
-                    a.fechaCompromiso && 
-                    String(a.fechaCompromiso).trim() !== ''
-                );
+                // Filtrar acciones pendientes con fecha (CORREGIDO: String() para evitar error con números)
+                const accionesPendientes = acciones.filter(a => {
+                    if (a.estatus === 'Completada') return false;
+                    if (!a.fechaCompromiso) return false;
+                    const fechaStr = String(a.fechaCompromiso).trim();
+                    return fechaStr !== '';
+                });
                 
                 if (accionesPendientes.length === 0) {
                     alert('ℹ️ No hay acciones pendientes con fecha para sincronizar');
@@ -4001,7 +4005,7 @@ Ve a Configuración → Google Calendar`);
                     const nombreProyecto = proyecto ? proyecto.nombre : 'Sin proyecto';
                     
                     return {
-                        summary: `[${nombreProyecto}] ${accion.accionEjecutiva}`,
+                        summary: `[${nombreProyecto}] ${accion.accionEjecutiva || 'Sin descripción'}`,
                         description: `📋 Tipo: ${accion.tipo || 'N/A'}
 👤 Responsable: ${accion.responsable || 'N/A'}
 📂 Área: ${accion.area || 'N/A'}
@@ -4009,9 +4013,9 @@ Ve a Configuración → Google Calendar`);
 📊 Avance: ${accion.avance || 0}%
 💬 Observaciones: ${accion.observaciones || 'N/A'}
 
-[Sistema: Centro de Control Proyectos Macros GUIA]`,
-                        date: accion.fechaCompromiso,
-                        status: accion.estatus,
+[Sistema: Centro Control Proyectos Macros GUIA]`,
+                        date: String(accion.fechaCompromiso),
+                        status: accion.estatus || 'Pendiente',
                         eventId: `guia_accion_${accion.id}`
                     };
                 });
@@ -4027,7 +4031,7 @@ Ve a Configuración → Google Calendar`);
 📅 ${result.created || 0} eventos creados
 🔄 ${result.updated || 0} eventos actualizados`);
                 } else {
-                    throw new Error(result?.error || 'Error desconocido');
+                    throw new Error(result?.error || 'Error desconocido en la sincronización');
                 }
                 
             } catch (error) {
@@ -4044,6 +4048,7 @@ ${error.message}`);
             }
         }
         
+        // Cargar y guardar URL automáticamente
         document.addEventListener('DOMContentLoaded', function() {
             const urlInput = document.getElementById('calendarScriptUrl');
             if (urlInput) {
@@ -4051,7 +4056,7 @@ ${error.message}`);
                 if (savedUrl) urlInput.value = savedUrl;
                 
                 urlInput.addEventListener('change', function() {
-                    const url = this.value.trim();
+                    const url = String(this.value || '').trim();
                     if (url) {
                         localStorage.setItem('calendarScriptUrl', url);
                         console.log('✅ URL de Calendar guardada');
@@ -4060,7 +4065,7 @@ ${error.message}`);
             }
         });
         
-        // ==================== FIN CALENDAR INTEGRATION ====================
+        // ==================== FIN CALENDAR SYNC ====================
     </script>
 </body>
 </html>
