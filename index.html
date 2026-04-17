@@ -1718,7 +1718,12 @@
             </nav>
 
             <div class="sidebar-footer">
-                <button class="config-btn" onclick="abrirConfiguracion()">
+                <button class="config-btn" onclick="sincronizarConCalendar()" style="background: rgba(6, 182, 212, 0.2); border-color: var(--info);">
+                    <span>🔄</span>
+                    <span>Sincronizar Calendar</span>
+                </button>
+                
+<button class="config-btn" onclick="abrirConfiguracion()">
                     <span>⚙️</span>
                     <span>Configuración</span>
                 </button>
@@ -1803,8 +1808,6 @@
                         </div>
                         <div class="toolbar-right">
                             <input type="text" class="search-box" id="accionesSearch" placeholder="Buscar acciones..." oninput="renderAcciones()">
-                            <button class="btn btn-secondary" onclick="sincronizarDesdeCalendar()">🔄 Sincronizar Calendar</button>
-                            <button class="btn btn-secondary" onclick="exportarPDFAcciones()">📄 Exportar PDF</button>
                             <button class="btn btn-success" onclick="abrirModalAccion()">+ Acción</button>
                         </div>
                     </div>
@@ -1866,9 +1869,6 @@
                             <select class="select-filter" id="responsablesProyectoFilter" onchange="renderResponsables()">
                                 <option value="">Todos los proyectos</option>
                             </select>
-                        </div>
-                        <div class="toolbar-right">
-                            <button class="btn btn-secondary" onclick="exportarPDFResponsables()">📄 Exportar PDF</button>
                         </div>
                     </div>
 
@@ -2136,6 +2136,13 @@
                 <h2 class="modal-title">⚙️ Configuración</h2>
             </div>
             <div class="modal-body">
+                <div class="form-group full-width" style="margin-bottom: 24px;">
+                    <label class="form-label">🔗 Google Calendar - URL del Script</label>
+                    <input type="text" class="form-input" id="calendarScriptUrl" placeholder="https://script.google.com/macros/s/..." style="font-family: 'Courier New', monospace; font-size: 0.8125rem;">
+                    <small style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 8px; display: block;">
+                        Pega aquí la URL de tu Google Apps Script desplegado como Web App
+                    </small>
+                </div>
                 <div class="form-group full-width">
                     <label class="form-label">Tema de Colores</label>
                     <div class="theme-selector">
@@ -2160,11 +2167,6 @@
                             <div class="theme-option-name">Sunset</div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group full-width" style="margin-top: 24px;">
-                    <label class="form-label">🔗 Google Calendar - URL del Script</label>
-                    <input type="text" class="form-input" id="calendarScriptUrlInput" placeholder="https://script.google.com/macros/s/...">
-                    <small style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 4px; display: block;">Pega aquí la URL de tu Google Apps Script desplegado como Web App</small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -2210,15 +2212,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <script>
         // DATOS GLOBALES
         let proyectos = JSON.parse(localStorage.getItem('ccProyectos')) || [];
         let acciones = JSON.parse(localStorage.getItem('ccAcciones')) || [];
-        
-        // GOOGLE CALENDAR SYNC
-        let calendarScriptUrl = localStorage.getItem('ccCalendarScriptUrl') || '';
 
         // LIMPIAR TODO excepto texto alfanumérico de ESTADOS Y PRIORIDADES
         acciones = acciones.map(a => {
@@ -2265,17 +2262,9 @@
             document.getElementById('modalConfiguracion').classList.add('active');
             const tema = localStorage.getItem('ccTema') || 'light';
             actualizarTemaActivo(tema);
-            
-            // Cargar URL del script de Calendar
-            document.getElementById('calendarScriptUrlInput').value = calendarScriptUrl;
         }
 
         function cerrarConfiguracion() {
-            // Guardar URL del script de Calendar
-            const url = document.getElementById('calendarScriptUrlInput').value.trim();
-            calendarScriptUrl = url;
-            localStorage.setItem('ccCalendarScriptUrl', url);
-            
             document.getElementById('modalConfiguracion').classList.remove('active');
         }
 
@@ -2823,7 +2812,7 @@
             document.getElementById('formAccion').reset();
         }
 
-        document.getElementById('formAccion').addEventListener('submit', async function(e) {
+        document.getElementById('formAccion').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const id = document.getElementById('accionId').value;
@@ -2836,9 +2825,6 @@
             // Limpiar cualquier carácter no alfanumérico
             prioridad = prioridad.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
             estatus = estatus.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
-            
-            // Preservar calendarEventId si ya existe
-            const accionExistente = id ? acciones.find(a => a.id === parseInt(id)) : null;
             
             const accion = {
                 id: id ? parseInt(id) : Date.now(),
@@ -2853,7 +2839,6 @@
                 fechaCompromiso: document.getElementById('accionFechaCompromiso').value,
                 observaciones: document.getElementById('accionObservaciones').value,
                 tipo: 'Estratégica',
-                calendarEventId: accionExistente?.calendarEventId || null,
                 fechaModificacion: new Date().toISOString(),
                 fechaCreacion: id ? (acciones.find(a => a.id === parseInt(id))?.fechaCreacion || new Date().toISOString()) : new Date().toISOString()
             };
@@ -2866,24 +2851,6 @@
             }
 
             guardarDatos();
-            
-            // Sincronizar con Calendar automáticamente si tiene deadline
-            if (calendarScriptUrl && accion.fechaCompromiso) {
-                try {
-                    const eventId = await sincronizarAccionConCalendar(accion);
-                    if (eventId && eventId !== accion.calendarEventId) {
-                        accion.calendarEventId = eventId;
-                        if (id) {
-                            const index = acciones.findIndex(a => a.id === parseInt(id));
-                            if (index !== -1) acciones[index] = accion;
-                        }
-                        guardarDatos();
-                    }
-                } catch (error) {
-                    console.error('Error sincronizando con Calendar:', error);
-                }
-            }
-            
             renderAcciones();
             renderDashboard();
             renderResponsables();
@@ -2896,14 +2863,6 @@
         function eliminarAccion() {
             const id = document.getElementById('accionId').value;
             if (!id || !confirm('¿Eliminar esta acción?')) return;
-            
-            // Buscar la acción antes de eliminarla para obtener el eventId
-            const accion = acciones.find(a => a.id === parseInt(id));
-            
-            // Eliminar evento de Calendar si existe
-            if (accion && accion.calendarEventId) {
-                eliminarEventoCalendar(accion.calendarEventId);
-            }
             
             acciones = acciones.filter(a => a.id !== parseInt(id));
             guardarDatos();
@@ -3957,510 +3916,229 @@
             alert('✅ Todos los datos han sido eliminados');
         }
 
-        // ==========================================
-        // GOOGLE CALENDAR SYNC - FUNCIONES
-        // ==========================================
+        // ================================================
+        // CALENDAR SYNC - INTEGRACIÓN JSONP
+        // ================================================
         
-        async function sincronizarAccionConCalendar(accion) {
-            if (!calendarScriptUrl) {
-                console.log('URL del script no configurada');
-                return null;
+/**
+ * ================================================
+ * CALENDAR SYNC - CLIENTE JSONP
+ * ================================================
+ */
+
+// Variables globales
+let CALENDAR_SCRIPT_URL = '';
+let syncInProgress = false;
+
+// ==========================================
+// JSONP HELPER
+// ==========================================
+
+function jsonpRequest(url, params, callback) {
+  return new Promise((resolve, reject) => {
+    const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+    
+    // Crear función callback global
+    window[callbackName] = function(data) {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      resolve(data);
+    };
+    
+    // Construir URL con parámetros
+    const queryParams = new URLSearchParams(params);
+    queryParams.append('callback', callbackName);
+    const fullUrl = url + '?' + queryParams.toString();
+    
+    // Crear script tag
+    const script = document.createElement('script');
+    script.src = fullUrl;
+    script.onerror = () => {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      reject(new Error('Error al cargar script'));
+    };
+    
+    // Timeout de 30 segundos
+    setTimeout(() => {
+      if (window[callbackName]) {
+        delete window[callbackName];
+        document.body.removeChild(script);
+        reject(new Error('Timeout: El servidor no respondió'));
+      }
+    }, 30000);
+    
+    document.body.appendChild(script);
+  });
+}
+
+// ==========================================
+// TEST CONNECTION
+// ==========================================
+
+async function testCalendarConnection() {
+  const url = localStorage.getItem('calendarScriptUrl');
+  
+  if (!url) {
+    return { success: false, error: 'URL del script no configurada' };
+  }
+  
+  try {
+    const result = await jsonpRequest(url, { action: 'test' });
+    return result;
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+// ==========================================
+// SINCRONIZAR CON CALENDAR
+// ==========================================
+
+async function sincronizarConCalendar() {
+  if (syncInProgress) {
+    alert('Ya hay una sincronización en progreso...');
+    return;
+  }
+  
+  const url = localStorage.getItem('calendarScriptUrl');
+  
+  if (!url || url.trim() === '') {
+    alert('⚠️ Configura la URL del script de Google Calendar primero
+
+Ve a Configuración → Google Calendar');
+    return;
+  }
+  
+  syncInProgress = true;
+  const btn = document.querySelector('[onclick*="sincronizarConCalendar"]');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '🔄 Sincronizando...';
+  }
+  
+  try {
+    // Obtener acciones con deadlines
+    const accionesConDeadline = acciones.filter(a => a.fechaCompromiso && a.estatus !== 'Completada');
+    
+    if (accionesConDeadline.length === 0) {
+      alert('ℹ️ No hay acciones pendientes con fecha para sincronizar');
+      return;
+    }
+    
+    // Preparar datos para enviar
+    const accionesData = accionesConDeadline.map(a => {
+      const proyecto = proyectos.find(p => p.id === a.proyectoId);
+      return {
+        id: a.id,
+        proyectoNombre: proyecto?.nombre || 'Sin proyecto',
+        accionEjecutiva: a.accionEjecutiva || 'Sin descripción',
+        responsable: a.responsable || 'Sin asignar',
+        area: a.area,
+        prioridad: a.prioridad || 'Media',
+        fechaCompromiso: a.fechaCompromiso,
+        observaciones: a.observaciones,
+        calendarEventId: a.calendarEventId
+      };
+    });
+    
+    // Sincronizar vía JSONP
+    const result = await jsonpRequest(url, {
+      action: 'syncEvents',
+      acciones: JSON.stringify(accionesData)
+    });
+    
+    if (result.success) {
+      // Actualizar IDs de eventos en localStorage
+      result.events?.forEach(evt => {
+        const accion = acciones.find(a => a.id === evt.accionId);
+        if (accion) {
+          accion.calendarEventId = evt.calendarEventId;
+        }
+      });
+      
+      guardarDatos();
+      
+      alert(`✅ Sincronización exitosa
+
+${result.created || 0} eventos creados
+${result.updated || 0} eventos actualizados`);
+      
+      if (result.errors && result.errors.length > 0) {
+        console.warn('Algunos eventos tuvieron errores:', result.errors);
+      }
+    } else {
+      alert(`❌ Error en sincronización:
+
+${result.error || 'Error desconocido'}`);
+      console.error('Error de sincronización:', result);
+    }
+    
+  } catch (error) {
+    alert(`❌ Error al sincronizar:
+
+${error.message}
+
+Revisa la consola para más detalles`);
+    console.error('Error:', error);
+  } finally {
+    syncInProgress = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '🔄 Sincronizar Calendar';
+    }
+  }
+}
+
+// ==========================================
+// GUARDAR URL DEL SCRIPT
+// ==========================================
+
+function guardarCalendarScriptUrl(url) {
+  localStorage.setItem('calendarScriptUrl', url.trim());
+  CALENDAR_SCRIPT_URL = url.trim();
+}
+
+// ==========================================
+// CARGAR URL AL INICIO
+// ==========================================
+
+function cargarCalendarScriptUrl() {
+  const url = localStorage.getItem('calendarScriptUrl') || '';
+  CALENDAR_SCRIPT_URL = url;
+  return url;
+}
+
+
+        // ================================================
+        // MODIFICAR CONFIGURACIÓN PARA INCLUIR CALENDAR
+        // ================================================
+        
+        // Guardar configuración original
+        const cerrarConfiguracionOriginal = cerrarConfiguracion;
+        
+        // Sobreescribir función de configuración
+        function cerrarConfiguracion() {
+            const url = document.getElementById('calendarScriptUrl').value;
+            if (url && url.trim() !== '') {
+                guardarCalendarScriptUrl(url);
             }
-            
-            if (!accion.fechaCompromiso) {
-                console.log('Acción sin deadline, no se sincroniza');
-                return null;
-            }
-            
-            try {
-                const proyecto = proyectos.find(p => p.id === accion.proyectoId);
-                
-                const data = {
-                    action: 'createOrUpdateEvent',
-                    data: {
-                        id: accion.id,
-                        proyecto: proyecto ? proyecto.nombre : 'Sin Proyecto',
-                        tema: accion.tema,
-                        accion: accion.accionEjecutiva,
-                        responsable: accion.responsable,
-                        area: accion.area,
-                        prioridad: accion.prioridad,
-                        estado: accion.estatus,
-                        avance: accion.avance,
-                        deadline: accion.fechaCompromiso,
-                        observaciones: accion.observaciones,
-                        eventId: accion.calendarEventId || null
-                    }
-                };
-                
-                const response = await fetch(calendarScriptUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success && result.data && result.data.eventId) {
-                    return result.data.eventId;
-                }
-                
-                return null;
-                
-            } catch (error) {
-                console.error('Error sincronizando con Calendar:', error);
-                return null;
-            }
+            cerrarConfiguracionOriginal();
         }
         
-        async function sincronizarDesdeCalendar() {
-            if (!calendarScriptUrl) {
-                alert('⚠️ Configura primero la URL del Google Apps Script\n\nVe a Configuración > Google Calendar');
-                return;
-            }
-            
-            // Filtrar solo acciones con deadline y eventId
-            const accionesConCalendar = acciones.filter(a => a.fechaCompromiso && a.calendarEventId);
-            
-            if (accionesConCalendar.length === 0) {
-                alert('No hay acciones sincronizadas con Calendar');
-                return;
-            }
-            
-            try {
-                const btn = event.target;
-                btn.disabled = true;
-                btn.textContent = '🔄 Sincronizando...';
-                
-                const data = {
-                    action: 'syncFromCalendar',
-                    data: accionesConCalendar.map(a => ({
-                        id: a.id,
-                        eventId: a.calendarEventId,
-                        deadline: a.fechaCompromiso
-                    }))
-                };
-                
-                const response = await fetch(calendarScriptUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success && result.data && result.data.cambios) {
-                    const cambios = result.data.cambios;
-                    
-                    if (cambios.length === 0) {
-                        alert('✅ Todo sincronizado - No hay cambios');
-                    } else {
-                        // Aplicar cambios
-                        let actualizadas = 0;
-                        let eliminadas = 0;
-                        
-                        cambios.forEach(cambio => {
-                            const accion = acciones.find(a => a.id === cambio.id);
-                            if (!accion) return;
-                            
-                            if (cambio.type === 'updated') {
-                                accion.fechaCompromiso = cambio.newDeadline;
-                                actualizadas++;
-                            } else if (cambio.type === 'deleted') {
-                                accion.calendarEventId = null;
-                                eliminadas++;
-                            }
-                        });
-                        
-                        guardarDatos();
-                        renderAcciones();
-                        renderDashboard();
-                        renderResponsables();
-                        actualizarBadgeVencidas();
-                        
-                        let mensaje = '✅ Sincronización completada\n\n';
-                        if (actualizadas > 0) mensaje += `📅 ${actualizadas} fecha(s) actualizada(s)\n`;
-                        if (eliminadas > 0) mensaje += `🗑️ ${eliminadas} evento(s) eliminado(s) en Calendar\n`;
-                        
-                        alert(mensaje);
-                    }
-                } else {
-                    alert('❌ Error: ' + (result.message || 'No se pudo sincronizar'));
-                }
-                
-            } catch (error) {
-                console.error('Error sincronizando desde Calendar:', error);
-                alert('❌ Error al sincronizar desde Calendar\n\nVerifica la URL del script en Configuración');
-            } finally {
-                const btn = document.querySelector('.btn[onclick="sincronizarDesdeCalendar()"]');
-                if (btn) {
-                    btn.disabled = false;
-                    btn.textContent = '🔄 Sincronizar Calendar';
-                }
-            }
+        // Modificar apertura de configuración para cargar URL
+        const abrirConfiguracionOriginal = abrirConfiguracion;
+        function abrirConfiguracion() {
+            abrirConfiguracionOriginal();
+            const url = cargarCalendarScriptUrl();
+            document.getElementById('calendarScriptUrl').value = url || '';
         }
         
-        async function eliminarEventoCalendar(eventId) {
-            if (!calendarScriptUrl || !eventId) return;
-            
-            try {
-                const data = {
-                    action: 'deleteEvent',
-                    eventId: eventId
-                };
-                
-                await fetch(calendarScriptUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-            } catch (error) {
-                console.error('Error eliminando evento de Calendar:', error);
-            }
-        }
+        // Cargar URL al iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            cargarCalendarScriptUrl();
+        });
 
-        // ==========================================
-        // EXPORTAR PDF - FUNCIONES
-        // ==========================================
-        
-        function exportarPDFAcciones() {
-            const { jsPDF } = window.jspdf;
-            
-            // Filtrar acciones según filtros actuales
-            const filtroProyecto = document.getElementById('accionesProyectoFilter').value;
-            const filtroEstado = document.getElementById('accionesEstadoFilter').value;
-            const filtroPrioridad = document.getElementById('accionesPrioridadFilter').value;
-            const filtroResponsable = document.getElementById('accionesResponsableFilter').value;
-            const searchTerm = document.getElementById('accionesSearch').value.toLowerCase();
-
-            let acsFiltradas = acciones.filter(a => a.estatus !== 'Completada'); // Solo acciones activas
-            
-            if (filtroProyecto) acsFiltradas = acsFiltradas.filter(a => a.proyectoId == filtroProyecto);
-            if (filtroEstado) {
-                acsFiltradas = acsFiltradas.filter(a => {
-                    const estatusLimpio = (a.estatus || '').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
-                    return estatusLimpio === filtroEstado;
-                });
-            }
-            if (filtroPrioridad) acsFiltradas = acsFiltradas.filter(a => a.prioridad === filtroPrioridad);
-            if (filtroResponsable) acsFiltradas = acsFiltradas.filter(a => a.responsable === filtroResponsable);
-            if (searchTerm) {
-                acsFiltradas = acsFiltradas.filter(a => 
-                    (a.tema || '').toLowerCase().includes(searchTerm) ||
-                    (a.accionEjecutiva || '').toLowerCase().includes(searchTerm) ||
-                    (a.responsable || '').toLowerCase().includes(searchTerm)
-                );
-            }
-
-            if (acsFiltradas.length === 0) {
-                alert('No hay acciones activas para exportar con los filtros aplicados');
-                return;
-            }
-
-            // Crear PDF
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'letter'
-            });
-
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-            
-            // Colores corporativos
-            const colorNavy = [10, 37, 64];  // #0A2540
-            const colorGold = [245, 166, 35]; // #F5A623
-            const colorWhite = [255, 255, 255];
-            const colorGray = [128, 128, 128];
-
-            // Header con colores corporativos
-            doc.setFillColor(...colorNavy);
-            doc.rect(0, 0, pageWidth, 35, 'F');
-
-            // Logo/Título
-            doc.setFontSize(24);
-            doc.setTextColor(...colorGold);
-            doc.setFont('helvetica', 'bold');
-            doc.text('GUÍA', 15, 15);
-            
-            doc.setTextColor(...colorWhite);
-            doc.setFontSize(16);
-            doc.text('MACROLOTES', 15, 23);
-
-            // Título del reporte
-            doc.setFontSize(14);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Reporte de Acciones Activas', 15, 31);
-
-            // Fecha
-            doc.setFontSize(9);
-            doc.setFont('helvetica', 'normal');
-            const fecha = new Date().toLocaleDateString('es-MX', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-            doc.text(fecha, pageWidth - 15, 31, { align: 'right' });
-
-            // Preparar datos para la tabla
-            const tableData = acsFiltradas.map(a => {
-                const proyecto = proyectos.find(p => p.id === a.proyectoId);
-                const fechaFormateada = formatearFecha(a.fechaCompromiso);
-                const hoy = new Date();
-                hoy.setHours(0, 0, 0, 0);
-                
-                let diasRestantes = '-';
-                if (a.fechaCompromiso) {
-                    const fecha = new Date(fechaFormateada);
-                    fecha.setHours(0, 0, 0, 0);
-                    const diff = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24));
-                    diasRestantes = diff >= 0 ? `${diff}d` : `${Math.abs(diff)}d vencido`;
-                }
-
-                return [
-                    proyecto ? proyecto.nombre : 'Sin proyecto',
-                    a.tema || '-',
-                    a.accionEjecutiva || '-',
-                    a.responsable || '-',
-                    a.area || '-',
-                    a.prioridad || '-',
-                    a.estatus || '-',
-                    `${a.avance || 0}%`,
-                    fechaFormateada,
-                    diasRestantes,
-                    a.observaciones || '-'
-                ];
-            });
-
-            // Generar tabla
-            doc.autoTable({
-                startY: 40,
-                head: [['Proyecto', 'Tema', 'Acción', 'Responsable', 'Área', 'Prioridad', 'Estado', 'Avance', 'Deadline', 'Días', 'Observaciones']],
-                body: tableData,
-                theme: 'grid',
-                styles: {
-                    fontSize: 7,
-                    cellPadding: 2,
-                    lineColor: [200, 200, 200],
-                    lineWidth: 0.1
-                },
-                headStyles: {
-                    fillColor: colorNavy,
-                    textColor: colorWhite,
-                    fontStyle: 'bold',
-                    halign: 'center'
-                },
-                columnStyles: {
-                    0: { cellWidth: 25 },
-                    1: { cellWidth: 20 },
-                    2: { cellWidth: 45 },
-                    3: { cellWidth: 22 },
-                    4: { cellWidth: 20 },
-                    5: { cellWidth: 15, halign: 'center' },
-                    6: { cellWidth: 18, halign: 'center' },
-                    7: { cellWidth: 12, halign: 'center' },
-                    8: { cellWidth: 18, halign: 'center' },
-                    9: { cellWidth: 15, halign: 'center' },
-                    10: { cellWidth: 30 }
-                },
-                didDrawPage: function(data) {
-                    // Footer en cada página
-                    const pageCount = doc.internal.getNumberOfPages();
-                    const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
-                    
-                    doc.setFontSize(8);
-                    doc.setTextColor(...colorGray);
-                    doc.text(`Página ${currentPage} de ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-                    doc.text('Grupo Guía - Control de Proyectos Macros', pageWidth / 2, pageHeight - 6, { align: 'center' });
-                }
-            });
-
-            // Guardar PDF
-            const nombreArchivo = `Acciones_Activas_${new Date().toISOString().split('T')[0]}.pdf`;
-            doc.save(nombreArchivo);
-        }
-
-        function exportarPDFResponsables() {
-            const { jsPDF } = window.jspdf;
-            
-            // Filtrar acciones según proyecto seleccionado
-            const filtroProyecto = document.getElementById('responsablesProyectoFilter').value;
-            let accionesFiltradas = acciones.filter(a => a.estatus !== 'Completada'); // Solo acciones activas
-            
-            if (filtroProyecto) {
-                accionesFiltradas = accionesFiltradas.filter(a => a.proyectoId == filtroProyecto);
-            }
-
-            if (accionesFiltradas.length === 0) {
-                alert('No hay acciones activas para exportar');
-                return;
-            }
-
-            // Agrupar por responsable
-            const responsablesMap = {};
-            accionesFiltradas.forEach(a => {
-                const resp = a.responsable || 'Sin asignar';
-                if (!responsablesMap[resp]) responsablesMap[resp] = [];
-                responsablesMap[resp].push(a);
-            });
-
-            // Crear PDF
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'letter'
-            });
-
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-            
-            // Colores corporativos
-            const colorNavy = [10, 37, 64];
-            const colorGold = [245, 166, 35];
-            const colorWhite = [255, 255, 255];
-            const colorGray = [128, 128, 128];
-
-            let currentY = 40;
-            let isFirstPage = true;
-
-            Object.entries(responsablesMap).forEach(([responsable, accs], index) => {
-                // Header (solo primera página o si necesitamos nueva página)
-                if (isFirstPage || currentY > pageHeight - 60) {
-                    if (!isFirstPage) {
-                        doc.addPage();
-                    }
-                    
-                    // Header con colores corporativos
-                    doc.setFillColor(...colorNavy);
-                    doc.rect(0, 0, pageWidth, 35, 'F');
-
-                    // Logo/Título
-                    doc.setFontSize(24);
-                    doc.setTextColor(...colorGold);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('GUÍA', 15, 15);
-                    
-                    doc.setTextColor(...colorWhite);
-                    doc.setFontSize(16);
-                    doc.text('MACROLOTES', 15, 23);
-
-                    // Título del reporte
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('Reporte por Responsables', 15, 31);
-
-                    // Fecha
-                    doc.setFontSize(9);
-                    doc.setFont('helvetica', 'normal');
-                    const fecha = new Date().toLocaleDateString('es-MX', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    });
-                    doc.text(fecha, pageWidth - 15, 31, { align: 'right' });
-
-                    currentY = 40;
-                    isFirstPage = false;
-                }
-
-                // Sección del responsable
-                doc.setFillColor(...colorGold);
-                doc.rect(15, currentY, pageWidth - 30, 8, 'F');
-                
-                doc.setFontSize(11);
-                doc.setTextColor(...colorWhite);
-                doc.setFont('helvetica', 'bold');
-                doc.text(`${responsable} (${accs.length} acciones)`, 17, currentY + 5.5);
-
-                currentY += 12;
-
-                // Preparar datos de acciones del responsable
-                const tableData = accs.map(a => {
-                    const proyecto = proyectos.find(p => p.id === a.proyectoId);
-                    const fechaFormateada = formatearFecha(a.fechaCompromiso);
-                    const hoy = new Date();
-                    hoy.setHours(0, 0, 0, 0);
-                    
-                    let diasRestantes = '-';
-                    if (a.fechaCompromiso) {
-                        const fecha = new Date(fechaFormateada);
-                        fecha.setHours(0, 0, 0, 0);
-                        const diff = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24));
-                        diasRestantes = diff >= 0 ? `${diff}d` : `${Math.abs(diff)}d vencido`;
-                    }
-
-                    return [
-                        proyecto ? proyecto.nombre : 'Sin proyecto',
-                        a.tema || '-',
-                        a.accionEjecutiva || '-',
-                        a.area || '-',
-                        a.prioridad || '-',
-                        a.estatus || '-',
-                        `${a.avance || 0}%`,
-                        fechaFormateada,
-                        diasRestantes,
-                        a.observaciones || '-'
-                    ];
-                });
-
-                // Tabla de acciones
-                doc.autoTable({
-                    startY: currentY,
-                    head: [['Proyecto', 'Tema', 'Acción', 'Área', 'Prioridad', 'Estado', 'Avance', 'Deadline', 'Días', 'Observaciones']],
-                    body: tableData,
-                    theme: 'grid',
-                    styles: {
-                        fontSize: 7,
-                        cellPadding: 2,
-                        lineColor: [200, 200, 200],
-                        lineWidth: 0.1
-                    },
-                    headStyles: {
-                        fillColor: colorNavy,
-                        textColor: colorWhite,
-                        fontStyle: 'bold',
-                        halign: 'center',
-                        fontSize: 7
-                    },
-                    columnStyles: {
-                        0: { cellWidth: 22 },
-                        1: { cellWidth: 18 },
-                        2: { cellWidth: 48 },
-                        3: { cellWidth: 18 },
-                        4: { cellWidth: 14, halign: 'center' },
-                        5: { cellWidth: 16, halign: 'center' },
-                        6: { cellWidth: 12, halign: 'center' },
-                        7: { cellWidth: 18, halign: 'center' },
-                        8: { cellWidth: 14, halign: 'center' },
-                        9: { cellWidth: 30 }
-                    },
-                    margin: { left: 15, right: 15 },
-                    didDrawPage: function(data) {
-                        // Footer en cada página
-                        const pageCount = doc.internal.getNumberOfPages();
-                        const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
-                        
-                        doc.setFontSize(8);
-                        doc.setTextColor(...colorGray);
-                        doc.text(`Página ${currentPage} de ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-                        doc.text('Grupo Guía - Control de Proyectos Macros', pageWidth / 2, pageHeight - 6, { align: 'center' });
-                    }
-                });
-
-                currentY = doc.lastAutoTable.finalY + 8;
-            });
-
-            // Guardar PDF
-            const nombreArchivo = `Responsables_Acciones_${new Date().toISOString().split('T')[0]}.pdf`;
-            doc.save(nombreArchivo);
-        }
     </script>
 </body>
 </html>
