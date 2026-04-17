@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1722,8 +1723,7 @@
                     <span>🔄</span>
                     <span>Sincronizar Calendar</span>
                 </button>
-                
-<button class="config-btn" onclick="abrirConfiguracion()">
+                <button class="config-btn" onclick="abrirConfiguracion()">
                     <span>⚙️</span>
                     <span>Configuración</span>
                 </button>
@@ -2414,7 +2414,228 @@
             localStorage.setItem('ccAcciones', JSON.stringify(acciones));
         }
 
-        window.onload = function() {
+
+        // ================================================
+        // CALENDAR SYNC - INTEGRACIÓN JSONP
+        // ================================================
+        
+/**
+ * ================================================
+ * CALENDAR SYNC - CLIENTE JSONP
+ * ================================================
+ */
+
+// Variables globales
+let CALENDAR_SCRIPT_URL = '';
+let syncInProgress = false;
+
+// ==========================================
+// JSONP HELPER
+// ==========================================
+
+function jsonpRequest(url, params, callback) {
+  return new Promise((resolve, reject) => {
+    const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+    
+    // Crear función callback global
+    window[callbackName] = function(data) {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      resolve(data);
+    };
+    
+    // Construir URL con parámetros
+    const queryParams = new URLSearchParams(params);
+    queryParams.append('callback', callbackName);
+    const fullUrl = url + '?' + queryParams.toString();
+    
+    // Crear script tag
+    const script = document.createElement('script');
+    script.src = fullUrl;
+    script.onerror = () => {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      reject(new Error('Error al cargar script'));
+    };
+    
+    // Timeout de 30 segundos
+    setTimeout(() => {
+      if (window[callbackName]) {
+        delete window[callbackName];
+        document.body.removeChild(script);
+        reject(new Error('Timeout: El servidor no respondió'));
+      }
+    }, 30000);
+    
+    document.body.appendChild(script);
+  });
+}
+
+// ==========================================
+// TEST CONNECTION
+// ==========================================
+
+async function testCalendarConnection() {
+  const url = localStorage.getItem('calendarScriptUrl');
+  
+  if (!url) {
+    return { success: false, error: 'URL del script no configurada' };
+  }
+  
+  try {
+    const result = await jsonpRequest(url, { action: 'test' });
+    return result;
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+// ==========================================
+// SINCRONIZAR CON CALENDAR
+// ==========================================
+
+async function sincronizarConCalendar() {
+  if (syncInProgress) {
+    alert('Ya hay una sincronización en progreso...');
+    return;
+  }
+  
+  const url = localStorage.getItem('calendarScriptUrl');
+  
+  if (!url || url.trim() === '') {
+    alert('⚠️ Configura la URL del script de Google Calendar primero
+
+Ve a Configuración → Google Calendar');
+    return;
+  }
+  
+  syncInProgress = true;
+  const btn = document.querySelector('[onclick*="sincronizarConCalendar"]');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '🔄 Sincronizando...';
+  }
+  
+  try {
+    // Obtener acciones con deadlines
+    const accionesConDeadline = acciones.filter(a => a.fechaCompromiso && a.estatus !== 'Completada');
+    
+    if (accionesConDeadline.length === 0) {
+      alert('ℹ️ No hay acciones pendientes con fecha para sincronizar');
+      return;
+    }
+    
+    // Preparar datos para enviar
+    const accionesData = accionesConDeadline.map(a => {
+      const proyecto = proyectos.find(p => p.id === a.proyectoId);
+      return {
+        id: a.id,
+        proyectoNombre: proyecto?.nombre || 'Sin proyecto',
+        accionEjecutiva: a.accionEjecutiva || 'Sin descripción',
+        responsable: a.responsable || 'Sin asignar',
+        area: a.area,
+        prioridad: a.prioridad || 'Media',
+        fechaCompromiso: a.fechaCompromiso,
+        observaciones: a.observaciones,
+        calendarEventId: a.calendarEventId
+      };
+    });
+    
+    // Sincronizar vía JSONP
+    const result = await jsonpRequest(url, {
+      action: 'syncEvents',
+      acciones: JSON.stringify(accionesData)
+    });
+    
+    if (result.success) {
+      // Actualizar IDs de eventos en localStorage
+      result.events?.forEach(evt => {
+        const accion = acciones.find(a => a.id === evt.accionId);
+        if (accion) {
+          accion.calendarEventId = evt.calendarEventId;
+        }
+      });
+      
+      guardarDatos();
+      
+      alert(`✅ Sincronización exitosa
+
+${result.created || 0} eventos creados
+${result.updated || 0} eventos actualizados`);
+      
+      if (result.errors && result.errors.length > 0) {
+        console.warn('Algunos eventos tuvieron errores:', result.errors);
+      }
+    } else {
+      alert(`❌ Error en sincronización:
+
+${result.error || 'Error desconocido'}`);
+      console.error('Error de sincronización:', result);
+    }
+    
+  } catch (error) {
+    alert(`❌ Error al sincronizar:
+
+${error.message}
+
+Revisa la consola para más detalles`);
+    console.error('Error:', error);
+  } finally {
+    syncInProgress = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '🔄 Sincronizar Calendar';
+    }
+  }
+}
+
+// ==========================================
+// GUARDAR URL DEL SCRIPT
+// ==========================================
+
+function guardarCalendarScriptUrl(url) {
+  localStorage.setItem('calendarScriptUrl', url.trim());
+  CALENDAR_SCRIPT_URL = url.trim();
+}
+
+// ==========================================
+// CARGAR URL AL INICIO
+// ==========================================
+
+function cargarCalendarScriptUrl() {
+  const url = localStorage.getItem('calendarScriptUrl') || '';
+  CALENDAR_SCRIPT_URL = url;
+  return url;
+}
+
+
+        // ================================================
+        // EXTENDER FUNCIONES DE CONFIGURACIÓN
+        // ================================================
+        
+        const _abrirConfiguracionOriginal = window.abrirConfiguracion;
+        window.abrirConfiguracion = function() {
+            _abrirConfiguracionOriginal();
+            setTimeout(() => {
+                const url = cargarCalendarScriptUrl();
+                const input = document.getElementById('calendarScriptUrl');
+                if (input) input.value = url || '';
+            }, 100);
+        };
+        
+        const _cerrarConfiguracionOriginal = window.cerrarConfiguracion;
+        window.cerrarConfiguracion = function() {
+            const input = document.getElementById('calendarScriptUrl');
+            if (input) {
+                const url = input.value;
+                if (url && url.trim() !== '') {
+                    guardarCalendarScriptUrl(url);
+                }
+            }
+            _cerrarConfiguracionOriginal();
+        };
+
+                window.onload = function() {
             limpiezaProfundaDatos();
             cargarTema();
             actualizarFiltros();
@@ -3915,230 +4136,6 @@
             
             alert('✅ Todos los datos han sido eliminados');
         }
-
-        // ================================================
-        // CALENDAR SYNC - INTEGRACIÓN JSONP
-        // ================================================
-        
-/**
- * ================================================
- * CALENDAR SYNC - CLIENTE JSONP
- * ================================================
- */
-
-// Variables globales
-let CALENDAR_SCRIPT_URL = '';
-let syncInProgress = false;
-
-// ==========================================
-// JSONP HELPER
-// ==========================================
-
-function jsonpRequest(url, params, callback) {
-  return new Promise((resolve, reject) => {
-    const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
-    
-    // Crear función callback global
-    window[callbackName] = function(data) {
-      delete window[callbackName];
-      document.body.removeChild(script);
-      resolve(data);
-    };
-    
-    // Construir URL con parámetros
-    const queryParams = new URLSearchParams(params);
-    queryParams.append('callback', callbackName);
-    const fullUrl = url + '?' + queryParams.toString();
-    
-    // Crear script tag
-    const script = document.createElement('script');
-    script.src = fullUrl;
-    script.onerror = () => {
-      delete window[callbackName];
-      document.body.removeChild(script);
-      reject(new Error('Error al cargar script'));
-    };
-    
-    // Timeout de 30 segundos
-    setTimeout(() => {
-      if (window[callbackName]) {
-        delete window[callbackName];
-        document.body.removeChild(script);
-        reject(new Error('Timeout: El servidor no respondió'));
-      }
-    }, 30000);
-    
-    document.body.appendChild(script);
-  });
-}
-
-// ==========================================
-// TEST CONNECTION
-// ==========================================
-
-async function testCalendarConnection() {
-  const url = localStorage.getItem('calendarScriptUrl');
-  
-  if (!url) {
-    return { success: false, error: 'URL del script no configurada' };
-  }
-  
-  try {
-    const result = await jsonpRequest(url, { action: 'test' });
-    return result;
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-}
-
-// ==========================================
-// SINCRONIZAR CON CALENDAR
-// ==========================================
-
-async function sincronizarConCalendar() {
-  if (syncInProgress) {
-    alert('Ya hay una sincronización en progreso...');
-    return;
-  }
-  
-  const url = localStorage.getItem('calendarScriptUrl');
-  
-  if (!url || url.trim() === '') {
-    alert('⚠️ Configura la URL del script de Google Calendar primero
-
-Ve a Configuración → Google Calendar');
-    return;
-  }
-  
-  syncInProgress = true;
-  const btn = document.querySelector('[onclick*="sincronizarConCalendar"]');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = '🔄 Sincronizando...';
-  }
-  
-  try {
-    // Obtener acciones con deadlines
-    const accionesConDeadline = acciones.filter(a => a.fechaCompromiso && a.estatus !== 'Completada');
-    
-    if (accionesConDeadline.length === 0) {
-      alert('ℹ️ No hay acciones pendientes con fecha para sincronizar');
-      return;
-    }
-    
-    // Preparar datos para enviar
-    const accionesData = accionesConDeadline.map(a => {
-      const proyecto = proyectos.find(p => p.id === a.proyectoId);
-      return {
-        id: a.id,
-        proyectoNombre: proyecto?.nombre || 'Sin proyecto',
-        accionEjecutiva: a.accionEjecutiva || 'Sin descripción',
-        responsable: a.responsable || 'Sin asignar',
-        area: a.area,
-        prioridad: a.prioridad || 'Media',
-        fechaCompromiso: a.fechaCompromiso,
-        observaciones: a.observaciones,
-        calendarEventId: a.calendarEventId
-      };
-    });
-    
-    // Sincronizar vía JSONP
-    const result = await jsonpRequest(url, {
-      action: 'syncEvents',
-      acciones: JSON.stringify(accionesData)
-    });
-    
-    if (result.success) {
-      // Actualizar IDs de eventos en localStorage
-      result.events?.forEach(evt => {
-        const accion = acciones.find(a => a.id === evt.accionId);
-        if (accion) {
-          accion.calendarEventId = evt.calendarEventId;
-        }
-      });
-      
-      guardarDatos();
-      
-      alert(`✅ Sincronización exitosa
-
-${result.created || 0} eventos creados
-${result.updated || 0} eventos actualizados`);
-      
-      if (result.errors && result.errors.length > 0) {
-        console.warn('Algunos eventos tuvieron errores:', result.errors);
-      }
-    } else {
-      alert(`❌ Error en sincronización:
-
-${result.error || 'Error desconocido'}`);
-      console.error('Error de sincronización:', result);
-    }
-    
-  } catch (error) {
-    alert(`❌ Error al sincronizar:
-
-${error.message}
-
-Revisa la consola para más detalles`);
-    console.error('Error:', error);
-  } finally {
-    syncInProgress = false;
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = '🔄 Sincronizar Calendar';
-    }
-  }
-}
-
-// ==========================================
-// GUARDAR URL DEL SCRIPT
-// ==========================================
-
-function guardarCalendarScriptUrl(url) {
-  localStorage.setItem('calendarScriptUrl', url.trim());
-  CALENDAR_SCRIPT_URL = url.trim();
-}
-
-// ==========================================
-// CARGAR URL AL INICIO
-// ==========================================
-
-function cargarCalendarScriptUrl() {
-  const url = localStorage.getItem('calendarScriptUrl') || '';
-  CALENDAR_SCRIPT_URL = url;
-  return url;
-}
-
-
-        // ================================================
-        // MODIFICAR CONFIGURACIÓN PARA INCLUIR CALENDAR
-        // ================================================
-        
-        // Guardar configuración original
-        const cerrarConfiguracionOriginal = cerrarConfiguracion;
-        
-        // Sobreescribir función de configuración
-        function cerrarConfiguracion() {
-            const url = document.getElementById('calendarScriptUrl').value;
-            if (url && url.trim() !== '') {
-                guardarCalendarScriptUrl(url);
-            }
-            cerrarConfiguracionOriginal();
-        }
-        
-        // Modificar apertura de configuración para cargar URL
-        const abrirConfiguracionOriginal = abrirConfiguracion;
-        function abrirConfiguracion() {
-            abrirConfiguracionOriginal();
-            const url = cargarCalendarScriptUrl();
-            document.getElementById('calendarScriptUrl').value = url || '';
-        }
-        
-        // Cargar URL al iniciar
-        window.addEventListener('DOMContentLoaded', () => {
-            cargarCalendarScriptUrl();
-        });
-
     </script>
 </body>
 </html>
