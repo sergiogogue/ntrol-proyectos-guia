@@ -4000,29 +4000,26 @@ Ve a Configuración → Google Calendar`);
                     return;
                 }
                 
-                const eventos = accionesPendientes.map(accion => {
+                const accionesParaSync = accionesPendientes.map(accion => {
                     const proyecto = proyectos.find(p => p.id === accion.proyectoId);
                     const nombreProyecto = proyecto ? proyecto.nombre : 'Sin proyecto';
                     
                     return {
-                        summary: `[${nombreProyecto}] ${accion.accionEjecutiva || 'Sin descripción'}`,
-                        description: `📋 Tipo: ${accion.tipo || 'N/A'}
-👤 Responsable: ${accion.responsable || 'N/A'}
-📂 Área: ${accion.area || 'N/A'}
-⚡ Prioridad: ${accion.prioridad || 'N/A'}
-📊 Avance: ${accion.avance || 0}%
-💬 Observaciones: ${accion.observaciones || 'N/A'}
-
-[Sistema: Centro Control Proyectos Macros GUIA]`,
-                        date: String(accion.fechaCompromiso),
-                        status: accion.estatus || 'Pendiente',
-                        eventId: `guia_accion_${accion.id}`
+                        id: accion.id,
+                        proyectoNombre: nombreProyecto,
+                        accionEjecutiva: accion.accionEjecutiva || 'Sin descripción',
+                        fechaCompromiso: String(accion.fechaCompromiso),
+                        responsable: accion.responsable || 'N/A',
+                        area: accion.area || 'N/A',
+                        prioridad: accion.prioridad || 'Media',
+                        observaciones: accion.observaciones || '',
+                        calendarEventId: accion.calendarEventId || null
                     };
                 });
                 
                 const result = await jsonpRequest(url, {
                     action: 'syncEvents',
-                    events: JSON.stringify(eventos)
+                    acciones: JSON.stringify(accionesParaSync)
                 });
                 
                 if (result && result.success) {
