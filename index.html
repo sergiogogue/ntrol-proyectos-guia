@@ -4173,8 +4173,8 @@
                 // Caso 4: No existe evento → crear
                 else {
                     const result = await callCalendarApi('create', payload);
-                    if (result.success && result.eventId) {
-                        eventosMap[accion.id] = result.eventId;
+                    if (result.success && (result.taskId || result.eventId)) {
+                        eventosMap[accion.id] = result.taskId || result.eventId;
                         saveEventosMap(eventosMap);
                     }
                 }
