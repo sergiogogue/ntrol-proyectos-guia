@@ -1661,6 +1661,404 @@
                 transform: scale(0.99);
             }
         }
+        /* ===== CENTRO DE MANDO v5.0 ===== */
+        .comando-wrapper {
+            padding: 24px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        .comando-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .comando-titulo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .comando-fecha {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        .comando-acciones-header {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-modo-ceo {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-modo-ceo:hover { transform: translateY(-1px); }
+        .btn-pdf-semanal {
+            background: var(--secondary);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-pdf-semanal:hover { background: #059669; }
+
+        /* Banner Acción del Día */
+        .accion-del-dia {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border-radius: 14px;
+            padding: 18px 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .accion-del-dia-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+        .accion-del-dia-content { flex: 1; }
+        .accion-del-dia-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0.85;
+            margin-bottom: 4px;
+        }
+        .accion-del-dia-titulo {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        .accion-del-dia-meta {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        .accion-del-dia.empty {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+        }
+
+        /* Grid de cuadrantes */
+        .comando-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .cuadrante {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 20px 22px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+        }
+        .cuadrante-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .cuadrante-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .cuadrante-dot.azul { background: var(--primary); }
+        .cuadrante-dot.naranja { background: var(--warning); }
+        .cuadrante-dot.verde { background: var(--secondary); }
+        .cuadrante-dot.rojo { background: var(--danger); }
+        .cuadrante-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .cuadrante-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+
+        /* Cuadrante Score */
+        .score-numeros {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .score-cumplidos {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+        .score-total {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+        }
+        .score-pct {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-left: 8px;
+        }
+        .score-bar {
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+        .score-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), #059669);
+            transition: width 0.6s;
+        }
+        .score-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .score-stat {
+            text-align: center;
+        }
+        .score-stat-num {
+            font-size: 1.25rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .score-stat-num.green { color: var(--secondary); }
+        .score-stat-num.yellow { color: var(--warning); }
+        .score-stat-num.red { color: var(--danger); }
+        .score-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .score-tendencia {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .score-tendencia.down {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        .score-tendencia.neutral {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--gray-600);
+        }
+
+        /* Cuadrante Hoy */
+        .hoy-bloque {
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .hoy-bloque-header {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .hoy-bloque.vencidas {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid var(--danger);
+        }
+        .hoy-bloque.vencidas .hoy-bloque-header { color: var(--danger); }
+        .hoy-bloque.hoy {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--warning);
+        }
+        .hoy-bloque.hoy .hoy-bloque-header { color: var(--warning); }
+        .hoy-bloque.semana {
+            background: var(--gray-50);
+            border-left: 3px solid var(--gray-400);
+        }
+        .hoy-bloque.semana .hoy-bloque-header { color: var(--text-primary); }
+        .hoy-item {
+            font-size: 0.8rem;
+            padding: 3px 0;
+            line-height: 1.4;
+        }
+        .hoy-vacio {
+            padding: 14px;
+            text-align: center;
+            color: var(--secondary);
+            font-size: 0.875rem;
+            background: rgba(16, 185, 129, 0.08);
+            border-radius: 10px;
+        }
+
+        /* Cuadrante Momentum */
+        .momentum-item {
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .momentum-item:hover { opacity: 0.75; }
+        .momentum-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .momentum-nombre {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .momentum-pct {
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .momentum-pct.green { color: var(--secondary); }
+        .momentum-pct.yellow { color: var(--warning); }
+        .momentum-pct.red { color: var(--danger); }
+        .momentum-bar {
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .momentum-bar-fill {
+            height: 100%;
+            transition: width 0.6s;
+        }
+        .momentum-bar-fill.green { background: var(--secondary); }
+        .momentum-bar-fill.yellow { background: var(--warning); }
+        .momentum-bar-fill.red { background: var(--danger); }
+
+        /* Cuadrante Alertas */
+        .alerta-card {
+            border-left: 3px solid;
+            padding: 10px 14px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 10px;
+        }
+        .alerta-card.peligro {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.08);
+        }
+        .alerta-card.advertencia {
+            border-color: var(--warning);
+            background: rgba(245, 158, 11, 0.08);
+        }
+        .alerta-card.info {
+            border-color: var(--info);
+            background: rgba(6, 182, 212, 0.08);
+        }
+        .alerta-titulo {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+        .alerta-card.peligro .alerta-titulo { color: var(--danger); }
+        .alerta-card.advertencia .alerta-titulo { color: var(--warning); }
+        .alerta-card.info .alerta-titulo { color: var(--info); }
+        .alerta-detalle {
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+        .alerta-card.peligro .alerta-detalle { color: var(--danger); }
+        .alerta-card.advertencia .alerta-detalle { color: var(--warning); }
+        .alerta-card.info .alerta-detalle { color: var(--info); }
+        .sin-alertas {
+            text-align: center;
+            padding: 20px;
+            color: var(--secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Modo CEO - pantalla completa */
+        body.modo-ceo .sidebar,
+        body.modo-ceo .mobile-header,
+        body.modo-ceo .comando-acciones-header {
+            display: none !important;
+        }
+        body.modo-ceo .comando-wrapper {
+            padding: 32px 48px;
+            max-width: 100%;
+        }
+        body.modo-ceo .comando-titulo {
+            font-size: 2rem;
+        }
+        body.modo-ceo .accion-del-dia-titulo {
+            font-size: 1.5rem;
+        }
+        body.modo-ceo .score-cumplidos {
+            font-size: 4rem;
+        }
+        body.modo-ceo .cuadrante {
+            padding: 24px 28px;
+        }
+        body.modo-ceo .main-content {
+            margin-top: 0;
+        }
+        .btn-salir-ceo {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            z-index: 9999;
+            display: none;
+        }
+        body.modo-ceo .btn-salir-ceo {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .comando-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .comando-wrapper {
+                padding: 16px;
+            }
+            .comando-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .accion-del-dia {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -1694,9 +2092,14 @@
             </div>
 
             <nav class="sidebar-nav">
-                <div class="nav-item active" onclick="showView('dashboard', event)" data-view="dashboard">
+                <div class="nav-item active" onclick="showView('comando', event)" data-view="comando">
+                    <span class="nav-icon">🎯</span>
+                    <span>Comando</span>
+                    <span class="nav-badge" id="badgeVencidasComando" style="display: none;">0</span>
+                </div>
+                <div class="nav-item" onclick="showView('dashboard', event)" data-view="dashboard">
                     <span class="nav-icon">📊</span>
-                    <span>Dashboard</span>
+                    <span>Dashboard clásico</span>
                     <span class="nav-badge" id="badgeVencidas" style="display: none;">0</span>
                 </div>
                 <div class="nav-item" onclick="showView('acciones', event)" data-view="acciones">
@@ -1718,6 +2121,18 @@
             </nav>
 
             <div class="sidebar-footer">
+                <button class="config-btn" onclick="sincronizarConTasks()" id="btnSyncTasks" style="background: rgba(59, 130, 246, 0.25); border-color: var(--primary);">
+                    <span>🔄</span>
+                    <span id="btnSyncTasksText">Sync Google Tasks</span>
+                </button>
+                <button class="config-btn" onclick="window.open('https://tasks.google.com', '_blank')" style="background: rgba(245, 158, 11, 0.2); border-color: var(--warning);">
+                    <span>📋</span>
+                    <span>Abrir Google Tasks</span>
+                </button>
+                <button class="config-btn" onclick="resetSyncMap()" style="background: rgba(139, 92, 246, 0.2); border-color: #8b5cf6;" title="Reinicia el mapa de sincronización si hubo problema">
+                    <span>♻️</span>
+                    <span>Reset Sync Map</span>
+                </button>
                 <button class="config-btn" onclick="abrirConfiguracion()">
                     <span>⚙️</span>
                     <span>Configuración</span>
@@ -1731,19 +2146,84 @@
                     <span>Importar Backup</span>
                 </button>
                 <input type="file" id="importBackupFile" accept=".json" style="display: none;" onchange="importarBackupCompleto(event)">
-                <button class="config-btn" onclick="sincronizarCalendarMasivo()" style="background: rgba(59, 130, 246, 0.2); border-color: var(--primary);">
-                    <span>📅</span>
-                    <span id="btnSyncCalText">Sync Google Calendar</span>
-                </button>
                 <button class="btn btn-danger" onclick="resetData()" style="width: 100%; margin-bottom: 12px;">🗑 Reset Data</button>
-                <div class="version-text">v4.2 + Calendar Sync</div>
+                <div class="version-text">v5.0 + Centro de Mando</div>
             </div>
         </div>
 
         <!-- MAIN CONTENT -->
         <div class="main-content">
-            <!-- DASHBOARD -->
-            <div id="dashboard" class="view-content active">
+            <!-- BOTÓN SALIR MODO CEO -->
+            <button class="btn-salir-ceo" onclick="salirModoCEO()">✕ Salir Modo CEO</button>
+
+            <!-- ===== VISTA COMANDO (NUEVA, DEFAULT) ===== -->
+            <div id="comando" class="view-content active">
+                <div class="comando-wrapper">
+                    <div class="comando-header">
+                        <div>
+                            <div class="comando-titulo">Centro de Mando</div>
+                            <div class="comando-fecha" id="comandoFecha"></div>
+                        </div>
+                        <div class="comando-acciones-header">
+                            <button class="btn-modo-ceo" onclick="activarModoCEO()">
+                                <span>👔</span><span>Modo CEO</span>
+                            </button>
+                            <button class="btn-pdf-semanal" onclick="generarReporteSemanalPDF()">
+                                <span>📄</span><span>Reporte semanal</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BANNER ACCIÓN DEL DÍA -->
+                    <div id="accionDelDiaBanner"></div>
+
+                    <!-- GRID 4 CUADRANTES -->
+                    <div class="comando-grid">
+                        <!-- C1: Score -->
+                        <div class="cuadrante">
+                            <div class="cuadrante-header">
+                                <div class="cuadrante-dot azul"></div>
+                                <div class="cuadrante-label">Score · cumplimiento</div>
+                            </div>
+                            <div class="cuadrante-subtitle">Compromisos de la semana</div>
+                            <div id="cuadranteScore"></div>
+                        </div>
+
+                        <!-- C2: Hoy -->
+                        <div class="cuadrante">
+                            <div class="cuadrante-header">
+                                <div class="cuadrante-dot naranja"></div>
+                                <div class="cuadrante-label">Tu día</div>
+                            </div>
+                            <div class="cuadrante-subtitle" id="cuadranteHoyFecha"></div>
+                            <div id="cuadranteHoy"></div>
+                        </div>
+
+                        <!-- C3: Momentum -->
+                        <div class="cuadrante">
+                            <div class="cuadrante-header">
+                                <div class="cuadrante-dot verde"></div>
+                                <div class="cuadrante-label">Momentum por proyecto</div>
+                            </div>
+                            <div class="cuadrante-subtitle">Avance + tendencia semanal</div>
+                            <div id="cuadranteMomentum"></div>
+                        </div>
+
+                        <!-- C4: Alertas IA -->
+                        <div class="cuadrante">
+                            <div class="cuadrante-header">
+                                <div class="cuadrante-dot rojo"></div>
+                                <div class="cuadrante-label">Alertas inteligentes</div>
+                            </div>
+                            <div class="cuadrante-subtitle">Diagnóstico automático</div>
+                            <div id="cuadranteAlertas"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DASHBOARD CLÁSICO (queda como respaldo) -->
+            <div id="dashboard" class="view-content">
                 <div class="content-wrapper">
                     <div class="content-header">
                         <h1 class="content-title">Dashboard Ejecutivo</h1>
@@ -2160,33 +2640,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="form-group full-width" style="margin-top: 32px; padding-top: 24px; border-top: 2px solid var(--border-color);">
-                    <label class="form-label" style="font-size: 1rem; margin-bottom: 12px;">📅 Integración Google Calendar</label>
-                    
-                    <div style="background: var(--gray-50); padding: 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.6;">
-                        <strong style="color: var(--text-primary);">Sync híbrido activo:</strong><br>
-                        • Auto-sync al crear/editar acciones con fecha<br>
-                        • Solo sincroniza acciones NO completadas<br>
-                        • Al marcar Completada → se elimina del Calendar<br>
-                        • Botón "Sync Google Calendar" en sidebar = sync masivo
-                    </div>
-
-                    <label class="form-label" style="font-size: 0.875rem;">URL del Web App (Apps Script)</label>
-                    <input type="text" class="form-input" id="calendarWebAppUrl" placeholder="https://script.google.com/macros/s/.../exec" style="font-size: 0.8125rem; font-family: monospace;">
-                    
-                    <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-                        <button type="button" class="btn btn-primary" onclick="guardarUrlCalendar()" style="flex: 1;">💾 Guardar URL</button>
-                        <button type="button" class="btn btn-secondary" onclick="testearConexionCalendar()" style="flex: 1;">🔍 Probar conexión</button>
-                    </div>
-
-                    <div id="estadoCalendar" style="margin-top: 12px; padding: 10px; border-radius: 6px; font-size: 0.8125rem; display: none;"></div>
-
-                    <label style="display: flex; align-items: center; gap: 8px; margin-top: 16px; cursor: pointer; font-size: 0.875rem;">
-                        <input type="checkbox" id="calendarActivo" onchange="toggleCalendarActivo()" style="width: 18px; height: 18px; cursor: pointer;">
-                        <span>Activar sincronización automática</span>
-                    </label>
-                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" onclick="cerrarConfiguracion()">Guardar</button>
@@ -2236,6 +2689,20 @@
         let proyectos = JSON.parse(localStorage.getItem('ccProyectos')) || [];
         let acciones = JSON.parse(localStorage.getItem('ccAcciones')) || [];
 
+        // ==========================================
+        // GOOGLE TASKS SYNC - CONFIGURACIÓN
+        // ==========================================
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuSm6XCn2TcbkEPbp1X4FkQ_0OtVx7HPNF7EU8s2jbBbzb6UlgXzjkFoE5kfF2r1jh/exec';
+        
+        // Mapa: accionId -> taskId. Esta es la VERDAD para anti-duplicación.
+        let accionToTaskMap = JSON.parse(localStorage.getItem('ccAccionToTaskMap')) || {};
+        
+        // Lock para evitar syncs simultáneos
+        let syncEnProgreso = false;
+        
+        // Lock por acción individual (evita doble auto-sync de la misma acción)
+        const syncLocksIndividuales = new Set();
+
         // LIMPIAR TODO excepto texto alfanumérico de ESTADOS Y PRIORIDADES
         acciones = acciones.map(a => {
             if (a.estatus) {
@@ -2281,10 +2748,6 @@
             document.getElementById('modalConfiguracion').classList.add('active');
             const tema = localStorage.getItem('ccTema') || 'light';
             actualizarTemaActivo(tema);
-            cargarConfigCalendar();
-            // Limpiar estado visual previo del módulo Calendar
-            const estado = document.getElementById('estadoCalendar');
-            if (estado) estado.style.display = 'none';
         }
 
         function cerrarConfiguracion() {
@@ -2447,7 +2910,6 @@
             renderAcciones();
             renderResponsables();
             renderAnalisis();
-            actualizarBotonSyncCalendar();
         };
 
         // NAVEGACIÓN
@@ -2883,8 +3345,8 @@
             actualizarBadgeVencidas();
             cerrarModalAccion();
             
-            // Auto-sync con Google Calendar (silencioso, no bloquea UI)
-            autoSyncAccion(accion);
+            // Auto-sync a Google Tasks (silencioso, no bloquea UI)
+            syncAccionIndividual(accion);
         });
 
         function eliminarAccion() {
@@ -2893,8 +3355,8 @@
             
             const accionId = parseInt(id);
             
-            // Eliminar evento de Calendar antes de borrar la acción
-            autoSyncEliminar(accionId);
+            // Eliminar task remota de Google Tasks (silencioso)
+            eliminarTaskRemoto(accionId);
             
             acciones = acciones.filter(a => a.id !== accionId);
             guardarDatos();
@@ -2996,10 +3458,6 @@
                 const proyecto = proyectos.find(p => p.id === a.proyectoId);
                 const nombreProyecto = proyecto ? proyecto.nombre : 'Sin proyecto';
                 
-                // Indicador de sincronizado con Calendar
-                const eventosMap = getEventosMap();
-                const sincronizado = eventosMap[a.id] ? ' 📅' : '';
-                
                 return `
                     <tr onclick="abrirModalAccion(${a.id})">
                         <td><span class="proyecto-badge" title="${nombreProyecto}">${nombreProyecto}</span></td>
@@ -3010,7 +3468,7 @@
                         <td><span class="badge badge-${prioridadLimpia.toLowerCase()}">${prioridadLimpia}</span></td>
                         <td><span class="estado-badge estado-${estadoClass}">${estatusLimpio}</span></td>
                         <td><span class="avance-badge">${a.avance || 0}%</span></td>
-                        <td style="${esVencida ? 'color: var(--danger); font-weight: 600;' : ''}" title="${sincronizado ? 'Sincronizado con Google Calendar' : ''}">${formatearFecha(a.fechaCompromiso)} ${esVencida ? '🔴' : ''}${sincronizado}</td>
+                        <td style="${esVencida ? 'color: var(--danger); font-weight: 600;' : ''}">${formatearFecha(a.fechaCompromiso)} ${esVencida ? '🔴' : ''}</td>
                         <td>
                             <button class="btn-icon" onclick="event.stopPropagation(); abrirModalAccion(${a.id})" title="Editar">✏️</button>
                         </td>
@@ -3709,14 +4167,12 @@
         // BACKUP COMPLETO
         function exportarBackupCompleto() {
             const backup = {
-                version: '4.2',
+                version: '4.4',
                 fecha: new Date().toISOString(),
                 proyectos: proyectos,
                 acciones: acciones,
-                tema: localStorage.getItem('ccTema') || 'light',
-                calendarEventos: JSON.parse(localStorage.getItem(CALENDAR_CONFIG.eventosKey) || '{}'),
-                calendarUrl: localStorage.getItem(CALENDAR_CONFIG.urlKey) || '',
-                calendarActivo: localStorage.getItem(CALENDAR_CONFIG.activoKey) || 'false'
+                accionToTaskMap: accionToTaskMap,
+                tema: localStorage.getItem('ccTema') || 'light'
             };
 
             const dataStr = JSON.stringify(backup, null, 2);
@@ -3767,15 +4223,12 @@
                     proyectos = backup.proyectos;
                     acciones = backup.acciones;
                     
-                    // Restaurar mapa de eventos de Google Calendar (evita duplicados cross-device)
-                    if (backup.calendarEventos) {
-                        localStorage.setItem(CALENDAR_CONFIG.eventosKey, JSON.stringify(backup.calendarEventos));
-                    }
-                    if (backup.calendarUrl) {
-                        localStorage.setItem(CALENDAR_CONFIG.urlKey, backup.calendarUrl);
-                    }
-                    if (backup.calendarActivo) {
-                        localStorage.setItem(CALENDAR_CONFIG.activoKey, backup.calendarActivo);
+                    // Restaurar accionToTaskMap si existe en el backup (v4.3+)
+                    // CRÍTICO: sin este map, el siguiente sync DUPLICARÍA todo en Google Tasks
+                    if (backup.accionToTaskMap && typeof backup.accionToTaskMap === 'object') {
+                        accionToTaskMap = backup.accionToTaskMap;
+                    } else {
+                        accionToTaskMap = {};
                     }
                     
                     // Limpiar TODO excepto texto alfanumérico
@@ -3802,7 +4255,6 @@
                     renderAnalisis();
                     actualizarFiltros();
                     actualizarBadgeVencidas();
-                    actualizarBotonSyncCalendar();
 
                     alert('✅ Backup importado exitosamente');
                     event.target.value = '';
@@ -3946,351 +4398,18 @@
         function guardarDatos() {
             localStorage.setItem('ccProyectos', JSON.stringify(proyectos));
             localStorage.setItem('ccAcciones', JSON.stringify(acciones));
+            localStorage.setItem('ccAccionToTaskMap', JSON.stringify(accionToTaskMap));
         }
-
-        // ==========================================
-        // 📅 GOOGLE CALENDAR SYNC - MÓDULO
-        // ==========================================
-        
-        const CALENDAR_CONFIG = {
-            urlKey: 'ccCalendarUrl',
-            activoKey: 'ccCalendarActivo',
-            eventosKey: 'ccCalendarEventos' // map accionId -> eventId
-        };
-
-        // Cargar configuración al iniciar
-        function cargarConfigCalendar() {
-            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey) || '';
-            const activo = localStorage.getItem(CALENDAR_CONFIG.activoKey) === 'true';
-            
-            const inputUrl = document.getElementById('calendarWebAppUrl');
-            const checkActivo = document.getElementById('calendarActivo');
-            
-            if (inputUrl) inputUrl.value = url;
-            if (checkActivo) checkActivo.checked = activo;
-            
-            actualizarBotonSyncCalendar();
-        }
-
-        function actualizarBotonSyncCalendar() {
-            const btn = document.getElementById('btnSyncCalText');
-            if (!btn) return;
-            
-            const activo = localStorage.getItem(CALENDAR_CONFIG.activoKey) === 'true';
-            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey);
-            
-            if (!url) {
-                btn.textContent = 'Configurar Calendar';
-            } else if (!activo) {
-                btn.textContent = 'Calendar (pausado)';
-            } else {
-                btn.textContent = 'Sync Google Calendar';
-            }
-        }
-
-        function guardarUrlCalendar() {
-            const url = document.getElementById('calendarWebAppUrl').value.trim();
-            
-            if (!url) {
-                mostrarEstadoCalendar('⚠️ Pega la URL del Web App', 'warning');
-                return;
-            }
-            
-            if (!url.includes('script.google.com/macros/s/') || !url.endsWith('/exec')) {
-                mostrarEstadoCalendar('❌ URL inválida. Debe terminar en /exec', 'error');
-                return;
-            }
-            
-            localStorage.setItem(CALENDAR_CONFIG.urlKey, url);
-            mostrarEstadoCalendar('✅ URL guardada correctamente', 'success');
-            actualizarBotonSyncCalendar();
-        }
-
-        function toggleCalendarActivo() {
-            const activo = document.getElementById('calendarActivo').checked;
-            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey);
-            
-            if (activo && !url) {
-                document.getElementById('calendarActivo').checked = false;
-                mostrarEstadoCalendar('⚠️ Primero guarda la URL del Web App', 'warning');
-                return;
-            }
-            
-            localStorage.setItem(CALENDAR_CONFIG.activoKey, activo ? 'true' : 'false');
-            mostrarEstadoCalendar(activo ? '✅ Sync automático activado' : '⏸ Sync automático pausado', activo ? 'success' : 'warning');
-            actualizarBotonSyncCalendar();
-            
-            // Si acaba de activar y hay acciones elegibles sin sincronizar, sugerir sync masivo
-            if (activo) {
-                const eventosMap = getEventosMap();
-                const elegibles = acciones.filter(debeSincronizarse);
-                const pendientesSync = elegibles.filter(a => !eventosMap[a.id]);
-                
-                if (pendientesSync.length > 0) {
-                    setTimeout(() => {
-                        if (confirm(`💡 Detecté ${pendientesSync.length} acción(es) elegible(s) sin sincronizar.\n\n¿Quieres hacer la sincronización masiva inicial ahora?`)) {
-                            cerrarConfiguracion();
-                            setTimeout(() => sincronizarCalendarMasivo(), 300);
-                        }
-                    }, 500);
-                }
-            }
-        }
-
-        function mostrarEstadoCalendar(mensaje, tipo) {
-            const estado = document.getElementById('estadoCalendar');
-            if (!estado) return;
-            
-            const colores = {
-                success: { bg: 'rgba(16, 185, 129, 0.1)', color: '#059669', border: '#10b981' },
-                error: { bg: 'rgba(239, 68, 68, 0.1)', color: '#dc2626', border: '#ef4444' },
-                warning: { bg: 'rgba(245, 158, 11, 0.1)', color: '#d97706', border: '#f59e0b' },
-                info: { bg: 'rgba(59, 130, 246, 0.1)', color: '#2563eb', border: '#3b82f6' }
-            };
-            
-            const c = colores[tipo] || colores.info;
-            estado.style.display = 'block';
-            estado.style.background = c.bg;
-            estado.style.color = c.color;
-            estado.style.borderLeft = `3px solid ${c.border}`;
-            estado.textContent = mensaje;
-            
-            if (tipo === 'success') {
-                setTimeout(() => { estado.style.display = 'none'; }, 4000);
-            }
-        }
-
-        async function testearConexionCalendar() {
-            const url = document.getElementById('calendarWebAppUrl').value.trim();
-            
-            if (!url) {
-                mostrarEstadoCalendar('⚠️ Pega la URL primero', 'warning');
-                return;
-            }
-            
-            mostrarEstadoCalendar('⏳ Probando conexión...', 'info');
-            
-            try {
-                const response = await fetch(url, { method: 'GET', redirect: 'follow' });
-                const data = await response.json();
-                
-                if (data.status && data.status.includes('activo')) {
-                    mostrarEstadoCalendar(`✅ Conexión exitosa (${data.version || 'v1.0'})`, 'success');
-                } else {
-                    mostrarEstadoCalendar('⚠️ Respuesta inesperada del servidor', 'warning');
-                }
-            } catch (error) {
-                mostrarEstadoCalendar('❌ Error: ' + error.message, 'error');
-            }
-        }
-
-        // Validador: ¿debe sincronizarse esta acción?
-        function debeSincronizarse(accion) {
-            if (!accion.fechaCompromiso) return false;
-            const estatusLimpio = (accion.estatus || '').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim().toLowerCase();
-            if (estatusLimpio === 'completada') return false;
-            return true;
-        }
-
-        // Obtener mapa de eventos sincronizados
-        function getEventosMap() {
-            return JSON.parse(localStorage.getItem(CALENDAR_CONFIG.eventosKey) || '{}');
-        }
-
-        function saveEventosMap(mapa) {
-            localStorage.setItem(CALENDAR_CONFIG.eventosKey, JSON.stringify(mapa));
-        }
-
-        // Preparar payload de acción para Calendar
-        function buildCalendarPayload(accion) {
-            const proyecto = proyectos.find(p => p.id === accion.proyectoId);
-            
-            // FIX TIMEZONE: añadir mediodía local para evitar desfase al crear all-day event
-            // Apps Script interpretaría "2026-05-20" como UTC midnight que puede caer en día anterior en MX
-            // Con "T12:00:00" se evita el corrimiento en cualquier timezone del continente
-            let fechaSegura = accion.fechaCompromiso;
-            if (fechaSegura && /^\d{4}-\d{2}-\d{2}$/.test(fechaSegura)) {
-                fechaSegura = fechaSegura + 'T12:00:00';
-            }
-            
-            return {
-                accionId: accion.id,
-                proyecto: proyecto ? proyecto.nombre : 'Sin proyecto',
-                accion: accion.accionEjecutiva || 'Sin descripción',
-                responsable: accion.responsable || '',
-                area: accion.area || '',
-                prioridad: accion.prioridad || '',
-                estatus: accion.estatus || '',
-                avance: accion.avance || 0,
-                fechaCompromiso: fechaSegura,
-                observaciones: accion.observaciones || ''
-            };
-        }
-
-        // Enviar solicitud al Apps Script
-        async function callCalendarApi(action, payload) {
-            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey);
-            if (!url) throw new Error('URL de Calendar no configurada');
-            
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action, ...payload }),
-                redirect: 'follow'
-            });
-            
-            return await response.json();
-        }
-
-        // AUTO-SYNC: crear/actualizar evento al guardar acción
-        async function autoSyncAccion(accion) {
-            const activo = localStorage.getItem(CALENDAR_CONFIG.activoKey) === 'true';
-            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey);
-            
-            if (!activo || !url) return; // Sync desactivado
-            
-            const eventosMap = getEventosMap();
-            const eventIdExistente = eventosMap[accion.id];
-            
-            try {
-                // Caso 1: Acción no debe estar en Calendar pero hay evento → eliminarlo
-                if (!debeSincronizarse(accion) && eventIdExistente) {
-                    await callCalendarApi('delete', { eventId: eventIdExistente, accionId: accion.id });
-                    delete eventosMap[accion.id];
-                    saveEventosMap(eventosMap);
-                    return;
-                }
-                
-                // Caso 2: Acción no elegible y sin evento → nada que hacer
-                if (!debeSincronizarse(accion)) return;
-                
-                const payload = buildCalendarPayload(accion);
-                
-                // Caso 3: Ya existe evento → actualizar
-                if (eventIdExistente) {
-                    await callCalendarApi('update', { ...payload, eventId: eventIdExistente });
-                } 
-                // Caso 4: No existe evento → crear
-                else {
-                    const result = await callCalendarApi('create', payload);
-                    if (result.success && (result.taskId || result.eventId)) {
-                        eventosMap[accion.id] = result.taskId || result.eventId;
-                        saveEventosMap(eventosMap);
-                    }
-                }
-            } catch (error) {
-                console.warn('Calendar sync falló silenciosamente:', error.message);
-                // No interrumpimos el flujo del usuario — el dashboard sigue funcionando
-            }
-        }
-
-        // AUTO-SYNC: eliminar evento al borrar acción
-        async function autoSyncEliminar(accionId) {
-            const activo = localStorage.getItem(CALENDAR_CONFIG.activoKey) === 'true';
-            if (!activo) return;
-            
-            const eventosMap = getEventosMap();
-            const eventId = eventosMap[accionId];
-            if (!eventId) return;
-            
-            try {
-                await callCalendarApi('delete', { eventId, accionId });
-                delete eventosMap[accionId];
-                saveEventosMap(eventosMap);
-            } catch (error) {
-                console.warn('Error al eliminar evento:', error.message);
-            }
-        }
-
-        // SYNC MASIVO: botón del sidebar
-        async function sincronizarCalendarMasivo() {
-            const url = localStorage.getItem(CALENDAR_CONFIG.urlKey);
-            
-            if (!url) {
-                alert('⚠️ Primero configura la URL del Web App en Configuración ⚙️');
-                abrirConfiguracion();
-                return;
-            }
-            
-            const elegibles = acciones.filter(debeSincronizarse);
-            
-            if (elegibles.length === 0) {
-                alert('ℹ️ No hay acciones elegibles para sincronizar\n\n(Deben tener fecha compromiso y NO estar completadas)');
-                return;
-            }
-            
-            const eventosMap = getEventosMap();
-            const nuevas = elegibles.filter(a => !eventosMap[a.id]);
-            const actualizar = elegibles.filter(a => eventosMap[a.id]);
-            
-            const mensaje = `📅 Sincronización masiva:\n\n` +
-                `• Nuevas a crear: ${nuevas.length}\n` +
-                `• Existentes a actualizar: ${actualizar.length}\n` +
-                `• Total: ${elegibles.length}\n\n` +
-                `¿Continuar?`;
-            
-            if (!confirm(mensaje)) return;
-            
-            const btn = document.getElementById('btnSyncCalText');
-            const textoOriginal = btn.textContent;
-            btn.textContent = '⏳ Sincronizando...';
-            
-            let exitos = 0, fallos = 0;
-            
-            // Procesar nuevas en lote
-            if (nuevas.length > 0) {
-                try {
-                    const payloads = nuevas.map(buildCalendarPayload);
-                    const result = await callCalendarApi('sync_batch', { acciones: payloads });
-                    
-                    if (result.success && result.resultados) {
-                        result.resultados.forEach(r => {
-                            if (r.success && r.eventId && r.accionId) {
-                                eventosMap[r.accionId] = r.eventId;
-                                exitos++;
-                            } else {
-                                fallos++;
-                            }
-                        });
-                        saveEventosMap(eventosMap);
-                    }
-                } catch (error) {
-                    fallos += nuevas.length;
-                    console.error('Error en lote:', error);
-                }
-            }
-            
-            // Procesar actualizaciones una por una
-            for (const accion of actualizar) {
-                try {
-                    const payload = buildCalendarPayload(accion);
-                    const result = await callCalendarApi('update', { ...payload, eventId: eventosMap[accion.id] });
-                    if (result.success) exitos++; else fallos++;
-                } catch (error) {
-                    fallos++;
-                }
-            }
-            
-            btn.textContent = textoOriginal;
-            actualizarBotonSyncCalendar();
-            
-            alert(`✅ Sincronización completa\n\n` +
-                  `• Exitosas: ${exitos}\n` +
-                  `• Con errores: ${fallos}\n\n` +
-                  `Revisa tu Google Calendar 📅`);
-        }
-
-        // ==========================================
-        // FIN MÓDULO GOOGLE CALENDAR
-        // ==========================================
 
         function resetData() {
-            if (!confirm('⚠️ ¿ELIMINAR TODOS LOS PROYECTOS Y ACCIONES?\n\nEsta acción no se puede deshacer.')) return;
+            if (!confirm('⚠️ ¿ELIMINAR TODOS LOS PROYECTOS Y ACCIONES?\n\nEsta acción no se puede deshacer.\n\nNOTA: Esto NO elimina las tareas en Google Tasks. Para limpiarlas, hazlo manualmente en tasks.google.com')) return;
             
             proyectos = [];
             acciones = [];
+            accionToTaskMap = {};
             localStorage.removeItem('ccProyectos');
             localStorage.removeItem('ccAcciones');
+            localStorage.removeItem('ccAccionToTaskMap');
             
             renderProyectos();
             renderAcciones();
@@ -4300,7 +4419,1256 @@
             actualizarFiltros();
             actualizarBadgeVencidas();
             
-            alert('✅ Todos los datos han sido eliminados');
+            alert('✅ Todos los datos han sido eliminados del dashboard');
+        }
+        
+        // ==========================================
+        // GOOGLE TASKS SYNC - FUNCIONES (v4.4 anti-duplicación)
+        // ==========================================
+        
+        /**
+         * v4.8 FIX DEFINITIVO: Usa el NOMBRE REAL del proyecto en lugar de
+         * mapear a una lista hardcodeada de 5. El backend
+         * (obtenerOcrearListaParaProyecto) crea la lista si no existe.
+         */
+        function obtenerNombreProyectoTasks(accion) {
+            const proyecto = proyectos.find(p => p.id === accion.proyectoId);
+            if (!proyecto) return 'Sin Proyecto';
+            // Devolver el nombre real del proyecto, tal cual está en el dashboard.
+            // Si no hay nombre, usar desarrollo. Si tampoco, fallback.
+            return proyecto.nombre || proyecto.desarrollo || 'Sin Proyecto';
+        }
+        
+        /**
+         * Lee el mapa de referencias de una acción.
+         * COMPATIBLE con dos formatos:
+         *   - Viejo (string): accionToTaskMap[id] = "taskId"
+         *   - Nuevo (objeto): accionToTaskMap[id] = { taskId, listaId }
+         * Devuelve { taskId, listaId } o null.
+         */
+        function obtenerRefDeAccion(accionId) {
+            const v = accionToTaskMap[accionId];
+            if (!v) return null;
+            if (typeof v === 'string') {
+                // Formato viejo: solo string del taskId. listaId desconocido.
+                return { taskId: v, listaId: null };
+            }
+            if (typeof v === 'object' && v.taskId) {
+                return { taskId: v.taskId, listaId: v.listaId || null };
+            }
+            return null;
+        }
+        
+        /**
+         * Guarda la referencia completa (taskId + listaId) de una acción.
+         */
+        function guardarRefDeAccion(accionId, taskId, listaId) {
+            if (!taskId) return;
+            accionToTaskMap[accionId] = {
+                taskId: taskId,
+                listaId: listaId || null
+            };
+        }
+        
+        /**
+         * NORMALIZADOR DE FECHAS (v4.6)
+         * Convierte cualquier fecha a formato YYYY-MM-DD válido.
+         * Maneja:
+         *   - Strings ISO ya válidos: "2026-04-29" -> se devuelven tal cual
+         *   - Números seriales de Excel: 46104 -> "2026-04-29"
+         *   - Strings con números seriales: "46104" -> "2026-04-29"
+         *   - Fechas en otros formatos: intenta parsear con Date()
+         *   - Fechas inválidas o vacías -> "" (sin fecha)
+         */
+        function normalizarFecha(fecha) {
+            // Caso vacío/null/undefined -> sin fecha
+            if (fecha === null || fecha === undefined || fecha === '') return '';
+            
+            const fechaStr = String(fecha).trim();
+            if (!fechaStr || fechaStr === '0') return '';
+            
+            // Caso 1: ya es ISO YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(fechaStr)) {
+                // Validar que sea fecha real (no "2026-99-99")
+                const d = new Date(fechaStr + 'T12:00:00');
+                if (!isNaN(d.getTime())) {
+                    // Verificar que el string round-trip sea igual (rechaza "2026-99-99" que JS auto-corrige)
+                    const yyyy = d.getFullYear();
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    if (`${yyyy}-${mm}-${dd}` === fechaStr) return fechaStr;
+                }
+                return '';
+            }
+            
+            // Caso 2: número serial de Excel
+            // Offset correcto: Excel base = 1899-12-30 (compensa bug del año bisiesto 1900)
+            // Rango razonable: > 25569 (~1970) y < 80000 (~2118)
+            if (/^\d+(\.\d+)?$/.test(fechaStr)) {
+                const num = parseFloat(fechaStr);
+                if (num > 0 && num < 80000) {
+                    const fechaBase = new Date(1899, 11, 30); // 1899-12-30 (base Excel correcta)
+                    fechaBase.setDate(fechaBase.getDate() + Math.floor(num));
+                    if (!isNaN(fechaBase.getTime()) && fechaBase.getFullYear() > 1990 && fechaBase.getFullYear() < 2100) {
+                        const yyyy = fechaBase.getFullYear();
+                        const mm = String(fechaBase.getMonth() + 1).padStart(2, '0');
+                        const dd = String(fechaBase.getDate()).padStart(2, '0');
+                        return `${yyyy}-${mm}-${dd}`;
+                    }
+                }
+                return '';
+            }
+            
+            // Caso 3: cualquier otro formato, intentar parsear
+            const d = new Date(fechaStr);
+            if (!isNaN(d.getTime()) && d.getFullYear() > 1990 && d.getFullYear() < 2100) {
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            }
+            
+            // No se pudo interpretar -> tratar como sin fecha
+            return '';
+        }
+        
+        /**
+         * REPARAR FECHAS ROTAS (v4.6)
+         * Recorre todas las acciones, normaliza sus fechas y guarda los cambios.
+         * Devuelve { reparadas, vaciadas } con las cantidades.
+         */
+        function repararFechasAcciones() {
+            let reparadas = 0;
+            let vaciadas = 0;
+            
+            acciones.forEach(a => {
+                const original = a.fechaCompromiso;
+                if (!original) return; // Ya está vacía, no toca
+                
+                const normalizada = normalizarFecha(original);
+                if (normalizada !== String(original)) {
+                    a.fechaCompromiso = normalizada;
+                    if (normalizada === '') {
+                        vaciadas++;
+                    } else {
+                        reparadas++;
+                    }
+                }
+            });
+            
+            if (reparadas > 0 || vaciadas > 0) {
+                guardarDatos();
+            }
+            
+            return { reparadas, vaciadas };
+        }
+        
+        /**
+         * Construye el payload con TODOS los nombres de campo posibles que el backend
+         * podría esperar. Esto garantiza compatibilidad sin importar el formato exacto.
+         * v4.6: normaliza la fecha antes de enviarla.
+         */
+        function construirPayloadAccion(accion) {
+            const fechaNormalizada = normalizarFecha(accion.fechaCompromiso);
+            return {
+                accionId: accion.id,
+                id: accion.id,
+                proyecto: obtenerNombreProyectoTasks(accion),
+                tema: accion.tema || '',
+                accion: accion.accionEjecutiva || '',
+                accionEjecutiva: accion.accionEjecutiva || '',
+                responsable: accion.responsable || '',
+                area: accion.area || '',
+                prioridad: accion.prioridad || 'Media',
+                estatus: accion.estatus || 'No iniciado',
+                avance: accion.avance || 0,
+                fechaCompromiso: fechaNormalizada, // Vacío string si no hay fecha válida
+                observaciones: accion.observaciones || ''
+            };
+        }
+        
+        /**
+         * SYNC MASIVO - Sincroniza todas las acciones con fecha al backend.
+         * En v4.5 hace SYNC SECUENCIAL llamando a syncAccionIndividual una por una,
+         * lo cual garantiza:
+         *   - Cada acción manda taskId+listaId si los tiene
+         *   - Recuperación automática de taskIds huérfanos
+         *   - Cero duplicaciones
+         */
+
+         // ==========================================
+// NUEVA v3.1 — Detectar tasks borradas en Google
+// Compara accionToTaskMap (local) con Google Tasks (remoto)
+// Devuelve qué acciones tienen taskId que YA NO existe en Google
+// ==========================================
+async function detectarBorradasEnGoogle() {
+  try {
+    if (!APPS_SCRIPT_URL) {
+      return { success: false, eliminadas: [], error: 'APPS_SCRIPT_URL no configurada' };
+    }
+
+    // Construir syncMap simple: { accionId: taskId } para mandar al backend
+    const syncMapSimple = {};
+    for (const accionId in accionToTaskMap) {
+      const ref = obtenerRefDeAccion(accionId);
+      if (ref && ref.taskId) {
+        syncMapSimple[accionId] = ref.taskId;
+      }
+    }
+
+    if (Object.keys(syncMapSimple).length === 0) {
+      console.log('Sync map vacío, no hay nada que detectar');
+      return { success: true, eliminadas: [] };
+    }
+
+    console.log('🔍 Detectando borradas en Google Tasks...');
+    console.log('Mapas a verificar:', Object.keys(syncMapSimple).length);
+
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'detect_deleted',
+        syncMap: syncMapSimple
+      }),
+      redirect: 'follow'
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      console.error('❌ Error del backend:', data.error);
+      return { success: false, eliminadas: [], error: data.error };
+    }
+
+    // Enriquecer con datos de las acciones del dashboard
+    const eliminadasConDatos = data.eliminadas
+      .map(item => {
+        const accion = acciones.find(a => String(a.id) === String(item.accionId));
+        if (!accion) return null;
+        return {
+          accionId: item.accionId,
+          taskId: item.taskId,
+          accion: accion.accion || '(sin descripción)',
+          proyecto: accion.proyecto || '',
+          responsable: accion.responsable || '',
+          estatus: accion.estatus || ''
+        };
+      })
+      .filter(item => item !== null);
+
+    console.log(`✅ Detectadas ${eliminadasConDatos.length} borradas en Google con datos en dashboard`);
+
+    return {
+      success: true,
+      eliminadas: eliminadasConDatos,
+      totalSyncMap: data.totalSyncMap,
+      totalTasksGoogle: data.totalTasksGoogle
+    };
+
+  } catch (error) {
+    console.error('❌ Error en detectarBorradasEnGoogle:', error);
+    return { success: false, eliminadas: [], error: error.message };
+  }
+}
+        async function sincronizarConTasks() {
+            if (syncEnProgreso) {
+                alert('⚠️ Ya hay una sincronización en curso. Espera a que termine.');
+                return;
+            }
+            // ==========================================
+        // v3.1 — DETECCIÓN DE BORRADAS EN GOOGLE
+        // Si el usuario borró tasks en Google, detectarlas y preguntar
+        // ==========================================
+        try {
+          const deteccion = await detectarBorradasEnGoogle();
+          
+          if (deteccion.success && deteccion.eliminadas.length > 0) {
+            let mensajeBorradas = `🗑️ Detectadas ${deteccion.eliminadas.length} task(s) borrada(s) en Google Tasks:\n\n`;
+            
+            deteccion.eliminadas.slice(0, 10).forEach((item, i) => {
+              const titulo = (item.accion || '').substring(0, 60);
+              mensajeBorradas += `${i + 1}. ${titulo}\n   📁 ${item.proyecto} · 👤 ${item.responsable}\n\n`;
+            });
+            
+            if (deteccion.eliminadas.length > 10) {
+              mensajeBorradas += `... y ${deteccion.eliminadas.length - 10} más\n\n`;
+            }
+            
+            mensajeBorradas += `¿Eliminar también estas acciones del Dashboard?\n\n`;
+            mensajeBorradas += `✅ OK = Eliminar del Dashboard\n`;
+            mensajeBorradas += `❌ Cancelar = Conservar (se volverán a crear en Tasks al sincronizar)`;
+            
+            const confirmarBorrado = confirm(mensajeBorradas);
+            
+            if (confirmarBorrado) {
+              let eliminadasOk = 0;
+              for (const item of deteccion.eliminadas) {
+                const idx = acciones.findIndex(a => String(a.id) === String(item.accionId));
+                if (idx !== -1) {
+                  delete accionToTaskMap[item.accionId];
+                  acciones.splice(idx, 1);
+                  eliminadasOk++;
+                }
+              }
+              
+              guardarDatos();
+              renderProyectos();
+              renderAcciones();
+              renderDashboard();
+              renderResponsables();
+              renderAnalisis();
+              actualizarFiltros();
+              actualizarBadgeVencidas();
+              
+              alert(`✅ ${eliminadasOk} acción(es) eliminada(s) del Dashboard.\n\nContinuando con sincronización normal...`);
+            } else {
+              console.log('Usuario eligió conservar las acciones huérfanas');
+            }
+          }
+        } catch (errorDeteccion) {
+          console.warn('⚠️ No se pudo detectar borradas (continuando sync normal):', errorDeteccion);
+        }
+            // v4.6 PASO 1: Auto-reparar fechas rotas (formato Excel serial -> ISO)
+            const reparacion = repararFechasAcciones();
+            
+            // v4.6 PASO 2: incluir TODAS las acciones no completadas, con o sin fecha.
+            const accionesParaSync = acciones.filter(a => a.estatus !== 'Completada');
+            
+            if (accionesParaSync.length === 0) {
+                alert('ℹ️ No hay acciones pendientes para sincronizar');
+                return;
+            }
+            
+            const nuevas = accionesParaSync.filter(a => !obtenerRefDeAccion(a.id)).length;
+            const updates = accionesParaSync.length - nuevas;
+            const conFecha = accionesParaSync.filter(a => a.fechaCompromiso).length;
+            const sinFecha = accionesParaSync.length - conFecha;
+            
+            let mensajeInicial = `🔄 Sincronizar ${accionesParaSync.length} acciones a Google Tasks\n\n`;
+            
+            if (reparacion.reparadas > 0 || reparacion.vaciadas > 0) {
+                mensajeInicial += `🔧 Auto-reparación de fechas:\n`;
+                if (reparacion.reparadas > 0) mensajeInicial += `   ✓ ${reparacion.reparadas} fechas convertidas de Excel a formato correcto\n`;
+                if (reparacion.vaciadas > 0) mensajeInicial += `   ✓ ${reparacion.vaciadas} fechas inválidas vaciadas (van sin due date)\n`;
+                mensajeInicial += `\n`;
+            }
+            
+            mensajeInicial += `📋 Total: ${accionesParaSync.length}\n`;
+            mensajeInicial += `   📅 Con fecha: ${conFecha}\n`;
+            mensajeInicial += `   📋 Sin fecha (van sin due date): ${sinFecha}\n\n`;
+            mensajeInicial += `🆕 Nuevas (se crearán): ${nuevas}\n`;
+            mensajeInicial += `🔄 Existentes (se actualizarán): ${updates}\n\n`;
+            mensajeInicial += `Tiempo estimado: ${Math.ceil(accionesParaSync.length * 1.2 / 60)} minuto(s)\n\n`;
+            mensajeInicial += `¿Continuar?`;
+            
+            const confirmacion = confirm(mensajeInicial);
+            
+            if (!confirmacion) return;
+            
+            syncEnProgreso = true;
+            const btnSync = document.getElementById('btnSyncTasks');
+            const btnSyncText = document.getElementById('btnSyncTasksText');
+            const textoOriginal = btnSyncText.textContent;
+            btnSync.disabled = true;
+            
+            let exitos = 0;
+            let errores = 0;
+            let creadasNuevas = 0;
+            let actualizadas = 0;
+            const total = accionesParaSync.length;
+            
+            try {
+                for (let i = 0; i < accionesParaSync.length; i++) {
+                    const accion = accionesParaSync[i];
+                    btnSyncText.textContent = `Sincronizando ${i + 1}/${total}...`;
+                    
+                    try {
+                        const refExistente = obtenerRefDeAccion(accion.id);
+                        let esUpdate = !!(refExistente && refExistente.taskId);
+                        
+                        let payload = {
+                            action: esUpdate ? 'update' : 'create',
+                            ...construirPayloadAccion(accion),
+                            taskId: esUpdate ? refExistente.taskId : null,
+                            listaId: esUpdate ? refExistente.listaId : null
+                        };
+                        
+                        let response = await fetch(APPS_SCRIPT_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            redirect: 'follow',
+                            body: JSON.stringify(payload)
+                        });
+                        
+                        let resultado = await response.json();
+                        
+                        // Recuperación: update falla con "Missing task list"
+                        if (!resultado.success && esUpdate && resultado.error && /Missing task list|task list ID/i.test(resultado.error)) {
+                            console.log(`🔁 Acción ${accion.id}: taskId huérfano, reintentando como create...`);
+                            delete accionToTaskMap[accion.id];
+                            
+                            payload = {
+                                action: 'create',
+                                ...construirPayloadAccion(accion),
+                                taskId: null,
+                                listaId: null
+                            };
+                            
+                            response = await fetch(APPS_SCRIPT_URL, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                                redirect: 'follow',
+                                body: JSON.stringify(payload)
+                            });
+                            
+                            resultado = await response.json();
+                        }
+                        
+                        if (resultado.success && resultado.taskId) {
+                            // CRÍTICO v4.7: Detectar si el backend creó una task nueva en lugar de actualizar
+                            // Si esUpdate y el taskId recibido es DIFERENTE al enviado = backend creó duplicado
+                            const taskIdEnviado = esUpdate ? refExistente.taskId : null;
+                            const taskIdRecibido = resultado.taskId;
+                            const backendCreoNueva = esUpdate && taskIdEnviado !== taskIdRecibido;
+                            
+                            if (backendCreoNueva) {
+                                console.warn(`⚠️ Acción ${accion.id}: Backend creó task NUEVA en lugar de actualizar. taskId viejo: ${taskIdEnviado}, taskId nuevo: ${taskIdRecibido}. Actualizando ref local.`);
+                            }
+                            
+                            // SIEMPRE guardar el taskId+listaId que devuelve el backend
+                            // (es la fuente de verdad real de Google Tasks)
+                            guardarRefDeAccion(accion.id, resultado.taskId, resultado.listaId);
+                            
+                            exitos++;
+                            if (esUpdate && !backendCreoNueva) actualizadas++;
+                            else creadasNuevas++;
+                            
+                            console.log(`✅ ${i + 1}/${total} OK - Acción ${accion.id} -> Task ${resultado.taskId} (${esUpdate && !backendCreoNueva ? 'actualizada' : 'creada'})`);
+                        } else {
+                            errores++;
+                            console.warn(`❌ ${i + 1}/${total} falló - Acción ${accion.id}:`, resultado.error || 'sin detalle (backend devolvió success:false sin error)');
+                        }
+                    } catch (eAccion) {
+                        errores++;
+                        console.warn(`❌ ${i + 1}/${total} error de red - Acción ${accion.id}:`, eAccion.message);
+                    }
+                    
+                    // Guardado parcial cada 5 acciones
+                    if (i % 5 === 0) guardarDatos();
+                }
+                
+                guardarDatos();
+                
+                let mensaje = `✅ Sincronización completada\n\n`;
+                mensaje += `📋 Total procesadas: ${total}\n`;
+                mensaje += `✅ Exitosas: ${exitos}\n`;
+                if (creadasNuevas > 0) mensaje += `🆕 Creadas nuevas: ${creadasNuevas}\n`;
+                if (actualizadas > 0) mensaje += `🔄 Actualizadas: ${actualizadas}\n`;
+                if (errores > 0) mensaje += `❌ Con error: ${errores}\n`;
+                mensaje += `\n💾 IDs sincronizados en total: ${Object.keys(accionToTaskMap).length}`;
+                mensaje += `\n\nAbre Google Tasks para ver los resultados.`;
+                alert(mensaje);
+                
+            } catch (error) {
+                console.error('Error sync Tasks:', error);
+                guardarDatos();
+                alert('❌ Error al sincronizar:\n' + error.message + `\n\nProgreso parcial guardado: ${exitos} exitosas.`);
+            } finally {
+                syncEnProgreso = false;
+                btnSyncText.textContent = textoOriginal;
+                btnSync.disabled = false;
+            }
+        }
+        
+        /**
+         * SYNC INDIVIDUAL - Crea o actualiza UNA task cuando se guarda una acción.
+         * BLINDADO ANTI-DUPLICACIÓN: 
+         * 1. Lock por acción para evitar dobles clicks
+         * 2. Si ya hay taskId en el map, manda 'update' (no 'create')
+         * 3. Captura el taskId de la respuesta y lo guarda inmediatamente
+         */
+        async function syncAccionIndividual(accion) {
+            // v4.6: ya no requiere fecha. Las acciones sin fecha también se sincronizan.
+            if (!APPS_SCRIPT_URL) return;
+            if (accion.estatus === 'Completada') return; // Las completadas no se sincronizan
+            
+            // Lock por acción individual
+            if (syncLocksIndividuales.has(accion.id)) {
+                console.log('Sync ya en curso para acción', accion.id);
+                return;
+            }
+            syncLocksIndividuales.add(accion.id);
+            
+            try {
+                // Extraer IDs existentes (compatible con formato viejo string y nuevo objeto)
+                const refExistente = obtenerRefDeAccion(accion.id);
+                const esUpdate = !!(refExistente && refExistente.taskId);
+                
+                const payload = {
+                    action: esUpdate ? 'update' : 'create',
+                    ...construirPayloadAccion(accion),
+                    taskId: esUpdate ? refExistente.taskId : null,
+                    listaId: esUpdate ? refExistente.listaId : null
+                };
+                
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    redirect: 'follow',
+                    body: JSON.stringify(payload)
+                });
+                
+                const resultado = await response.json();
+                
+                if (resultado.success && resultado.taskId) {
+                    // v4.7: Detectar si backend creó task nueva en lugar de actualizar
+                    const taskIdEnviado = esUpdate ? refExistente.taskId : null;
+                    const backendCreoNueva = esUpdate && taskIdEnviado !== resultado.taskId;
+                    if (backendCreoNueva) {
+                        console.warn(`⚠️ Acción ${accion.id}: Backend creó task NUEVA (${resultado.taskId}) en lugar de actualizar (${taskIdEnviado}). Ref local actualizada.`);
+                    }
+                    // SIEMPRE guardar el taskId+listaId que devuelve el backend (fuente de verdad)
+                    guardarRefDeAccion(accion.id, resultado.taskId, resultado.listaId || (refExistente && refExistente.listaId));
+                    guardarDatos();
+                    console.log(`✅ Sync ${esUpdate && !backendCreoNueva ? 'update' : 'create'} OK - Acción ${accion.id} -> Task ${resultado.taskId}`);
+                } else if (!resultado.success) {
+                    console.warn(`❌ Sync ${esUpdate ? 'update' : 'create'} falló:`, resultado.error || 'sin detalle');
+                    
+                    // RECUPERACIÓN: Si el update falla por "Missing task list ID",
+                    // significa que tenemos un taskId huérfano. Lo borramos del mapa
+                    // y reintentamos como create para no perder la sincronización.
+                    if (esUpdate && resultado.error && /Missing task list|task list ID/i.test(resultado.error)) {
+                        console.log('🔁 Detectado taskId huérfano, reintentando como create...');
+                        delete accionToTaskMap[accion.id];
+                        guardarDatos();
+                        syncLocksIndividuales.delete(accion.id);
+                        return syncAccionIndividual(accion); // Reintento limpio
+                    }
+                }
+            } catch (error) {
+                console.warn('Auto-sync error (no crítico):', error.message);
+            } finally {
+                syncLocksIndividuales.delete(accion.id);
+            }
+        }
+        
+        /**
+         * Eliminar la task remota de Google Tasks cuando se borra una acción local.
+         */
+        async function eliminarTaskRemoto(accionId) {
+            const ref = obtenerRefDeAccion(accionId);
+            if (!ref || !ref.taskId) return;
+            
+            try {
+                const payload = {
+                    action: 'delete',
+                    taskId: ref.taskId,
+                    listaId: ref.listaId || null,
+                    accionId: accionId
+                };
+                
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    redirect: 'follow',
+                    body: JSON.stringify(payload)
+                });
+                
+                delete accionToTaskMap[accionId];
+                guardarDatos();
+            } catch (error) {
+                console.warn('Eliminación remota falló:', error.message);
+            }
+        }
+        
+        /**
+         * RESET SYNC MAP - Limpia el mapa local de sincronización.
+         * Usar SOLO después de borrar manualmente las listas en Google Tasks,
+         * para que el siguiente sync vuelva a crear todo desde cero.
+         */
+        function resetSyncMap() {
+            const totalActual = Object.keys(accionToTaskMap).length;
+            const mensaje = `⚠️ Reset Sync Map\n\n` +
+                `Esto borra el mapa local de IDs (accionId -> taskId).\n` +
+                `Actualmente tiene ${totalActual} mapeos.\n\n` +
+                `USAR SOLO si ya borraste las listas duplicadas en Google Tasks.\n` +
+                `El próximo sync creará todo desde cero.\n\n` +
+                `¿Continuar?`;
+            
+            if (!confirm(mensaje)) return;
+            
+            accionToTaskMap = {};
+            localStorage.removeItem('ccAccionToTaskMap');
+            guardarDatos();
+            
+            alert('✅ Sync Map reseteado. El próximo Sync creará todo limpio.');
+        }
+
+        // ============================================
+        // CENTRO DE MANDO v5.0 - LÓGICA
+        // ============================================
+
+        function renderComando() {
+            actualizarFechaComando();
+            renderAccionDelDia();
+            renderCuadranteScore();
+            renderCuadranteHoy();
+            renderCuadranteMomentum();
+            renderCuadranteAlertas();
+            actualizarBadgeVencidasComando();
+        }
+
+        function actualizarFechaComando() {
+            const dias = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+            const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+            const hoy = new Date();
+            const fechaStr = `${dias[hoy.getDay()]} ${hoy.getDate()} de ${meses[hoy.getMonth()]} ${hoy.getFullYear()}`;
+            const elFecha = document.getElementById('comandoFecha');
+            const elHoyFecha = document.getElementById('cuadranteHoyFecha');
+            if (elFecha) elFecha.textContent = fechaStr;
+            if (elHoyFecha) elHoyFecha.textContent = `Tu día — ${fechaStr}`;
+        }
+
+        function actualizarBadgeVencidasComando() {
+            const { vencidas } = calcularAlarmas();
+            const badge = document.getElementById('badgeVencidasComando');
+            if (!badge) return;
+            if (vencidas.length > 0) {
+                badge.textContent = vencidas.length;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // ===== ACCIÓN DEL DÍA =====
+        function calcularAccionDelDia() {
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            const candidatas = acciones.filter(a => 
+                a.estatus !== 'Completada' && 
+                a.fechaCompromiso &&
+                a.estatus !== 'Pausada'
+            );
+            if (candidatas.length === 0) return null;
+            const conScore = candidatas.map(a => {
+                const fecha = new Date(formatearFecha(a.fechaCompromiso));
+                const diasVencido = Math.ceil((hoy - fecha) / (1000*60*60*24));
+                let score = 0;
+                if (diasVencido > 0) score += diasVencido * 10;
+                else if (diasVencido === 0) score += 5;
+                if (a.prioridad === 'Alta') score += 20;
+                else if (a.prioridad === 'Media') score += 5;
+                if (a.estatus === 'Bloqueada') score += 15;
+                if (a.estatus === 'Retrasada') score += 10;
+                return { accion: a, score, diasVencido };
+            });
+            conScore.sort((a, b) => b.score - a.score);
+            return conScore[0];
+        }
+
+        function renderAccionDelDia() {
+            const banner = document.getElementById('accionDelDiaBanner');
+            if (!banner) return;
+            const top = calcularAccionDelDia();
+            if (!top) {
+                banner.innerHTML = `
+                    <div class="accion-del-dia empty">
+                        <div class="accion-del-dia-icon">✨</div>
+                        <div class="accion-del-dia-content">
+                            <div class="accion-del-dia-label">Sin acciones críticas</div>
+                            <div class="accion-del-dia-titulo">Todo está bajo control</div>
+                            <div class="accion-del-dia-meta">No tienes acciones vencidas o de alta prioridad pendientes</div>
+                        </div>
+                    </div>`;
+                return;
+            }
+            const a = top.accion;
+            const proyecto = proyectos.find(p => p.id === a.proyectoId);
+            const meta = [];
+            if (top.diasVencido > 0) meta.push(`Vencida hace ${top.diasVencido} día${top.diasVencido > 1 ? 's' : ''}`);
+            else if (top.diasVencido === 0) meta.push('Vence HOY');
+            if (a.prioridad) meta.push(`Prioridad ${a.prioridad}`);
+            if (proyecto) meta.push(proyecto.nombre);
+            if (a.responsable) meta.push(`→ ${a.responsable}`);
+            banner.innerHTML = `
+                <div class="accion-del-dia" onclick="abrirModalAccion(${a.id})" style="cursor: pointer;">
+                    <div class="accion-del-dia-icon">🎯</div>
+                    <div class="accion-del-dia-content">
+                        <div class="accion-del-dia-label">La acción del día</div>
+                        <div class="accion-del-dia-titulo">${(a.accionEjecutiva || 'Sin descripción').substring(0, 110)}${(a.accionEjecutiva || '').length > 110 ? '...' : ''}</div>
+                        <div class="accion-del-dia-meta">${meta.join(' · ')}</div>
+                    </div>
+                </div>`;
+        }
+
+        // ===== CUADRANTE 1: SCORE =====
+        function renderCuadranteScore() {
+            const cont = document.getElementById('cuadranteScore');
+            if (!cont) return;
+            const total = acciones.length;
+            const cumplidas = acciones.filter(a => a.estatus === 'Completada').length;
+            const enTiempo = acciones.filter(a => {
+                if (a.estatus === 'Completada') return false;
+                if (!a.fechaCompromiso) return false;
+                return new Date(formatearFecha(a.fechaCompromiso)) >= new Date();
+            }).length;
+            const vencidas = acciones.filter(a => {
+                if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
+                return new Date(formatearFecha(a.fechaCompromiso)) < new Date();
+            }).length;
+            const pct = total > 0 ? Math.round((cumplidas / total) * 100) : 0;
+            const tendencia = calcularTendenciaSemanal();
+            let tendenciaHTML = '';
+            if (tendencia.cambio > 0) {
+                tendenciaHTML = `<div class="score-tendencia">↑ +${tendencia.cambio}% vs semana pasada</div>`;
+            } else if (tendencia.cambio < 0) {
+                tendenciaHTML = `<div class="score-tendencia down">↓ ${tendencia.cambio}% vs semana pasada</div>`;
+            } else {
+                tendenciaHTML = `<div class="score-tendencia neutral">→ Sin cambio vs semana pasada</div>`;
+            }
+            cont.innerHTML = `
+                <div class="score-numeros">
+                    <span class="score-cumplidos">${cumplidas}</span>
+                    <span class="score-total">/ ${total}</span>
+                    <span class="score-pct">${pct}%</span>
+                </div>
+                <div class="score-bar">
+                    <div class="score-bar-fill" style="width: ${pct}%"></div>
+                </div>
+                <div class="score-stats">
+                    <div class="score-stat">
+                        <div class="score-stat-num green">${cumplidas}</div>
+                        <div class="score-stat-label">Cumplidos</div>
+                    </div>
+                    <div class="score-stat">
+                        <div class="score-stat-num yellow">${enTiempo}</div>
+                        <div class="score-stat-label">En tiempo</div>
+                    </div>
+                    <div class="score-stat">
+                        <div class="score-stat-num red">${vencidas}</div>
+                        <div class="score-stat-label">Vencidos</div>
+                    </div>
+                </div>
+                ${tendenciaHTML}`;
+        }
+
+        function calcularTendenciaSemanal() {
+            const hoy = new Date();
+            const haceSemana = new Date();
+            haceSemana.setDate(hoy.getDate() - 7);
+            const haceDosSemanas = new Date();
+            haceDosSemanas.setDate(hoy.getDate() - 14);
+            const completadasUltimaSemana = acciones.filter(a => {
+                if (a.estatus !== 'Completada') return false;
+                const f = new Date(a.fechaModificacion || a.fechaCreacion);
+                return f >= haceSemana && f <= hoy;
+            }).length;
+            const completadasSemanaAnterior = acciones.filter(a => {
+                if (a.estatus !== 'Completada') return false;
+                const f = new Date(a.fechaModificacion || a.fechaCreacion);
+                return f >= haceDosSemanas && f < haceSemana;
+            }).length;
+            let cambio = 0;
+            if (completadasSemanaAnterior > 0) {
+                cambio = Math.round(((completadasUltimaSemana - completadasSemanaAnterior) / completadasSemanaAnterior) * 100);
+            } else if (completadasUltimaSemana > 0) {
+                cambio = 100;
+            }
+            return { cambio, ultimaSemana: completadasUltimaSemana, semanaAnterior: completadasSemanaAnterior };
+        }
+
+        // ===== CUADRANTE 2: HOY =====
+        function renderCuadranteHoy() {
+            const cont = document.getElementById('cuadranteHoy');
+            if (!cont) return;
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            const finSemana = new Date(hoy);
+            finSemana.setDate(finSemana.getDate() + 7);
+            const vencidas = acciones.filter(a => {
+                if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
+                return new Date(formatearFecha(a.fechaCompromiso)) < hoy;
+            }).sort((a, b) => new Date(formatearFecha(a.fechaCompromiso)) - new Date(formatearFecha(b.fechaCompromiso)));
+            const venceHoy = acciones.filter(a => {
+                if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
+                const f = new Date(formatearFecha(a.fechaCompromiso));
+                return f.getTime() === hoy.getTime();
+            });
+            const venceSemana = acciones.filter(a => {
+                if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
+                const f = new Date(formatearFecha(a.fechaCompromiso));
+                return f > hoy && f <= finSemana;
+            });
+            let html = '';
+            if (vencidas.length === 0 && venceHoy.length === 0 && venceSemana.length === 0) {
+                html = `<div class="hoy-vacio">✨ No tienes pendientes urgentes</div>`;
+            } else {
+                if (vencidas.length > 0) {
+                    html += `<div class="hoy-bloque vencidas">
+                        <div class="hoy-bloque-header">🔴 ${vencidas.length} vencida${vencidas.length > 1 ? 's' : ''} — atender ya</div>`;
+                    vencidas.slice(0, 3).forEach(a => {
+                        const proy = proyectos.find(p => p.id === a.proyectoId);
+                        const titulo = (a.accionEjecutiva || 'Sin descripción').substring(0, 55);
+                        html += `<div class="hoy-item" onclick="abrirModalAccion(${a.id})" style="cursor:pointer;">• ${titulo}${a.accionEjecutiva && a.accionEjecutiva.length > 55 ? '...' : ''} ${a.responsable ? `<span style="opacity:0.7">(${a.responsable})</span>` : ''}</div>`;
+                    });
+                    if (vencidas.length > 3) html += `<div class="hoy-item" style="opacity:0.7">+ ${vencidas.length - 3} más</div>`;
+                    html += '</div>';
+                }
+                if (venceHoy.length > 0) {
+                    html += `<div class="hoy-bloque hoy">
+                        <div class="hoy-bloque-header">⏰ ${venceHoy.length} vence${venceHoy.length > 1 ? 'n' : ''} hoy</div>`;
+                    venceHoy.slice(0, 3).forEach(a => {
+                        const titulo = (a.accionEjecutiva || 'Sin descripción').substring(0, 55);
+                        html += `<div class="hoy-item" onclick="abrirModalAccion(${a.id})" style="cursor:pointer;">• ${titulo}${a.accionEjecutiva && a.accionEjecutiva.length > 55 ? '...' : ''}</div>`;
+                    });
+                    if (venceHoy.length > 3) html += `<div class="hoy-item" style="opacity:0.7">+ ${venceHoy.length - 3} más</div>`;
+                    html += '</div>';
+                }
+                if (venceSemana.length > 0) {
+                    html += `<div class="hoy-bloque semana">
+                        <div class="hoy-bloque-header">📅 Esta semana: ${venceSemana.length} más</div>
+                    </div>`;
+                }
+            }
+            cont.innerHTML = html;
+        }
+
+        // ===== CUADRANTE 3: MOMENTUM =====
+        function renderCuadranteMomentum() {
+            const cont = document.getElementById('cuadranteMomentum');
+            if (!cont) return;
+            if (proyectos.length === 0) {
+                cont.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-secondary); font-size:0.875rem;">No hay proyectos para mostrar</div>`;
+                return;
+            }
+            const datos = proyectos.map(proy => {
+                const accs = acciones.filter(a => a.proyectoId === proy.id);
+                const total = accs.length;
+                if (total === 0) return null;
+                const completadas = accs.filter(a => a.estatus === 'Completada').length;
+                const pct = Math.round((completadas / total) * 100);
+                const tendencia = calcularTendenciaProyecto(proy.id);
+                return { proy, pct, total, completadas, tendencia };
+            }).filter(d => d !== null).sort((a, b) => b.pct - a.pct);
+            let html = '';
+            datos.forEach(d => {
+                let color = 'red';
+                if (d.pct >= 70) color = 'green';
+                else if (d.pct >= 40) color = 'yellow';
+                let flecha = '→';
+                if (d.tendencia > 0) flecha = '↑';
+                else if (d.tendencia < 0) flecha = '↓';
+                html += `<div class="momentum-item" onclick="filtrarPorProyecto(${d.proy.id})">
+                    <div class="momentum-item-header">
+                        <span class="momentum-nombre">${d.proy.nombre}</span>
+                        <span class="momentum-pct ${color}">${d.pct}% ${flecha}</span>
+                    </div>
+                    <div class="momentum-bar">
+                        <div class="momentum-bar-fill ${color}" style="width: ${d.pct}%"></div>
+                    </div>
+                </div>`;
+            });
+            if (html === '') {
+                html = `<div style="text-align:center; padding:20px; color:var(--text-secondary); font-size:0.875rem;">Aún no hay acciones registradas</div>`;
+            }
+            cont.innerHTML = html;
+        }
+
+        function calcularTendenciaProyecto(proyectoId) {
+            const hoy = new Date();
+            const haceSemana = new Date();
+            haceSemana.setDate(hoy.getDate() - 7);
+            const haceDosSemanas = new Date();
+            haceDosSemanas.setDate(hoy.getDate() - 14);
+            const accsProy = acciones.filter(a => a.proyectoId === proyectoId);
+            const ultimaSemana = accsProy.filter(a => {
+                if (a.estatus !== 'Completada') return false;
+                const f = new Date(a.fechaModificacion || a.fechaCreacion);
+                return f >= haceSemana;
+            }).length;
+            const semanaAnterior = accsProy.filter(a => {
+                if (a.estatus !== 'Completada') return false;
+                const f = new Date(a.fechaModificacion || a.fechaCreacion);
+                return f >= haceDosSemanas && f < haceSemana;
+            }).length;
+            return ultimaSemana - semanaAnterior;
+        }
+
+        function filtrarPorProyecto(proyectoId) {
+            const filtroAcciones = document.getElementById('accionesProyectoFilter');
+            if (filtroAcciones) filtroAcciones.value = proyectoId;
+            showView('acciones', null);
+            if (typeof renderAcciones === 'function') renderAcciones();
+        }
+
+        // ===== CUADRANTE 4: ALERTAS IA =====
+        function renderCuadranteAlertas() {
+            const cont = document.getElementById('cuadranteAlertas');
+            if (!cont) return;
+            const alertas = generarAlertasInteligentes();
+            if (alertas.length === 0) {
+                cont.innerHTML = `<div class="sin-alertas">✨ Todo bajo control · sin alertas</div>`;
+                return;
+            }
+            let html = '';
+            alertas.slice(0, 5).forEach(a => {
+                html += `<div class="alerta-card ${a.tipo}">
+                    <div class="alerta-titulo">${a.titulo}</div>
+                    <div class="alerta-detalle">${a.detalle}</div>
+                </div>`;
+            });
+            cont.innerHTML = html;
+        }
+
+        function generarAlertasInteligentes() {
+            const alertas = [];
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            // Alerta 1: Proyectos estancados (sin avance hace +5 días)
+            proyectos.forEach(proy => {
+                const accs = acciones.filter(a => a.proyectoId === proy.id && a.estatus !== 'Completada');
+                if (accs.length === 0) return;
+                const ultimaModif = accs.reduce((max, a) => {
+                    const f = new Date(a.fechaModificacion || a.fechaCreacion);
+                    return f > max ? f : max;
+                }, new Date(0));
+                const dias = Math.floor((hoy - ultimaModif) / (1000 * 60 * 60 * 24));
+                if (dias >= 5 && dias < 365) {
+                    alertas.push({
+                        tipo: 'peligro',
+                        titulo: `${proy.nombre} estancado`,
+                        detalle: `${dias} días sin avance · escalar`,
+                        prioridad: 100 - dias
+                    });
+                }
+            });
+
+            // Alerta 2: Sobrecarga de responsables
+            const cargaPorResp = {};
+            acciones.forEach(a => {
+                if (a.estatus === 'Completada') return;
+                const r = a.responsable || 'Sin asignar';
+                cargaPorResp[r] = (cargaPorResp[r] || 0) + 1;
+            });
+            Object.entries(cargaPorResp).forEach(([resp, count]) => {
+                if (count >= 12 && resp !== 'Sin asignar') {
+                    alertas.push({
+                        tipo: 'advertencia',
+                        titulo: `Sobrecarga: ${resp}`,
+                        detalle: `${count} acciones activas · redistribuir`,
+                        prioridad: count
+                    });
+                }
+            });
+
+            // Alerta 3: Acciones huérfanas (sin responsable)
+            const huerfanas = acciones.filter(a => 
+                a.estatus !== 'Completada' && 
+                (!a.responsable || a.responsable.trim() === '' || a.responsable === 'Sin asignar')
+            );
+            if (huerfanas.length > 0) {
+                alertas.push({
+                    tipo: 'advertencia',
+                    titulo: `${huerfanas.length} acción${huerfanas.length > 1 ? 'es' : ''} sin responsable`,
+                    detalle: 'Asignar responsable directo',
+                    prioridad: huerfanas.length * 5
+                });
+            }
+
+            // Alerta 4: Predicción de proyectos en riesgo (>50% vencidas)
+            proyectos.forEach(proy => {
+                const accs = acciones.filter(a => a.proyectoId === proy.id && a.estatus !== 'Completada');
+                if (accs.length < 3) return;
+                const vencidas = accs.filter(a => {
+                    if (!a.fechaCompromiso) return false;
+                    return new Date(formatearFecha(a.fechaCompromiso)) < hoy;
+                }).length;
+                const pctVencidas = Math.round((vencidas / accs.length) * 100);
+                if (pctVencidas >= 50) {
+                    alertas.push({
+                        tipo: 'peligro',
+                        titulo: `${proy.nombre} en riesgo`,
+                        detalle: `${pctVencidas}% de acciones activas vencidas`,
+                        prioridad: pctVencidas
+                    });
+                }
+            });
+
+            // Alerta 5: Bloqueadas críticas
+            const bloqueadas = acciones.filter(a => a.estatus === 'Bloqueada');
+            if (bloqueadas.length >= 3) {
+                alertas.push({
+                    tipo: 'advertencia',
+                    titulo: `${bloqueadas.length} acciones bloqueadas`,
+                    detalle: 'Revisar dependencias y desbloquear',
+                    prioridad: bloqueadas.length * 3
+                });
+            }
+
+            // Alerta 6: Velocidad cayendo
+            const tend = calcularTendenciaSemanal();
+            if (tend.cambio < -20 && tend.semanaAnterior >= 3) {
+                alertas.push({
+                    tipo: 'peligro',
+                    titulo: 'Velocidad cayendo',
+                    detalle: `${Math.abs(tend.cambio)}% menos cierres que semana pasada`,
+                    prioridad: Math.abs(tend.cambio)
+                });
+            } else if (tend.cambio > 30 && tend.ultimaSemana >= 3) {
+                alertas.push({
+                    tipo: 'info',
+                    titulo: 'Buen ritmo',
+                    detalle: `+${tend.cambio}% más cierres que semana pasada`,
+                    prioridad: 50
+                });
+            }
+
+            // Ordenar por prioridad descendente
+            alertas.sort((a, b) => b.prioridad - a.prioridad);
+            return alertas;
+        }
+
+        // ===== MODO CEO =====
+        function activarModoCEO() {
+            document.body.classList.add('modo-ceo');
+            const docElem = document.documentElement;
+            if (docElem.requestFullscreen) docElem.requestFullscreen().catch(() => {});
+            else if (docElem.webkitRequestFullscreen) docElem.webkitRequestFullscreen();
+        }
+
+        function salirModoCEO() {
+            document.body.classList.remove('modo-ceo');
+            if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+            else if (document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.body.classList.contains('modo-ceo')) {
+                salirModoCEO();
+            }
+        });
+
+        // ===== REPORTE PDF SEMANAL =====
+        function generarReporteSemanalPDF() {
+            if (typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
+                cargarLibreriasPDF(() => generarReporteSemanalPDFInterno());
+            } else {
+                generarReporteSemanalPDFInterno();
+            }
+        }
+
+        function cargarLibreriasPDF(callback) {
+            const s1 = document.createElement('script');
+            s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+            s1.onload = () => {
+                const s2 = document.createElement('script');
+                s2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js';
+                s2.onload = callback;
+                document.body.appendChild(s2);
+            };
+            document.body.appendChild(s1);
+        }
+
+        function generarReporteSemanalPDFInterno() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                const total = acciones.length;
+                const cumplidas = acciones.filter(a => a.estatus === 'Completada').length;
+                const vencidas = acciones.filter(a => {
+                    if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
+                    return new Date(formatearFecha(a.fechaCompromiso)) < new Date();
+                }).length;
+                const pct = total > 0 ? Math.round((cumplidas / total) * 100) : 0;
+                const tend = calcularTendenciaSemanal();
+                const fechaStr = new Date().toLocaleDateString('es-MX', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+                // Header
+                doc.setFillColor(31, 41, 55);
+                doc.rect(0, 0, 210, 35, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(18);
+                doc.setFont('helvetica', 'bold');
+                doc.text('REPORTE EJECUTIVO SEMANAL', 14, 16);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Centro de Control Macros · Grupo Guía', 14, 24);
+                doc.setFontSize(9);
+                doc.text(fechaStr, 14, 30);
+
+                // Score box
+                doc.setTextColor(31, 41, 55);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.text('SCORE DE CUMPLIMIENTO', 14, 50);
+                doc.setFontSize(28);
+                doc.setTextColor(16, 185, 129);
+                doc.text(`${pct}%`, 14, 65);
+                doc.setFontSize(10);
+                doc.setTextColor(75, 85, 99);
+                doc.text(`${cumplidas} cumplidas de ${total} totales`, 14, 73);
+                let tendTexto = 'Sin cambio vs semana pasada';
+                if (tend.cambio > 0) tendTexto = `+${tend.cambio}% vs semana pasada`;
+                else if (tend.cambio < 0) tendTexto = `${tend.cambio}% vs semana pasada`;
+                doc.text(tendTexto, 14, 79);
+
+                // Stats
+                doc.setFillColor(243, 244, 246);
+                doc.rect(120, 45, 75, 40, 'F');
+                doc.setTextColor(31, 41, 55);
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'bold');
+                doc.text('RESUMEN', 124, 52);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.text(`Total acciones: ${total}`, 124, 60);
+                doc.text(`Cumplidas: ${cumplidas}`, 124, 66);
+                doc.text(`Vencidas: ${vencidas}`, 124, 72);
+                doc.text(`Bloqueadas: ${acciones.filter(a => a.estatus === 'Bloqueada').length}`, 124, 78);
+
+                // Estado por proyecto
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(31, 41, 55);
+                doc.text('AVANCE POR PROYECTO', 14, 100);
+
+                const filasProy = proyectos.map(p => {
+                    const accs = acciones.filter(a => a.proyectoId === p.id);
+                    const t = accs.length;
+                    const c = accs.filter(a => a.estatus === 'Completada').length;
+                    const pp = t > 0 ? Math.round((c / t) * 100) : 0;
+                    const v = accs.filter(a => {
+                        if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
+                        return new Date(formatearFecha(a.fechaCompromiso)) < new Date();
+                    }).length;
+                    return [p.nombre, t.toString(), c.toString(), v.toString(), pp + '%'];
+                });
+
+                doc.autoTable({
+                    startY: 105,
+                    head: [['Proyecto', 'Total', 'Cumplidas', 'Vencidas', 'Avance']],
+                    body: filasProy,
+                    theme: 'grid',
+                    headStyles: { fillColor: [31, 41, 55], textColor: [255, 255, 255], fontSize: 9 },
+                    styles: { fontSize: 9, cellPadding: 3 },
+                    columnStyles: {
+                        0: { cellWidth: 70 },
+                        1: { halign: 'center', cellWidth: 25 },
+                        2: { halign: 'center', cellWidth: 28 },
+                        3: { halign: 'center', cellWidth: 28 },
+                        4: { halign: 'center', cellWidth: 25, fontStyle: 'bold' }
+                    }
+                });
+
+                // Alertas
+                let yPos = doc.lastAutoTable.finalY + 12;
+                if (yPos > 230) { doc.addPage(); yPos = 20; }
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(31, 41, 55);
+                doc.text('ALERTAS Y RIESGOS', 14, yPos);
+                yPos += 7;
+                const alertas = generarAlertasInteligentes();
+                if (alertas.length === 0) {
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(16, 185, 129);
+                    doc.text('Sin alertas críticas en este momento', 14, yPos);
+                } else {
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'normal');
+                    alertas.slice(0, 6).forEach(a => {
+                        if (yPos > 270) { doc.addPage(); yPos = 20; }
+                        const color = a.tipo === 'peligro' ? [220, 38, 38] : a.tipo === 'advertencia' ? [234, 88, 12] : [6, 182, 212];
+                        doc.setTextColor(...color);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('• ' + a.titulo, 14, yPos);
+                        yPos += 5;
+                        doc.setTextColor(75, 85, 99);
+                        doc.setFont('helvetica', 'normal');
+                        doc.text('   ' + a.detalle, 14, yPos);
+                        yPos += 7;
+                    });
+                }
+
+                // Top 5 vencidas
+                if (yPos > 240) { doc.addPage(); yPos = 20; }
+                else yPos += 8;
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(31, 41, 55);
+                doc.text('TOP ACCIONES VENCIDAS', 14, yPos);
+                const top5Vencidas = acciones.filter(a => {
+                    if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
+                    return new Date(formatearFecha(a.fechaCompromiso)) < new Date();
+                }).sort((a, b) => new Date(formatearFecha(a.fechaCompromiso)) - new Date(formatearFecha(b.fechaCompromiso))).slice(0, 5);
+
+                if (top5Vencidas.length === 0) {
+                    yPos += 7;
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(16, 185, 129);
+                    doc.text('Sin acciones vencidas', 14, yPos);
+                } else {
+                    const filas5 = top5Vencidas.map(a => {
+                        const proy = proyectos.find(p => p.id === a.proyectoId);
+                        const dias = Math.ceil((new Date() - new Date(formatearFecha(a.fechaCompromiso))) / (1000*60*60*24));
+                        return [
+                            (a.accionEjecutiva || '').substring(0, 60),
+                            proy ? proy.nombre.substring(0, 20) : '',
+                            a.responsable || '',
+                            `-${dias}d`
+                        ];
+                    });
+                    doc.autoTable({
+                        startY: yPos + 3,
+                        head: [['Acción', 'Proyecto', 'Responsable', 'Atraso']],
+                        body: filas5,
+                        theme: 'grid',
+                        headStyles: { fillColor: [220, 38, 38], textColor: [255, 255, 255], fontSize: 9 },
+                        styles: { fontSize: 8, cellPadding: 2.5 },
+                        columnStyles: {
+                            0: { cellWidth: 90 },
+                            1: { cellWidth: 35 },
+                            2: { cellWidth: 35 },
+                            3: { halign: 'center', cellWidth: 22, fontStyle: 'bold', textColor: [220, 38, 38] }
+                        }
+                    });
+                }
+
+                // Footer
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.setTextColor(156, 163, 175);
+                    doc.text(`Página ${i} de ${pageCount}`, 105, 290, { align: 'center' });
+                    doc.text('Centro de Control Macros · Grupo Guía · Confidencial', 105, 294, { align: 'center' });
+                }
+
+                const fecha = new Date().toISOString().split('T')[0];
+                doc.save(`Reporte_Ejecutivo_${fecha}.pdf`);
+            } catch (e) {
+                console.error('Error generando PDF:', e);
+                alert('Error al generar PDF: ' + e.message);
+            }
+        }
+
+        // Hook: render Comando cuando se cambia a esa vista o cuando hay cambios
+        const _showViewOriginal = showView;
+        showView = function(viewName, event) {
+            _showViewOriginal(viewName, event);
+            if (viewName === 'comando') renderComando();
+        };
+
+        // Render inicial al cargar
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => setTimeout(renderComando, 200));
+        } else {
+            setTimeout(renderComando, 200);
         }
     </script>
 </body>
