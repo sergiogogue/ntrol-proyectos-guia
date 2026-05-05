@@ -2133,10 +2133,6 @@
                     <span>♻️</span>
                     <span>Reset Sync Map</span>
                 </button>
-                <button class="config-btn" onclick="testPullDesdeTasks()" style="background: rgba(168, 85, 247, 0.2); border-color: #a855f7;" title="Prueba detección de cambios desde Google Tasks (no modifica nada)">
-                    <span>🧪</span>
-                    <span>Test Pull</span>
-                </button>
                 <button class="config-btn" onclick="abrirConfiguracion()">
                     <span>⚙️</span>
                     <span>Configuración</span>
@@ -2612,6 +2608,28 @@
         </div>
     </div>
 
+    <!-- MODAL REVISIÓN DE CAMBIOS DESDE GOOGLE TASKS -->
+        <div id="modalRevisionCambios" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">🔄 Revisar cambios desde Google Tasks</h2>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 8px;">
+                        Se detectaron <strong id="contadorRevisionCambios">0</strong> acciones con cambios. Selecciona cuáles quieres aplicar al dashboard.
+                    </p>
+                </div>
+                <div class="modal-body">
+                    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                        <button type="button" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 12px;" onclick="document.querySelectorAll('.check-revision').forEach(c => c.checked = true);">✓ Marcar todos</button>
+                        <button type="button" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 12px;" onclick="document.querySelectorAll('.check-revision').forEach(c => c.checked = false);">✗ Desmarcar todos</button>
+                    </div>
+                    <div id="listaRevisionCambios"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCancelarRevision">Cancelar (no aplicar nada)</button>
+                    <button type="button" class="btn btn-primary" id="btnAplicarRevision">Aplicar seleccionados</button>
+                </div>
+            </div>
+        </div>
     <!-- MODAL CONFIGURACIÓN -->
     <div id="modalConfiguracion" class="modal">
         <div class="modal-content">
@@ -4883,6 +4901,44 @@ async function detectarBorradasEnGoogle() {
                 btnSyncText.textContent = textoOriginal;
                 btnSync.disabled = false;
             }
+            // ===== PULL BIDIRECCIONAL =====
+            try {
+                const resultadoPull = await pullCambiosDesdeBackend();
+
+                if (resultadoPull && resultadoPull.modificadas) {
+                    let cambiosAplicados = 0;
+                    let huerfanasImportadas = 0;
+
+                    if (resultadoPull.modificadas.length > 0) {
+                        const aprobados = await mostrarModalRevisionCambios(resultadoPull.modificadas);
+                        if (aprobados.length > 0) {
+                            cambiosAplicados = aplicarCambiosSeleccionados(aprobados);
+                        }
+                    }
+
+                    if (resultadoPull.nuevas && resultadoPull.nuevas.length > 0) {
+                        huerfanasImportadas = importarHuerfanasAutomatico(resultadoPull.nuevas);
+                    }
+
+                    if (cambiosAplicados > 0 || huerfanasImportadas > 0) {
+                        guardarDatos();
+                        renderProyectos();
+                        renderAcciones();
+                        renderDashboard();
+                        renderResponsables();
+                        renderAnalisis();
+                        actualizarFiltros();
+                        actualizarBadgeVencidas();
+
+                        let mensajeFinal = '✅ Sync completado:\n\n';
+                        if (cambiosAplicados > 0) mensajeFinal += `🔄 ${cambiosAplicados} cambios aplicados\n`;
+                        if (huerfanasImportadas > 0) mensajeFinal += `📥 ${huerfanasImportadas} acciones importadas\n`;
+                        alert(mensajeFinal);
+                    }
+                }
+            } catch (errorPull) {
+                console.warn('Pull bidireccional falló (no crítico):', errorPull.message);
+            }
         }
         
         /**
@@ -5008,21 +5064,14 @@ async function detectarBorradasEnGoogle() {
             
             alert('✅ Sync Map reseteado. El próximo Sync creará todo limpio.');
         }
+       // ==========================================
+        // SYNC BIDIRECCIONAL - Pull de cambios desde Google Tasks
         // ==========================================
-        // TEST PULL - Validación de pull_changes (FASE 1)
-        // No modifica datos. Solo muestra resultados.
-        // ==========================================
-        async function testPullDesdeTasks() {
-            if (!APPS_SCRIPT_URL) {
-                alert('❌ APPS_SCRIPT_URL no configurada');
-                return;
-            }
 
-            console.log('🧪 ===== INICIANDO TEST PULL =====');
-            console.log('Acciones en dashboard:', acciones.length);
-            console.log('Proyectos en dashboard:', proyectos.length);
-            console.log('Mapeos en syncMap:', Object.keys(accionToTaskMap).length);
-
+        /**
+         * Llama al backend pull_changes y devuelve el resultado.
+         */
+        async function pullCambiosDesdeBackend() {
             const syncMapSimple = {};
             for (const accionId in accionToTaskMap) {
                 const ref = obtenerRefDeAccion(accionId);
@@ -5045,73 +5094,144 @@ async function detectarBorradasEnGoogle() {
                 nombre: p.nombre
             }));
 
-            const payload = {
-                action: 'pull_changes',
-                syncMap: syncMapSimple,
-                dashboardSnapshot: dashboardSnapshot,
-                proyectos: proyectosSnapshot
-            };
+            const response = await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                redirect: 'follow',
+                body: JSON.stringify({
+                    action: 'pull_changes',
+                    syncMap: syncMapSimple,
+                    dashboardSnapshot: dashboardSnapshot,
+                    proyectos: proyectosSnapshot
+                })
+            });
 
-            console.log('📤 Payload enviado al backend:', payload);
+            return await response.json();
+        }
 
-            try {
-                const response = await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    redirect: 'follow',
-                    body: JSON.stringify(payload)
-                });
+        /**
+         * Importa todas las tasks huérfanas como acciones nuevas en el dashboard.
+         */
+        function importarHuerfanasAutomatico(huerfanas) {
+            let importadas = 0;
+            const ahora = new Date().toISOString();
 
-                const resultado = await response.json();
-                console.log('📥 Respuesta del backend:', resultado);
-
-                if (!resultado.modificadas) {
-                    alert('❌ Respuesta inesperada del backend.\n\nVer consola para detalles.');
+            huerfanas.forEach(h => {
+                const proyecto = proyectos.find(p => String(p.id) === String(h.proyectoId));
+                if (!proyecto) {
+                    console.warn('Huérfana ignorada (proyecto no existe):', h.titulo);
                     return;
                 }
 
-                const m = resultado.modificadas.length;
-                const n = resultado.nuevas.length;
-                const b = resultado.borradas.length;
+                const nuevaAccion = {
+                    id: Date.now() + Math.floor(Math.random() * 1000) + importadas,
+                    proyectoId: proyecto.id,
+                    tema: '',
+                    accionEjecutiva: h.titulo || '(Sin título)',
+                    responsable: '',
+                    area: '',
+                    prioridad: 'Media',
+                    estatus: h.status === 'completed' ? 'Completada' : 'No iniciado',
+                    avance: h.status === 'completed' ? 100 : 0,
+                    fechaCompromiso: h.fechaCompromiso || '',
+                    observaciones: h.notas || '',
+                    tipo: 'Estratégica',
+                    fechaCreacion: ahora,
+                    fechaModificacion: ahora
+                };
 
-                console.log('✅ Modificadas detectadas:', m);
-                console.log('✅ Nuevas (huérfanas) detectadas:', n);
-                console.log('✅ Borradas detectadas:', b);
+                acciones.push(nuevaAccion);
 
-                if (resultado.modificadas.length > 0) {
-                    console.log('--- DETALLE MODIFICADAS ---');
-                    resultado.modificadas.forEach((mod, i) => {
-                        console.log(`${i + 1}.`, mod);
+                accionToTaskMap[nuevaAccion.id] = {
+                    taskId: h.taskId,
+                    listaId: h.listaId
+                };
+
+                importadas++;
+            });
+
+            return importadas;
+        }
+
+        /**
+         * Muestra el modal de revisión de cambios con checkboxes.
+         */
+        function mostrarModalRevisionCambios(modificadas) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('modalRevisionCambios');
+                const lista = document.getElementById('listaRevisionCambios');
+
+                let html = '';
+                modificadas.forEach((mod, idx) => {
+                    const cambiosTexto = Object.entries(mod.cambios).map(([campo, valor]) => {
+                        return `<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;"><strong>${campo}:</strong> "${valor}"</div>`;
+                    }).join('');
+
+                    html += `
+                        <div style="background: var(--gray-50); padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid var(--primary);">
+                            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" class="check-revision" data-idx="${idx}" checked style="margin-top: 4px; width: 18px; height: 18px; cursor: pointer;">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--text-primary); font-size: 0.875rem;">${mod.tituloAccion || '(Sin título)'}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">${mod.proyecto || ''}</div>
+                                    ${cambiosTexto}
+                                </div>
+                            </label>
+                        </div>
+                    `;
+                });
+
+                lista.innerHTML = html;
+                document.getElementById('contadorRevisionCambios').textContent = modificadas.length;
+                modal.classList.add('active');
+
+                document.getElementById('btnAplicarRevision').onclick = () => {
+                    const seleccionados = [];
+                    document.querySelectorAll('.check-revision:checked').forEach(check => {
+                        const idx = parseInt(check.getAttribute('data-idx'));
+                        seleccionados.push(modificadas[idx]);
                     });
-                }
+                    modal.classList.remove('active');
+                    resolve(seleccionados);
+                };
 
-                if (resultado.nuevas.length > 0) {
-                    console.log('--- DETALLE NUEVAS (primeras 5) ---');
-                    resultado.nuevas.slice(0, 5).forEach((nu, i) => {
-                        console.log(`${i + 1}.`, nu);
-                    });
-                }
+                document.getElementById('btnCancelarRevision').onclick = () => {
+                    modal.classList.remove('active');
+                    resolve([]);
+                };
+            });
+        }
 
-                if (resultado.borradas.length > 0) {
-                    console.log('--- DETALLE BORRADAS ---');
-                    resultado.borradas.forEach((bo, i) => {
-                        console.log(`${i + 1}.`, bo);
-                    });
-                }
+        /**
+         * Aplica los cambios seleccionados a las acciones del dashboard.
+         */
+        function aplicarCambiosSeleccionados(cambiosAprobados) {
+            let aplicados = 0;
 
-                let mensaje = `🧪 TEST PULL - Resultados:\n\n`;
-                mensaje += `🔄 Modificadas: ${m}\n`;
-                mensaje += `📥 Nuevas (huérfanas): ${n}\n`;
-                mensaje += `🗑️ Borradas: ${b}\n\n`;
-                mensaje += `Ver consola (F12) para detalles completos.\n\n`;
-                mensaje += `⚠️ Esto es una prueba. NO se modificó nada.`;
+            cambiosAprobados.forEach(cambio => {
+                const idx = acciones.findIndex(a => String(a.id) === String(cambio.accionId));
+                if (idx === -1) return;
 
-                alert(mensaje);
+                const accion = acciones[idx];
 
-            } catch (error) {
-                console.error('❌ Error en testPullDesdeTasks:', error);
-                alert('❌ Error en test:\n' + error.message);
-            }
+                Object.entries(cambio.cambios).forEach(([campo, valor]) => {
+                    if (campo === 'accionEjecutiva' && valor) {
+                        accion.accionEjecutiva = valor;
+                    } else if (campo === 'estatus' && valor) {
+                        accion.estatus = valor;
+                    } else if (campo === 'avance' && typeof valor === 'number') {
+                        accion.avance = valor;
+                    } else if (campo === 'fechaCompromiso') {
+                        accion.fechaCompromiso = valor || '';
+                    }
+                });
+
+                accion.fechaModificacion = new Date().toISOString();
+                acciones[idx] = accion;
+                aplicados++;
+            });
+
+            return aplicados;
         }
 
         // ============================================
