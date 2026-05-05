@@ -2133,6 +2133,10 @@
                     <span>♻️</span>
                     <span>Reset Sync Map</span>
                 </button>
+                <button class="config-btn" onclick="testPullDesdeTasks()" style="background: rgba(168, 85, 247, 0.2); border-color: #a855f7;" title="Prueba detección de cambios desde Google Tasks (no modifica nada)">
+                    <span>🧪</span>
+                    <span>Test Pull</span>
+                </button>
                 <button class="config-btn" onclick="abrirConfiguracion()">
                     <span>⚙️</span>
                     <span>Configuración</span>
@@ -5003,6 +5007,111 @@ async function detectarBorradasEnGoogle() {
             guardarDatos();
             
             alert('✅ Sync Map reseteado. El próximo Sync creará todo limpio.');
+        }
+        // ==========================================
+        // TEST PULL - Validación de pull_changes (FASE 1)
+        // No modifica datos. Solo muestra resultados.
+        // ==========================================
+        async function testPullDesdeTasks() {
+            if (!APPS_SCRIPT_URL) {
+                alert('❌ APPS_SCRIPT_URL no configurada');
+                return;
+            }
+
+            console.log('🧪 ===== INICIANDO TEST PULL =====');
+            console.log('Acciones en dashboard:', acciones.length);
+            console.log('Proyectos en dashboard:', proyectos.length);
+            console.log('Mapeos en syncMap:', Object.keys(accionToTaskMap).length);
+
+            const syncMapSimple = {};
+            for (const accionId in accionToTaskMap) {
+                const ref = obtenerRefDeAccion(accionId);
+                if (ref && ref.taskId) {
+                    syncMapSimple[accionId] = ref.taskId;
+                }
+            }
+
+            const dashboardSnapshot = acciones.map(a => ({
+                id: a.id,
+                accionEjecutiva: a.accionEjecutiva || '',
+                estatus: a.estatus || 'No iniciado',
+                avance: a.avance || 0,
+                fechaCompromiso: a.fechaCompromiso || null,
+                proyectoId: a.proyectoId
+            }));
+
+            const proyectosSnapshot = proyectos.map(p => ({
+                id: p.id,
+                nombre: p.nombre
+            }));
+
+            const payload = {
+                action: 'pull_changes',
+                syncMap: syncMapSimple,
+                dashboardSnapshot: dashboardSnapshot,
+                proyectos: proyectosSnapshot
+            };
+
+            console.log('📤 Payload enviado al backend:', payload);
+
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    redirect: 'follow',
+                    body: JSON.stringify(payload)
+                });
+
+                const resultado = await response.json();
+                console.log('📥 Respuesta del backend:', resultado);
+
+                if (!resultado.modificadas) {
+                    alert('❌ Respuesta inesperada del backend.\n\nVer consola para detalles.');
+                    return;
+                }
+
+                const m = resultado.modificadas.length;
+                const n = resultado.nuevas.length;
+                const b = resultado.borradas.length;
+
+                console.log('✅ Modificadas detectadas:', m);
+                console.log('✅ Nuevas (huérfanas) detectadas:', n);
+                console.log('✅ Borradas detectadas:', b);
+
+                if (resultado.modificadas.length > 0) {
+                    console.log('--- DETALLE MODIFICADAS ---');
+                    resultado.modificadas.forEach((mod, i) => {
+                        console.log(`${i + 1}.`, mod);
+                    });
+                }
+
+                if (resultado.nuevas.length > 0) {
+                    console.log('--- DETALLE NUEVAS (primeras 5) ---');
+                    resultado.nuevas.slice(0, 5).forEach((nu, i) => {
+                        console.log(`${i + 1}.`, nu);
+                    });
+                }
+
+                if (resultado.borradas.length > 0) {
+                    console.log('--- DETALLE BORRADAS ---');
+                    resultado.borradas.forEach((bo, i) => {
+                        console.log(`${i + 1}.`, bo);
+                    });
+                }
+
+                let mensaje = `🧪 TEST PULL - Resultados:\n\n`;
+                mensaje += `🔄 Modificadas: ${m}\n`;
+                mensaje += `📥 Nuevas (huérfanas): ${n}\n`;
+                mensaje += `🗑️ Borradas: ${b}\n\n`;
+                mensaje += `Ver consola (F12) para detalles completos.\n\n`;
+                mensaje += `⚠️ Esto es una prueba. NO se modificó nada.`;
+
+                alert(mensaje);
+
+            } catch (error) {
+                console.error('❌ Error en testPullDesdeTasks:', error);
+                alert('❌ Error en test:\n' + error.message);
+            }
         }
 
         // ============================================
