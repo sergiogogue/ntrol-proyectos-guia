@@ -2059,6 +2059,69 @@
             }
         }
 
+        /* ===== MODO REUNIÓN ===== */
+        .reunion-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #0d1117;
+            z-index: 2000;
+            overflow-y: auto;
+        }
+        .reunion-overlay.active { display: block; }
+        .reunion-header {
+            background: #1a1d29;
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #f5a623;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .reunion-header-left { display: flex; align-items: center; gap: 20px; }
+        .reunion-logo-text { font-size: 1rem; font-weight: 800; color: white; letter-spacing: 1px; }
+        .reunion-fecha { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+        .reunion-stats-header { display: flex; gap: 16px; align-items: center; }
+        .reunion-stat-pill { display: flex; flex-direction: column; align-items: center; padding: 5px 14px; border-radius: 8px; background: rgba(255,255,255,0.08); }
+        .reunion-stat-pill .val { font-size: 1.125rem; font-weight: 700; }
+        .reunion-stat-pill .lbl { font-size: 0.6rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; }
+        .reunion-close-btn { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.4); color: white; padding: 7px 18px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s; }
+        .reunion-close-btn:hover { background: rgba(239,68,68,0.4); }
+        .reunion-body { padding: 20px 28px 80px; }
+        .reunion-proyecto-block { margin-bottom: 24px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+        .reunion-proyecto-header { background: #1e2433; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .reunion-proyecto-nombre { font-size: 0.95rem; font-weight: 700; color: white; }
+        .reunion-proyecto-stats { display: flex; gap: 14px; align-items: center; }
+        .reunion-proy-stat { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+        .reunion-proy-stat span { font-weight: 700; color: white; }
+        .reunion-responsables-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1px; background: rgba(255,255,255,0.05); }
+        .reunion-resp-card { background: #131720; padding: 14px 18px; transition: background 0.2s; }
+        .reunion-resp-card:hover { background: #1a1f2e; }
+        .reunion-resp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .reunion-resp-nombre { font-size: 0.875rem; font-weight: 700; color: white; display: flex; align-items: center; gap: 8px; }
+        .semaforo { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .semaforo.verde { background: #10b981; box-shadow: 0 0 6px #10b981; }
+        .semaforo.amarillo { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
+        .semaforo.rojo { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+        .semaforo.gris { background: #6b7280; }
+        .reunion-resp-score { font-size: 0.7rem; color: rgba(255,255,255,0.4); }
+        .reunion-accion-row { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .reunion-accion-row:last-child { border-bottom: none; }
+        .reunion-accion-estado { flex-shrink: 0; width: 7px; height: 7px; border-radius: 2px; margin-top: 4px; }
+        .reunion-accion-texto { flex: 1; font-size: 0.775rem; color: rgba(255,255,255,0.8); line-height: 1.4; }
+        .reunion-accion-texto.vencida { color: #fca5a5; }
+        .reunion-accion-meta { flex-shrink: 0; font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+        .reunion-accion-meta.vencida { background: rgba(239,68,68,0.2); color: #fca5a5; }
+        .reunion-accion-meta.proxima { background: rgba(245,158,11,0.2); color: #fcd34d; }
+        .reunion-accion-meta.ok { background: rgba(16,185,129,0.1); color: #6ee7b7; }
+        .reunion-resp-no-acciones { font-size: 0.775rem; color: rgba(255,255,255,0.3); font-style: italic; padding: 6px 0; }
+        .reunion-nav-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: rgba(26,29,41,0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; padding: 8px 20px; display: flex; gap: 12px; align-items: center; backdrop-filter: blur(10px); z-index: 2010; }
+        .reunion-nav-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 7px 18px; border-radius: 20px; cursor: pointer; font-size: 0.775rem; font-weight: 600; transition: all 0.2s; }
+        .reunion-nav-btn:hover { background: rgba(255,255,255,0.2); }
+        .reunion-proyecto-idx { font-size: 0.775rem; color: rgba(255,255,255,0.5); min-width: 50px; text-align: center; }
+
     </style>
 </head>
 <body>
