@@ -2118,6 +2118,10 @@
                     <span class="nav-icon">🎯</span>
                     <span>Análisis</span>
                 </div>
+                <div class="nav-item" onclick="abrirModoReunion()" data-view="reunion">
+                    <span class="nav-icon">🖥️</span>
+                    <span>Modo Reunión</span>
+                </div>
             </nav>
 
             <div class="sidebar-footer">
@@ -2147,7 +2151,7 @@
                 </button>
                 <input type="file" id="importBackupFile" accept=".json" style="display: none;" onchange="importarBackupCompleto(event)">
                 <button class="btn btn-danger" onclick="resetData()" style="width: 100%; margin-bottom: 12px;">🗑 Reset Data</button>
-                <div class="version-text">v5.1 + PDF Export</div>
+                <div class="version-text">v5.2 + Reunión</div>
             </div>
         </div>
 
@@ -2453,6 +2457,20 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- MODO REUNIÓN OVERLAY -->
+    <div id="modoReunionOverlay" class="reunion-overlay">
+        <div class="reunion-header">
+            <div class="reunion-header-left">
+                <div class="reunion-logo-text">GRUPO GUÍA — CENTRO DE CONTROL</div>
+                <div class="reunion-fecha" id="reunionFecha"></div>
+            </div>
+            <div class="reunion-stats-header" id="reunionStatsHeader"></div>
+            <button class="reunion-close-btn" onclick="cerrarModoReunion()">✕ Cerrar</button>
+        </div>
+        <div class="reunion-body" id="reunionBody"></div>
+        <div class="reunion-nav-bar" id="reunionNavBar"></div>
     </div>
 
     <!-- MODAL PROYECTO -->
@@ -3520,7 +3538,10 @@
                             <div>
                                 <div class="card-title">👤 ${resp}</div>
                             </div>
-                            <button class="btn-icon" onclick="event.stopPropagation(); exportarPDFResponsable('${resp.replace(/'/g, "\\'")}', ${filtroProyecto || 'null'})" title="Exportar PDF">📄</button>
+                            <div style="display:flex;gap:4px">
+                                <button class="btn-icon" onclick="event.stopPropagation(); exportarBriefingResponsable('${resp.replace(/'/g, "\\'")}', ${filtroProyecto || 'null'})" title="Briefing 1:1">📋</button>
+                                <button class="btn-icon" onclick="event.stopPropagation(); exportarPDFResponsable('${resp.replace(/'/g, "\\'")}', ${filtroProyecto || 'null'})" title="PDF Pendientes">📄</button>
+                            </div>
                         </div>
                         <div class="card-stats">
                             <div class="stat">
@@ -4667,6 +4688,412 @@
                 const fecha = new Date().toISOString().split('T')[0];
                 const nombreResp = responsable.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
                 doc.save(`Acciones_${nombreResp}_${fecha}.pdf`);
+            });
+        }
+
+
+        // ==========================================
+        // MODO REUNIÓN
+        // ==========================================
+
+        function abrirModoReunion() {
+            const overlay = document.getElementById('modoReunionOverlay');
+            overlay.classList.add('active');
+            renderModoReunion();
+            document.body.style.overflow = 'hidden';
+
+            // Keyboard navigation
+            document.addEventListener('keydown', reunionKeyHandler);
+        }
+
+        function cerrarModoReunion() {
+            document.getElementById('modoReunionOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+            document.removeEventListener('keydown', reunionKeyHandler);
+        }
+
+        let reunionProyectoActual = 0;
+
+        function reunionKeyHandler(e) {
+            if (e.key === 'Escape') cerrarModoReunion();
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navegarReunion(1);
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') navegarReunion(-1);
+        }
+
+        function navegarReunion(dir) {
+            const bloques = document.querySelectorAll('.reunion-proyecto-block');
+            if (!bloques.length) return;
+            reunionProyectoActual = Math.max(0, Math.min(bloques.length - 1, reunionProyectoActual + dir));
+            bloques[reunionProyectoActual].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            actualizarNavReunion(bloques.length);
+        }
+
+        function actualizarNavReunion(total) {
+            const bar = document.getElementById('reunionNavBar');
+            const proysFiltrados = proyectos;
+            bar.innerHTML = `
+                <button class="reunion-nav-btn" onclick="navegarReunion(-1)">◀ Anterior</button>
+                <div class="reunion-proyecto-idx">${reunionProyectoActual + 1} / ${total}</div>
+                <button class="reunion-nav-btn" onclick="navegarReunion(1)">Siguiente ▶</button>
+                <button class="reunion-nav-btn" style="margin-left:16px;background:rgba(245,158,11,0.2)" onclick="exportarPDFReunion()">📄 PDF Reunión</button>
+            `;
+        }
+
+        function calcularSemaforo(accs) {
+            const activas = accs.filter(a => a.estatus !== 'Completada');
+            if (activas.length === 0) return 'gris';
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
+            const vencidas = activas.filter(a => a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoy).length;
+            const bloqueadas = activas.filter(a => a.estatus === 'Bloqueada').length;
+            const pctProblema = (vencidas + bloqueadas) / activas.length;
+            if (pctProblema >= 0.3 || bloqueadas >= 2) return 'rojo';
+            if (pctProblema >= 0.1 || vencidas >= 1) return 'amarillo';
+            return 'verde';
+        }
+
+        function colorEstadoReunion(estatus) {
+            const m = {
+                'No iniciado': '#6b7280', 'Pendiente': '#f59e0b', 'En progreso': '#3b82f6',
+                'Completada': '#10b981', 'Bloqueada': '#ef4444', 'Retrasada': '#ea580c', 'Pausada': '#8b5cf6'
+            };
+            return m[estatus] || '#6b7280';
+        }
+
+        function renderModoReunion() {
+            reunionProyectoActual = 0;
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
+
+            // Fecha
+            document.getElementById('reunionFecha').textContent =
+                new Date().toLocaleDateString('es-MX', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+
+            // Stats globales
+            const activas = acciones.filter(a => a.estatus !== 'Completada');
+            const vencidas = activas.filter(a => a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoy).length;
+            const bloqueadas = activas.filter(a => a.estatus === 'Bloqueada').length;
+            const completadas = acciones.filter(a => a.estatus === 'Completada').length;
+            const avance = acciones.length > 0 ? Math.round(acciones.reduce((s,a) => s + (a.avance||0), 0) / acciones.length) : 0;
+
+            document.getElementById('reunionStatsHeader').innerHTML = `
+                <div class="reunion-stat-pill"><span class="val" style="color:#3b82f6">${activas.length}</span><span class="lbl">Activas</span></div>
+                <div class="reunion-stat-pill"><span class="val" style="color:#ef4444">${vencidas}</span><span class="lbl">Vencidas</span></div>
+                <div class="reunion-stat-pill"><span class="val" style="color:#f59e0b">${bloqueadas}</span><span class="lbl">Bloqueadas</span></div>
+                <div class="reunion-stat-pill"><span class="val" style="color:#10b981">${completadas}</span><span class="lbl">Completadas</span></div>
+                <div class="reunion-stat-pill"><span class="val" style="color:#06b6d4">${avance}%</span><span class="lbl">Avance</span></div>
+            `;
+
+            // Bloques por proyecto
+            let bodyHtml = '';
+            proyectos.forEach(proy => {
+                const acsProy = acciones.filter(a => a.proyectoId === proy.id && a.estatus !== 'Completada');
+                const total = acciones.filter(a => a.proyectoId === proy.id).length;
+                const completadasProy = acciones.filter(a => a.proyectoId === proy.id && a.estatus === 'Completada').length;
+                const vencidasProy = acsProy.filter(a => a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoy).length;
+
+                // Agrupar por responsable
+                const respMap = {};
+                acsProy.forEach(a => {
+                    const r = a.responsable || 'Sin asignar';
+                    if (!respMap[r]) respMap[r] = [];
+                    respMap[r].push(a);
+                });
+
+                // Ordenar responsables: primero los con semáforo rojo
+                const respsOrdenados = Object.entries(respMap).sort(([,aAccs],[,bAccs]) => {
+                    const order = { 'rojo': 0, 'amarillo': 1, 'verde': 2, 'gris': 3 };
+                    return order[calcularSemaforo(aAccs)] - order[calcularSemaforo(bAccs)];
+                });
+
+                let respsHtml = respsOrdenados.map(([resp, accs]) => {
+                    const semColor = calcularSemaforo(accs);
+                    const accsOrdenadas = [...accs].sort((a,b) => {
+                        const aV = a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoy;
+                        const bV = b.fechaCompromiso && new Date(formatearFecha(b.fechaCompromiso)) < hoy;
+                        if (aV && !bV) return -1; if (!aV && bV) return 1;
+                        return 0;
+                    });
+
+                    const accionesHtml = accsOrdenadas.slice(0, 5).map(a => {
+                        const esVencida = a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoy;
+                        const fecha = formatearFecha(a.fechaCompromiso);
+                        let metaClass = 'ok', metaText = fecha !== '-' ? fecha : 'Sin fecha';
+                        if (esVencida) { metaClass = 'vencida'; metaText = `${calcularDiasRestantesPDF(a.fechaCompromiso)}d`; }
+                        else if (a.fechaCompromiso) {
+                            const diff = Math.ceil((new Date(formatearFecha(a.fechaCompromiso)) - hoy) / 86400000);
+                            if (diff <= 7) { metaClass = 'proxima'; metaText = `+${diff}d`; }
+                        }
+                        const estatusLimpio = (a.estatus||'').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g,'').trim();
+                        return `
+                            <div class="reunion-accion-row">
+                                <div class="reunion-accion-estado" style="background:${colorEstadoReunion(estatusLimpio)}"></div>
+                                <div class="reunion-accion-texto ${esVencida ? 'vencida' : ''}">${a.accionEjecutiva || '-'}</div>
+                                <div class="reunion-accion-meta ${metaClass}">${metaText}</div>
+                            </div>`;
+                    }).join('');
+
+                    const masAcciones = accs.length > 5 ? `<div style="font-size:0.7rem;color:rgba(255,255,255,0.3);padding:4px 0">+${accs.length - 5} más...</div>` : '';
+
+                    return `
+                        <div class="reunion-resp-card">
+                            <div class="reunion-resp-header">
+                                <div class="reunion-resp-nombre">
+                                    <div class="semaforo ${semColor}"></div>
+                                    ${resp}
+                                </div>
+                                <div class="reunion-resp-score">${accs.length} pendientes</div>
+                            </div>
+                            ${accionesHtml || '<div class="reunion-resp-no-acciones">Sin acciones activas</div>'}
+                            ${masAcciones}
+                        </div>`;
+                }).join('');
+
+                bodyHtml += `
+                    <div class="reunion-proyecto-block">
+                        <div class="reunion-proyecto-header" onclick="toggleProyectoReunion(this)">
+                            <div class="reunion-proyecto-nombre">📁 ${proy.nombre}</div>
+                            <div class="reunion-proyecto-stats">
+                                <div class="reunion-proy-stat">Activas: <span>${acsProy.length}</span></div>
+                                <div class="reunion-proy-stat">Vencidas: <span style="color:#ef4444">${vencidasProy}</span></div>
+                                <div class="reunion-proy-stat">Completadas: <span style="color:#10b981">${completadasProy}/${total}</span></div>
+                                <span style="color:rgba(255,255,255,0.3);font-size:0.8rem">▼</span>
+                            </div>
+                        </div>
+                        <div class="reunion-responsables-grid">${respsHtml || '<div style="padding:16px;color:rgba(255,255,255,0.3);font-size:0.875rem">Sin acciones activas en este proyecto</div>'}</div>
+                    </div>`;
+            });
+
+            document.getElementById('reunionBody').innerHTML = bodyHtml || '<div style="color:rgba(255,255,255,0.3);text-align:center;padding:60px">Sin proyectos para mostrar</div>';
+
+            // Nav bar
+            actualizarNavReunion(proyectos.length);
+        }
+
+        function toggleProyectoReunion(header) {
+            const grid = header.nextElementSibling;
+            const arrow = header.querySelector('span:last-child');
+            if (grid.style.display === 'none') {
+                grid.style.display = '';
+                arrow.textContent = '▼';
+            } else {
+                grid.style.display = 'none';
+                arrow.textContent = '▶';
+            }
+        }
+
+        // ==========================================
+        // BRIEFING PDF POR RESPONSABLE (mejorado)
+        // ==========================================
+
+        function exportarBriefingResponsable(responsable, proyectoId) {
+            cargarLibreriasPDF(() => {
+                const { jsPDF } = window.jspdf;
+                const hoy = new Date(); hoy.setHours(0,0,0,0);
+
+                let todasAccs = acciones.filter(a => a.responsable === responsable);
+                if (proyectoId) todasAccs = todasAccs.filter(a => a.proyectoId == proyectoId);
+
+                const activas = todasAccs.filter(a => a.estatus !== 'Completada');
+                const vencidas = activas.filter(a => a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoy);
+                const proximas7 = activas.filter(a => {
+                    if (!a.fechaCompromiso) return false;
+                    const diff = Math.ceil((new Date(formatearFecha(a.fechaCompromiso)) - hoy) / 86400000);
+                    return diff >= 0 && diff <= 7;
+                });
+                const completadas = todasAccs.filter(a => a.estatus === 'Completada');
+                const scoreGlobal = todasAccs.length > 0 ? Math.round((completadas.length / todasAccs.length) * 100) : 0;
+
+                const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+                const pW = doc.internal.pageSize.getWidth();
+                const proyectoLabel = proyectoId ? (proyectos.find(p => p.id == proyectoId)?.nombre || 'Proyecto') : 'Todos los proyectos';
+
+                let y = construirHeaderPDF(doc, `Briefing — ${responsable}`, proyectoLabel);
+
+                // Score card del responsable
+                doc.setFillColor(26, 35, 50);
+                doc.roundedRect(10, y, pW - 20, 22, 3, 3, 'F');
+
+                // Score
+                const scoreColor = scoreGlobal >= 70 ? [16,185,129] : scoreGlobal >= 40 ? [245,158,11] : [220,38,38];
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(22);
+                doc.setTextColor(...scoreColor);
+                doc.text(`${scoreGlobal}%`, 22, y + 14);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7);
+                doc.setTextColor(150,160,180);
+                doc.text('SCORE DE CUMPLIMIENTO', 22, y + 19);
+
+                // Mini stats
+                const miniStats = [
+                    { val: activas.length, lbl: 'Activas', color: [59,130,246] },
+                    { val: vencidas.length, lbl: 'Vencidas', color: [220,38,38] },
+                    { val: proximas7.length, lbl: 'Esta semana', color: [245,158,11] },
+                    { val: completadas.length, lbl: 'Completadas', color: [16,185,129] }
+                ];
+                miniStats.forEach((s, i) => {
+                    const cx = 75 + i * 35;
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(14);
+                    doc.setTextColor(...s.color);
+                    doc.text(String(s.val), cx, y + 12, { align: 'center' });
+                    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5);
+                    doc.setTextColor(150,160,180);
+                    doc.text(s.lbl, cx, y + 19, { align: 'center' });
+                });
+                y += 28;
+
+                // SECCIÓN 1: VENCIDAS
+                if (vencidas.length > 0) {
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+                    doc.setTextColor(220, 38, 38);
+                    doc.text(`🔴 VENCIDAS (${vencidas.length})`, 10, y + 6);
+                    doc.setDrawColor(220, 38, 38);
+                    doc.line(10, y + 8, pW - 10, y + 8);
+                    y += 12;
+
+                    const bodyVencidas = vencidas.map(a => {
+                        const proy = proyectos.find(p => p.id === a.proyectoId);
+                        const dias = calcularDiasRestantesPDF(a.fechaCompromiso);
+                        return [proy?.nombre || '-', a.tema || '-', a.accionEjecutiva || '-', formatearFecha(a.fechaCompromiso), dias, (a.observaciones||'').substring(0,40)];
+                    });
+
+                    doc.autoTable({
+                        startY: y,
+                        head: [['Proyecto', 'Tema', 'Acción', 'Deadline', 'Días', 'Obs.']],
+                        body: bodyVencidas,
+                        margin: { left: 10, right: 10 },
+                        styles: { fontSize: 6.5, cellPadding: 2, textColor: [30,40,60] },
+                        headStyles: { fillColor: [139, 20, 20], textColor: [255,255,255], fontSize: 6.5, cellPadding: 3 },
+                        alternateRowStyles: { fillColor: [255,245,245] },
+                        columnStyles: { 0:{cellWidth:24}, 1:{cellWidth:18}, 2:{cellWidth:52}, 3:{cellWidth:20}, 4:{cellWidth:12}, 5:{cellWidth:30} }
+                    });
+                    y = doc.lastAutoTable.finalY + 8;
+                }
+
+                // SECCIÓN 2: ESTA SEMANA
+                if (proximas7.length > 0) {
+                    if (y > 200) { doc.addPage(); y = 15; }
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+                    doc.setTextColor(245, 158, 11);
+                    doc.text(`⚡ COMPROMISOS ESTA SEMANA (${proximas7.length})`, 10, y + 6);
+                    doc.setDrawColor(245, 158, 11);
+                    doc.line(10, y + 8, pW - 10, y + 8);
+                    y += 12;
+
+                    const bodyProximas = proximas7.map(a => {
+                        const proy = proyectos.find(p => p.id === a.proyectoId);
+                        const dias = calcularDiasRestantesPDF(a.fechaCompromiso);
+                        const estatusLimpio = (a.estatus||'').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g,'').trim();
+                        return [proy?.nombre||'-', a.tema||'-', a.accionEjecutiva||'-', estatusLimpio, `${a.avance||0}%`, dias];
+                    });
+
+                    doc.autoTable({
+                        startY: y,
+                        head: [['Proyecto', 'Tema', 'Acción', 'Estado', 'Avance', 'Días']],
+                        body: bodyProximas,
+                        margin: { left: 10, right: 10 },
+                        styles: { fontSize: 6.5, cellPadding: 2, textColor: [30,40,60] },
+                        headStyles: { fillColor: [120, 75, 0], textColor: [255,255,255], fontSize: 6.5, cellPadding: 3 },
+                        alternateRowStyles: { fillColor: [255,251,235] },
+                        columnStyles: { 0:{cellWidth:24}, 1:{cellWidth:18}, 2:{cellWidth:60}, 3:{cellWidth:20}, 4:{cellWidth:12}, 5:{cellWidth:12} }
+                    });
+                    y = doc.lastAutoTable.finalY + 8;
+                }
+
+                // SECCIÓN 3: RESTO DE ACTIVAS
+                const resto = activas.filter(a => !vencidas.includes(a) && !proximas7.includes(a));
+                if (resto.length > 0) {
+                    if (y > 200) { doc.addPage(); y = 15; }
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+                    doc.setTextColor(59, 130, 246);
+                    doc.text(`📋 RESTO DE PENDIENTES (${resto.length})`, 10, y + 6);
+                    doc.setDrawColor(59, 130, 246);
+                    doc.line(10, y + 8, pW - 10, y + 8);
+                    y += 12;
+
+                    const bodyResto = resto.map(a => {
+                        const proy = proyectos.find(p => p.id === a.proyectoId);
+                        const estatusLimpio = (a.estatus||'').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g,'').trim();
+                        return [proy?.nombre||'-', a.tema||'-', a.accionEjecutiva||'-', estatusLimpio, `${a.avance||0}%`, formatearFecha(a.fechaCompromiso)];
+                    });
+
+                    doc.autoTable({
+                        startY: y,
+                        head: [['Proyecto', 'Tema', 'Acción', 'Estado', 'Avance', 'Deadline']],
+                        body: bodyResto,
+                        margin: { left: 10, right: 10 },
+                        styles: { fontSize: 6.5, cellPadding: 2, textColor: [30,40,60] },
+                        headStyles: { fillColor: [26, 29, 41], textColor: [255,255,255], fontSize: 6.5, cellPadding: 3 },
+                        alternateRowStyles: { fillColor: [248,250,255] },
+                        columnStyles: { 0:{cellWidth:24}, 1:{cellWidth:18}, 2:{cellWidth:60}, 3:{cellWidth:20}, 4:{cellWidth:12}, 5:{cellWidth:20} }
+                    });
+                }
+
+                agregarPiePaginaPDF(doc);
+                const fecha = new Date().toISOString().split('T')[0];
+                const nombreResp = responsable.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
+                doc.save(`Briefing_${nombreResp}_${fecha}.pdf`);
+            });
+        }
+
+        // ==========================================
+        // PDF COMPLETO DE REUNIÓN
+        // ==========================================
+        function exportarPDFReunion() {
+            cargarLibreriasPDF(() => {
+                const { jsPDF } = window.jspdf;
+                const hoy = new Date(); hoy.setHours(0,0,0,0);
+                const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+                const pW = doc.internal.pageSize.getWidth();
+
+                let y = construirHeaderPDF(doc, 'Reporte de Reunión Ejecutiva', new Date().toLocaleDateString('es-MX', {day:'2-digit',month:'long',year:'numeric'}));
+                y = resumenEstadisticasPDF(doc, acciones.filter(a => a.estatus !== 'Completada'), y);
+
+                proyectos.forEach((proy, idx) => {
+                    if (idx > 0) { doc.addPage(); y = 15; }
+                    const acsProy = acciones.filter(a => a.proyectoId === proy.id && a.estatus !== 'Completada');
+                    if (acsProy.length === 0) return;
+
+                    doc.setFillColor(26, 29, 41);
+                    doc.roundedRect(10, y, pW - 20, 9, 2, 2, 'F');
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+                    doc.setTextColor(255, 255, 255);
+                    doc.text(`📁 ${proy.nombre}`, 15, y + 6.5);
+                    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+                    doc.setTextColor(180, 190, 210);
+                    doc.text(`${acsProy.length} acciones activas`, pW - 15, y + 6.5, { align: 'right' });
+                    y += 13;
+
+                    const accsOrdenadas = [...acsProy].sort((a,b) => {
+                        const aV = a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoy;
+                        const bV = b.fechaCompromiso && new Date(formatearFecha(b.fechaCompromiso)) < hoy;
+                        if (aV&&!bV) return -1; if (!aV&&bV) return 1;
+                        if (!a.responsable && b.responsable) return 1;
+                        if (a.responsable && !b.responsable) return -1;
+                        return (a.responsable||'').localeCompare(b.responsable||'');
+                    });
+
+                    const body = accsOrdenadas.map(a => {
+                        const estatusLimpio = (a.estatus||'').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g,'').trim();
+                        const prioridadLimpia = (a.prioridad||'').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g,'').trim();
+                        return [a.responsable||'-', a.tema||'-', a.accionEjecutiva||'-', prioridadLimpia, estatusLimpio, `${a.avance||0}%`, formatearFecha(a.fechaCompromiso), calcularDiasRestantesPDF(a.fechaCompromiso)];
+                    });
+
+                    doc.autoTable({
+                        startY: y,
+                        head: [['Responsable', 'Tema', 'Acción', 'Prior.', 'Estado', 'Av%', 'Deadline', 'Días']],
+                        body,
+                        margin: { left: 10, right: 10 },
+                        styles: { fontSize: 6.5, cellPadding: 2, overflow: 'linebreak', textColor: [30,40,60] },
+                        headStyles: { fillColor: [59,130,246], textColor: [255,255,255], fontSize: 6.5, cellPadding: 3 },
+                        alternateRowStyles: { fillColor: [248,250,255] },
+                        columnStyles: { 0:{cellWidth:24}, 1:{cellWidth:18}, 2:{cellWidth:55}, 3:{cellWidth:12}, 4:{cellWidth:18}, 5:{cellWidth:10}, 6:{cellWidth:18}, 7:{cellWidth:11} }
+                    });
+                    y = doc.lastAutoTable.finalY + 6;
+                });
+
+                agregarPiePaginaPDF(doc);
+                const fecha = new Date().toISOString().split('T')[0];
+                doc.save(`Reunion_Ejecutiva_${fecha}.pdf`);
             });
         }
 
