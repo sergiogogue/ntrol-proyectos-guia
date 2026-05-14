@@ -1661,404 +1661,6 @@
                 transform: scale(0.99);
             }
         }
-        /* ===== CENTRO DE MANDO v5.0 ===== */
-        .comando-wrapper {
-            padding: 24px;
-            max-width: 1800px;
-            margin: 0 auto;
-        }
-        .comando-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .comando-titulo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-        .comando-fecha {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-        .comando-acciones-header {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .btn-modo-ceo {
-            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-            color: white;
-            padding: 10px 18px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-modo-ceo:hover { transform: translateY(-1px); }
-        .btn-pdf-semanal {
-            background: var(--secondary);
-            color: white;
-            padding: 10px 18px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-pdf-semanal:hover { background: #059669; }
-
-        /* Banner Acción del Día */
-        .accion-del-dia {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            border-radius: 14px;
-            padding: 18px 22px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .accion-del-dia-icon {
-            font-size: 2.5rem;
-            flex-shrink: 0;
-        }
-        .accion-del-dia-content { flex: 1; }
-        .accion-del-dia-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            opacity: 0.85;
-            margin-bottom: 4px;
-        }
-        .accion-del-dia-titulo {
-            font-size: 1.125rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-            line-height: 1.3;
-        }
-        .accion-del-dia-meta {
-            font-size: 0.8rem;
-            opacity: 0.9;
-        }
-        .accion-del-dia.empty {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
-        }
-
-        /* Grid de cuadrantes */
-        .comando-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-        .cuadrante {
-            background: var(--card-bg);
-            border-radius: 14px;
-            padding: 20px 22px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            border: 1px solid var(--border-color);
-        }
-        .cuadrante-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-        .cuadrante-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .cuadrante-dot.azul { background: var(--primary); }
-        .cuadrante-dot.naranja { background: var(--warning); }
-        .cuadrante-dot.verde { background: var(--secondary); }
-        .cuadrante-dot.rojo { background: var(--danger); }
-        .cuadrante-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-        .cuadrante-subtitle {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 14px;
-        }
-
-        /* Cuadrante Score */
-        .score-numeros {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .score-cumplidos {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            line-height: 1;
-        }
-        .score-total {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-        }
-        .score-pct {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--secondary);
-            margin-left: 8px;
-        }
-        .score-bar {
-            height: 8px;
-            background: var(--gray-200);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 14px;
-        }
-        .score-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--secondary), #059669);
-            transition: width 0.6s;
-        }
-        .score-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-        .score-stat {
-            text-align: center;
-        }
-        .score-stat-num {
-            font-size: 1.25rem;
-            font-weight: 700;
-            line-height: 1;
-        }
-        .score-stat-num.green { color: var(--secondary); }
-        .score-stat-num.yellow { color: var(--warning); }
-        .score-stat-num.red { color: var(--danger); }
-        .score-stat-label {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        .score-tendencia {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--secondary);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-        .score-tendencia.down {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-        .score-tendencia.neutral {
-            background: rgba(107, 114, 128, 0.1);
-            color: var(--gray-600);
-        }
-
-        /* Cuadrante Hoy */
-        .hoy-bloque {
-            padding: 10px 14px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-        .hoy-bloque-header {
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-        .hoy-bloque.vencidas {
-            background: rgba(239, 68, 68, 0.1);
-            border-left: 3px solid var(--danger);
-        }
-        .hoy-bloque.vencidas .hoy-bloque-header { color: var(--danger); }
-        .hoy-bloque.hoy {
-            background: rgba(245, 158, 11, 0.1);
-            border-left: 3px solid var(--warning);
-        }
-        .hoy-bloque.hoy .hoy-bloque-header { color: var(--warning); }
-        .hoy-bloque.semana {
-            background: var(--gray-50);
-            border-left: 3px solid var(--gray-400);
-        }
-        .hoy-bloque.semana .hoy-bloque-header { color: var(--text-primary); }
-        .hoy-item {
-            font-size: 0.8rem;
-            padding: 3px 0;
-            line-height: 1.4;
-        }
-        .hoy-vacio {
-            padding: 14px;
-            text-align: center;
-            color: var(--secondary);
-            font-size: 0.875rem;
-            background: rgba(16, 185, 129, 0.08);
-            border-radius: 10px;
-        }
-
-        /* Cuadrante Momentum */
-        .momentum-item {
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .momentum-item:hover { opacity: 0.75; }
-        .momentum-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-        .momentum-nombre {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-        .momentum-pct {
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-        .momentum-pct.green { color: var(--secondary); }
-        .momentum-pct.yellow { color: var(--warning); }
-        .momentum-pct.red { color: var(--danger); }
-        .momentum-bar {
-            height: 6px;
-            background: var(--gray-200);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        .momentum-bar-fill {
-            height: 100%;
-            transition: width 0.6s;
-        }
-        .momentum-bar-fill.green { background: var(--secondary); }
-        .momentum-bar-fill.yellow { background: var(--warning); }
-        .momentum-bar-fill.red { background: var(--danger); }
-
-        /* Cuadrante Alertas */
-        .alerta-card {
-            border-left: 3px solid;
-            padding: 10px 14px;
-            border-radius: 0 10px 10px 0;
-            margin-bottom: 10px;
-        }
-        .alerta-card.peligro {
-            border-color: var(--danger);
-            background: rgba(239, 68, 68, 0.08);
-        }
-        .alerta-card.advertencia {
-            border-color: var(--warning);
-            background: rgba(245, 158, 11, 0.08);
-        }
-        .alerta-card.info {
-            border-color: var(--info);
-            background: rgba(6, 182, 212, 0.08);
-        }
-        .alerta-titulo {
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 3px;
-        }
-        .alerta-card.peligro .alerta-titulo { color: var(--danger); }
-        .alerta-card.advertencia .alerta-titulo { color: var(--warning); }
-        .alerta-card.info .alerta-titulo { color: var(--info); }
-        .alerta-detalle {
-            font-size: 0.75rem;
-            line-height: 1.4;
-        }
-        .alerta-card.peligro .alerta-detalle { color: var(--danger); }
-        .alerta-card.advertencia .alerta-detalle { color: var(--warning); }
-        .alerta-card.info .alerta-detalle { color: var(--info); }
-        .sin-alertas {
-            text-align: center;
-            padding: 20px;
-            color: var(--secondary);
-            font-size: 0.875rem;
-        }
-
-        /* Modo CEO - pantalla completa */
-        body.modo-ceo .sidebar,
-        body.modo-ceo .mobile-header,
-        body.modo-ceo .comando-acciones-header {
-            display: none !important;
-        }
-        body.modo-ceo .comando-wrapper {
-            padding: 32px 48px;
-            max-width: 100%;
-        }
-        body.modo-ceo .comando-titulo {
-            font-size: 2rem;
-        }
-        body.modo-ceo .accion-del-dia-titulo {
-            font-size: 1.5rem;
-        }
-        body.modo-ceo .score-cumplidos {
-            font-size: 4rem;
-        }
-        body.modo-ceo .cuadrante {
-            padding: 24px 28px;
-        }
-        body.modo-ceo .main-content {
-            margin-top: 0;
-        }
-        .btn-salir-ceo {
-            position: fixed;
-            top: 16px;
-            right: 16px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            z-index: 9999;
-            display: none;
-        }
-        body.modo-ceo .btn-salir-ceo {
-            display: block;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .comando-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        @media (max-width: 768px) {
-            .comando-wrapper {
-                padding: 16px;
-            }
-            .comando-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .accion-del-dia {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-
     </style>
 </head>
 <body>
@@ -2092,14 +1694,9 @@
             </div>
 
             <nav class="sidebar-nav">
-                <div class="nav-item active" onclick="showView('comando', event)" data-view="comando">
-                    <span class="nav-icon">🎯</span>
-                    <span>Comando</span>
-                    <span class="nav-badge" id="badgeVencidasComando" style="display: none;">0</span>
-                </div>
-                <div class="nav-item" onclick="showView('dashboard', event)" data-view="dashboard">
+                <div class="nav-item active" onclick="showView('dashboard', event)" data-view="dashboard">
                     <span class="nav-icon">📊</span>
-                    <span>Dashboard clásico</span>
+                    <span>Dashboard</span>
                     <span class="nav-badge" id="badgeVencidas" style="display: none;">0</span>
                 </div>
                 <div class="nav-item" onclick="showView('acciones', event)" data-view="acciones">
@@ -2121,18 +1718,6 @@
             </nav>
 
             <div class="sidebar-footer">
-                <button class="config-btn" onclick="sincronizarConTasks()" id="btnSyncTasks" style="background: rgba(59, 130, 246, 0.25); border-color: var(--primary);">
-                    <span>🔄</span>
-                    <span id="btnSyncTasksText">Sync Google Tasks</span>
-                </button>
-                <button class="config-btn" onclick="window.open('https://tasks.google.com', '_blank')" style="background: rgba(245, 158, 11, 0.2); border-color: var(--warning);">
-                    <span>📋</span>
-                    <span>Abrir Google Tasks</span>
-                </button>
-                <button class="config-btn" onclick="resetSyncMap()" style="background: rgba(139, 92, 246, 0.2); border-color: #8b5cf6;" title="Reinicia el mapa de sincronización si hubo problema">
-                    <span>♻️</span>
-                    <span>Reset Sync Map</span>
-                </button>
                 <button class="config-btn" onclick="abrirConfiguracion()">
                     <span>⚙️</span>
                     <span>Configuración</span>
@@ -2147,83 +1732,14 @@
                 </button>
                 <input type="file" id="importBackupFile" accept=".json" style="display: none;" onchange="importarBackupCompleto(event)">
                 <button class="btn btn-danger" onclick="resetData()" style="width: 100%; margin-bottom: 12px;">🗑 Reset Data</button>
-                <div class="version-text">v5.0 + Centro de Mando</div>
+                <div class="version-text">v5.2 PDF Export - 2026</div>
             </div>
         </div>
 
         <!-- MAIN CONTENT -->
         <div class="main-content">
-            <!-- BOTÓN SALIR MODO CEO -->
-            <button class="btn-salir-ceo" onclick="salirModoCEO()">✕ Salir Modo CEO</button>
-
-            <!-- ===== VISTA COMANDO (NUEVA, DEFAULT) ===== -->
-            <div id="comando" class="view-content active">
-                <div class="comando-wrapper">
-                    <div class="comando-header">
-                        <div>
-                            <div class="comando-titulo">Centro de Mando</div>
-                            <div class="comando-fecha" id="comandoFecha"></div>
-                        </div>
-                        <div class="comando-acciones-header">
-                            <button class="btn-modo-ceo" onclick="activarModoCEO()">
-                                <span>👔</span><span>Modo CEO</span>
-                            </button>
-                            <button class="btn-pdf-semanal" onclick="generarReporteSemanalPDF()">
-                                <span>📄</span><span>Reporte semanal</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- BANNER ACCIÓN DEL DÍA -->
-                    <div id="accionDelDiaBanner"></div>
-
-                    <!-- GRID 4 CUADRANTES -->
-                    <div class="comando-grid">
-                        <!-- C1: Score -->
-                        <div class="cuadrante">
-                            <div class="cuadrante-header">
-                                <div class="cuadrante-dot azul"></div>
-                                <div class="cuadrante-label">Score · cumplimiento</div>
-                            </div>
-                            <div class="cuadrante-subtitle">Compromisos de la semana</div>
-                            <div id="cuadranteScore"></div>
-                        </div>
-
-                        <!-- C2: Hoy -->
-                        <div class="cuadrante">
-                            <div class="cuadrante-header">
-                                <div class="cuadrante-dot naranja"></div>
-                                <div class="cuadrante-label">Tu día</div>
-                            </div>
-                            <div class="cuadrante-subtitle" id="cuadranteHoyFecha"></div>
-                            <div id="cuadranteHoy"></div>
-                        </div>
-
-                        <!-- C3: Momentum -->
-                        <div class="cuadrante">
-                            <div class="cuadrante-header">
-                                <div class="cuadrante-dot verde"></div>
-                                <div class="cuadrante-label">Momentum por proyecto</div>
-                            </div>
-                            <div class="cuadrante-subtitle">Avance + tendencia semanal</div>
-                            <div id="cuadranteMomentum"></div>
-                        </div>
-
-                        <!-- C4: Alertas IA -->
-                        <div class="cuadrante">
-                            <div class="cuadrante-header">
-                                <div class="cuadrante-dot rojo"></div>
-                                <div class="cuadrante-label">Alertas inteligentes</div>
-                            </div>
-                            <div class="cuadrante-subtitle">Diagnóstico automático</div>
-                            <div id="cuadranteAlertas"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- DASHBOARD CLÁSICO (queda como respaldo) -->
-            <div id="dashboard" class="view-content">
+            <!-- DASHBOARD -->
+            <div id="dashboard" class="view-content active">
                 <div class="content-wrapper">
                     <div class="content-header">
                         <h1 class="content-title">Dashboard Ejecutivo</h1>
@@ -2287,6 +1803,7 @@
                         </div>
                         <div class="toolbar-right">
                             <input type="text" class="search-box" id="accionesSearch" placeholder="Buscar acciones..." oninput="renderAcciones()">
+                            <button class="btn btn-secondary" onclick="exportarPDFAcciones()" title="Exportar acciones activas a PDF">📄 PDF</button>
                             <button class="btn btn-success" onclick="abrirModalAccion()">+ Acción</button>
                         </div>
                     </div>
@@ -2608,28 +2125,6 @@
         </div>
     </div>
 
-    <!-- MODAL REVISIÓN DE CAMBIOS DESDE GOOGLE TASKS -->
-        <div id="modalRevisionCambios" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">🔄 Revisar cambios desde Google Tasks</h2>
-                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 8px;">
-                        Se detectaron <strong id="contadorRevisionCambios">0</strong> acciones con cambios. Selecciona cuáles quieres aplicar al dashboard.
-                    </p>
-                </div>
-                <div class="modal-body">
-                    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                        <button type="button" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 12px;" onclick="document.querySelectorAll('.check-revision').forEach(c => c.checked = true);">✓ Marcar todos</button>
-                        <button type="button" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 12px;" onclick="document.querySelectorAll('.check-revision').forEach(c => c.checked = false);">✗ Desmarcar todos</button>
-                    </div>
-                    <div id="listaRevisionCambios"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="btnCancelarRevision">Cancelar (no aplicar nada)</button>
-                    <button type="button" class="btn btn-primary" id="btnAplicarRevision">Aplicar seleccionados</button>
-                </div>
-            </div>
-        </div>
     <!-- MODAL CONFIGURACIÓN -->
     <div id="modalConfiguracion" class="modal">
         <div class="modal-content">
@@ -2706,24 +2201,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script>
         // DATOS GLOBALES
         let proyectos = JSON.parse(localStorage.getItem('ccProyectos')) || [];
         let acciones = JSON.parse(localStorage.getItem('ccAcciones')) || [];
-
-        // ==========================================
-        // GOOGLE TASKS SYNC - CONFIGURACIÓN
-        // ==========================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuSm6XCn2TcbkEPbp1X4FkQ_0OtVx7HPNF7EU8s2jbBbzb6UlgXzjkFoE5kfF2r1jh/exec';
-        
-        // Mapa: accionId -> taskId. Esta es la VERDAD para anti-duplicación.
-        let accionToTaskMap = JSON.parse(localStorage.getItem('ccAccionToTaskMap')) || {};
-        
-        // Lock para evitar syncs simultáneos
-        let syncEnProgreso = false;
-        
-        // Lock por acción individual (evita doble auto-sync de la misma acción)
-        const syncLocksIndividuales = new Set();
 
         // LIMPIAR TODO excepto texto alfanumérico de ESTADOS Y PRIORIDADES
         acciones = acciones.map(a => {
@@ -3366,21 +2849,13 @@
             renderAnalisis();
             actualizarBadgeVencidas();
             cerrarModalAccion();
-            
-            // Auto-sync a Google Tasks (silencioso, no bloquea UI)
-            syncAccionIndividual(accion);
         });
 
         function eliminarAccion() {
             const id = document.getElementById('accionId').value;
             if (!id || !confirm('¿Eliminar esta acción?')) return;
             
-            const accionId = parseInt(id);
-            
-            // Eliminar task remota de Google Tasks (silencioso)
-            eliminarTaskRemoto(accionId);
-            
-            acciones = acciones.filter(a => a.id !== accionId);
+            acciones = acciones.filter(a => a.id !== parseInt(id));
             guardarDatos();
             renderAcciones();
             renderDashboard();
@@ -3541,6 +3016,7 @@
                             <div>
                                 <div class="card-title">👤 ${resp}</div>
                             </div>
+                            <button class="btn-icon" onclick="event.stopPropagation(); exportarPDFResponsable('${resp.replace(/'/g, "\\'")}', ${filtroProyecto || 'null'})" title="Exportar PDF">📄</button>
                         </div>
                         <div class="card-stats">
                             <div class="stat">
@@ -4189,11 +3665,10 @@
         // BACKUP COMPLETO
         function exportarBackupCompleto() {
             const backup = {
-                version: '4.4',
+                version: '4.0',
                 fecha: new Date().toISOString(),
                 proyectos: proyectos,
                 acciones: acciones,
-                accionToTaskMap: accionToTaskMap,
                 tema: localStorage.getItem('ccTema') || 'light'
             };
 
@@ -4244,14 +3719,6 @@
 
                     proyectos = backup.proyectos;
                     acciones = backup.acciones;
-                    
-                    // Restaurar accionToTaskMap si existe en el backup (v4.3+)
-                    // CRÍTICO: sin este map, el siguiente sync DUPLICARÍA todo en Google Tasks
-                    if (backup.accionToTaskMap && typeof backup.accionToTaskMap === 'object') {
-                        accionToTaskMap = backup.accionToTaskMap;
-                    } else {
-                        accionToTaskMap = {};
-                    }
                     
                     // Limpiar TODO excepto texto alfanumérico
                     acciones = acciones.map(a => {
@@ -4420,18 +3887,15 @@
         function guardarDatos() {
             localStorage.setItem('ccProyectos', JSON.stringify(proyectos));
             localStorage.setItem('ccAcciones', JSON.stringify(acciones));
-            localStorage.setItem('ccAccionToTaskMap', JSON.stringify(accionToTaskMap));
         }
 
         function resetData() {
-            if (!confirm('⚠️ ¿ELIMINAR TODOS LOS PROYECTOS Y ACCIONES?\n\nEsta acción no se puede deshacer.\n\nNOTA: Esto NO elimina las tareas en Google Tasks. Para limpiarlas, hazlo manualmente en tasks.google.com')) return;
+            if (!confirm('⚠️ ¿ELIMINAR TODOS LOS PROYECTOS Y ACCIONES?\n\nEsta acción no se puede deshacer.')) return;
             
             proyectos = [];
             acciones = [];
-            accionToTaskMap = {};
             localStorage.removeItem('ccProyectos');
             localStorage.removeItem('ccAcciones');
-            localStorage.removeItem('ccAccionToTaskMap');
             
             renderProyectos();
             renderAcciones();
@@ -4441,1463 +3905,449 @@
             actualizarFiltros();
             actualizarBadgeVencidas();
             
-            alert('✅ Todos los datos han sido eliminados del dashboard');
+            alert('✅ Todos los datos han sido eliminados');
         }
-        
+
         // ==========================================
-        // GOOGLE TASKS SYNC - FUNCIONES (v4.4 anti-duplicación)
-        // ==========================================
-        
-        /**
-         * v4.8 FIX DEFINITIVO: Usa el NOMBRE REAL del proyecto en lugar de
-         * mapear a una lista hardcodeada de 5. El backend
-         * (obtenerOcrearListaParaProyecto) crea la lista si no existe.
-         */
-        function obtenerNombreProyectoTasks(accion) {
-            const proyecto = proyectos.find(p => p.id === accion.proyectoId);
-            if (!proyecto) return 'Sin Proyecto';
-            // Devolver el nombre real del proyecto, tal cual está en el dashboard.
-            // Si no hay nombre, usar desarrollo. Si tampoco, fallback.
-            return proyecto.nombre || proyecto.desarrollo || 'Sin Proyecto';
-        }
-        
-        /**
-         * Lee el mapa de referencias de una acción.
-         * COMPATIBLE con dos formatos:
-         *   - Viejo (string): accionToTaskMap[id] = "taskId"
-         *   - Nuevo (objeto): accionToTaskMap[id] = { taskId, listaId }
-         * Devuelve { taskId, listaId } o null.
-         */
-        function obtenerRefDeAccion(accionId) {
-            const v = accionToTaskMap[accionId];
-            if (!v) return null;
-            if (typeof v === 'string') {
-                // Formato viejo: solo string del taskId. listaId desconocido.
-                return { taskId: v, listaId: null };
-            }
-            if (typeof v === 'object' && v.taskId) {
-                return { taskId: v.taskId, listaId: v.listaId || null };
-            }
-            return null;
-        }
-        
-        /**
-         * Guarda la referencia completa (taskId + listaId) de una acción.
-         */
-        function guardarRefDeAccion(accionId, taskId, listaId) {
-            if (!taskId) return;
-            accionToTaskMap[accionId] = {
-                taskId: taskId,
-                listaId: listaId || null
-            };
-        }
-        
-        /**
-         * NORMALIZADOR DE FECHAS (v4.6)
-         * Convierte cualquier fecha a formato YYYY-MM-DD válido.
-         * Maneja:
-         *   - Strings ISO ya válidos: "2026-04-29" -> se devuelven tal cual
-         *   - Números seriales de Excel: 46104 -> "2026-04-29"
-         *   - Strings con números seriales: "46104" -> "2026-04-29"
-         *   - Fechas en otros formatos: intenta parsear con Date()
-         *   - Fechas inválidas o vacías -> "" (sin fecha)
-         */
-        function normalizarFecha(fecha) {
-            // Caso vacío/null/undefined -> sin fecha
-            if (fecha === null || fecha === undefined || fecha === '') return '';
-            
-            const fechaStr = String(fecha).trim();
-            if (!fechaStr || fechaStr === '0') return '';
-            
-            // Caso 1: ya es ISO YYYY-MM-DD
-            if (/^\d{4}-\d{2}-\d{2}$/.test(fechaStr)) {
-                // Validar que sea fecha real (no "2026-99-99")
-                const d = new Date(fechaStr + 'T12:00:00');
-                if (!isNaN(d.getTime())) {
-                    // Verificar que el string round-trip sea igual (rechaza "2026-99-99" que JS auto-corrige)
-                    const yyyy = d.getFullYear();
-                    const mm = String(d.getMonth() + 1).padStart(2, '0');
-                    const dd = String(d.getDate()).padStart(2, '0');
-                    if (`${yyyy}-${mm}-${dd}` === fechaStr) return fechaStr;
-                }
-                return '';
-            }
-            
-            // Caso 2: número serial de Excel
-            // Offset correcto: Excel base = 1899-12-30 (compensa bug del año bisiesto 1900)
-            // Rango razonable: > 25569 (~1970) y < 80000 (~2118)
-            if (/^\d+(\.\d+)?$/.test(fechaStr)) {
-                const num = parseFloat(fechaStr);
-                if (num > 0 && num < 80000) {
-                    const fechaBase = new Date(1899, 11, 30); // 1899-12-30 (base Excel correcta)
-                    fechaBase.setDate(fechaBase.getDate() + Math.floor(num));
-                    if (!isNaN(fechaBase.getTime()) && fechaBase.getFullYear() > 1990 && fechaBase.getFullYear() < 2100) {
-                        const yyyy = fechaBase.getFullYear();
-                        const mm = String(fechaBase.getMonth() + 1).padStart(2, '0');
-                        const dd = String(fechaBase.getDate()).padStart(2, '0');
-                        return `${yyyy}-${mm}-${dd}`;
-                    }
-                }
-                return '';
-            }
-            
-            // Caso 3: cualquier otro formato, intentar parsear
-            const d = new Date(fechaStr);
-            if (!isNaN(d.getTime()) && d.getFullYear() > 1990 && d.getFullYear() < 2100) {
-                const yyyy = d.getFullYear();
-                const mm = String(d.getMonth() + 1).padStart(2, '0');
-                const dd = String(d.getDate()).padStart(2, '0');
-                return `${yyyy}-${mm}-${dd}`;
-            }
-            
-            // No se pudo interpretar -> tratar como sin fecha
-            return '';
-        }
-        
-        /**
-         * REPARAR FECHAS ROTAS (v4.6)
-         * Recorre todas las acciones, normaliza sus fechas y guarda los cambios.
-         * Devuelve { reparadas, vaciadas } con las cantidades.
-         */
-        function repararFechasAcciones() {
-            let reparadas = 0;
-            let vaciadas = 0;
-            
-            acciones.forEach(a => {
-                const original = a.fechaCompromiso;
-                if (!original) return; // Ya está vacía, no toca
-                
-                const normalizada = normalizarFecha(original);
-                if (normalizada !== String(original)) {
-                    a.fechaCompromiso = normalizada;
-                    if (normalizada === '') {
-                        vaciadas++;
-                    } else {
-                        reparadas++;
-                    }
-                }
-            });
-            
-            if (reparadas > 0 || vaciadas > 0) {
-                guardarDatos();
-            }
-            
-            return { reparadas, vaciadas };
-        }
-        
-        /**
-         * Construye el payload con TODOS los nombres de campo posibles que el backend
-         * podría esperar. Esto garantiza compatibilidad sin importar el formato exacto.
-         * v4.6: normaliza la fecha antes de enviarla.
-         */
-        function construirPayloadAccion(accion) {
-            const fechaNormalizada = normalizarFecha(accion.fechaCompromiso);
-            return {
-                accionId: accion.id,
-                id: accion.id,
-                proyecto: obtenerNombreProyectoTasks(accion),
-                tema: accion.tema || '',
-                accion: accion.accionEjecutiva || '',
-                accionEjecutiva: accion.accionEjecutiva || '',
-                responsable: accion.responsable || '',
-                area: accion.area || '',
-                prioridad: accion.prioridad || 'Media',
-                estatus: accion.estatus || 'No iniciado',
-                avance: accion.avance || 0,
-                fechaCompromiso: fechaNormalizada, // Vacío string si no hay fecha válida
-                observaciones: accion.observaciones || ''
-            };
-        }
-        
-        /**
-         * SYNC MASIVO - Sincroniza todas las acciones con fecha al backend.
-         * En v4.5 hace SYNC SECUENCIAL llamando a syncAccionIndividual una por una,
-         * lo cual garantiza:
-         *   - Cada acción manda taskId+listaId si los tiene
-         *   - Recuperación automática de taskIds huérfanos
-         *   - Cero duplicaciones
-         */
-
-         // ==========================================
-// NUEVA v3.1 — Detectar tasks borradas en Google
-// Compara accionToTaskMap (local) con Google Tasks (remoto)
-// Devuelve qué acciones tienen taskId que YA NO existe en Google
-// ==========================================
-async function detectarBorradasEnGoogle() {
-  try {
-    if (!APPS_SCRIPT_URL) {
-      return { success: false, eliminadas: [], error: 'APPS_SCRIPT_URL no configurada' };
-    }
-
-    // Construir syncMap simple: { accionId: taskId } para mandar al backend
-    const syncMapSimple = {};
-    for (const accionId in accionToTaskMap) {
-      const ref = obtenerRefDeAccion(accionId);
-      if (ref && ref.taskId) {
-        syncMapSimple[accionId] = ref.taskId;
-      }
-    }
-
-    if (Object.keys(syncMapSimple).length === 0) {
-      console.log('Sync map vacío, no hay nada que detectar');
-      return { success: true, eliminadas: [] };
-    }
-
-    console.log('🔍 Detectando borradas en Google Tasks...');
-    console.log('Mapas a verificar:', Object.keys(syncMapSimple).length);
-
-    const response = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'detect_deleted',
-        syncMap: syncMapSimple
-      }),
-      redirect: 'follow'
-    });
-
-    const data = await response.json();
-
-    if (!data.success) {
-      console.error('❌ Error del backend:', data.error);
-      return { success: false, eliminadas: [], error: data.error };
-    }
-
-    // Enriquecer con datos de las acciones del dashboard
-    const eliminadasConDatos = data.eliminadas
-      .map(item => {
-        const accion = acciones.find(a => String(a.id) === String(item.accionId));
-        if (!accion) return null;
-        return {
-          accionId: item.accionId,
-          taskId: item.taskId,
-          accion: accion.accion || '(sin descripción)',
-          proyecto: accion.proyecto || '',
-          responsable: accion.responsable || '',
-          estatus: accion.estatus || ''
-        };
-      })
-      .filter(item => item !== null);
-
-    console.log(`✅ Detectadas ${eliminadasConDatos.length} borradas en Google con datos en dashboard`);
-
-    return {
-      success: true,
-      eliminadas: eliminadasConDatos,
-      totalSyncMap: data.totalSyncMap,
-      totalTasksGoogle: data.totalTasksGoogle
-    };
-
-  } catch (error) {
-    console.error('❌ Error en detectarBorradasEnGoogle:', error);
-    return { success: false, eliminadas: [], error: error.message };
-  }
-}
-        async function sincronizarConTasks() {
-            if (syncEnProgreso) {
-                alert('⚠️ Ya hay una sincronización en curso. Espera a que termine.');
-                return;
-            }
-            // ==========================================
-        // v3.1 — DETECCIÓN DE BORRADAS EN GOOGLE
-        // Si el usuario borró tasks en Google, detectarlas y preguntar
-        // ==========================================
-        try {
-          const deteccion = await detectarBorradasEnGoogle();
-          
-          if (deteccion.success && deteccion.eliminadas.length > 0) {
-            let mensajeBorradas = `🗑️ Detectadas ${deteccion.eliminadas.length} task(s) borrada(s) en Google Tasks:\n\n`;
-            
-            deteccion.eliminadas.slice(0, 10).forEach((item, i) => {
-              const titulo = (item.accion || '').substring(0, 60);
-              mensajeBorradas += `${i + 1}. ${titulo}\n   📁 ${item.proyecto} · 👤 ${item.responsable}\n\n`;
-            });
-            
-            if (deteccion.eliminadas.length > 10) {
-              mensajeBorradas += `... y ${deteccion.eliminadas.length - 10} más\n\n`;
-            }
-            
-            mensajeBorradas += `¿Eliminar también estas acciones del Dashboard?\n\n`;
-            mensajeBorradas += `✅ OK = Eliminar del Dashboard\n`;
-            mensajeBorradas += `❌ Cancelar = Conservar (se volverán a crear en Tasks al sincronizar)`;
-            
-            const confirmarBorrado = confirm(mensajeBorradas);
-            
-            if (confirmarBorrado) {
-              let eliminadasOk = 0;
-              for (const item of deteccion.eliminadas) {
-                const idx = acciones.findIndex(a => String(a.id) === String(item.accionId));
-                if (idx !== -1) {
-                  delete accionToTaskMap[item.accionId];
-                  acciones.splice(idx, 1);
-                  eliminadasOk++;
-                }
-              }
-              
-              guardarDatos();
-              renderProyectos();
-              renderAcciones();
-              renderDashboard();
-              renderResponsables();
-              renderAnalisis();
-              actualizarFiltros();
-              actualizarBadgeVencidas();
-              
-              alert(`✅ ${eliminadasOk} acción(es) eliminada(s) del Dashboard.\n\nContinuando con sincronización normal...`);
-            } else {
-              console.log('Usuario eligió conservar las acciones huérfanas');
-            }
-          }
-        } catch (errorDeteccion) {
-          console.warn('⚠️ No se pudo detectar borradas (continuando sync normal):', errorDeteccion);
-        }
-            // v4.6 PASO 1: Auto-reparar fechas rotas (formato Excel serial -> ISO)
-            const reparacion = repararFechasAcciones();
-            
-            // v4.6 PASO 2: incluir TODAS las acciones no completadas, con o sin fecha.
-            const accionesParaSync = acciones.filter(a => a.estatus !== 'Completada');
-            
-            if (accionesParaSync.length === 0) {
-                alert('ℹ️ No hay acciones pendientes para sincronizar');
-                return;
-            }
-            
-            const nuevas = accionesParaSync.filter(a => !obtenerRefDeAccion(a.id)).length;
-            const updates = accionesParaSync.length - nuevas;
-            const conFecha = accionesParaSync.filter(a => a.fechaCompromiso).length;
-            const sinFecha = accionesParaSync.length - conFecha;
-            
-            let mensajeInicial = `🔄 Sincronizar ${accionesParaSync.length} acciones a Google Tasks\n\n`;
-            
-            if (reparacion.reparadas > 0 || reparacion.vaciadas > 0) {
-                mensajeInicial += `🔧 Auto-reparación de fechas:\n`;
-                if (reparacion.reparadas > 0) mensajeInicial += `   ✓ ${reparacion.reparadas} fechas convertidas de Excel a formato correcto\n`;
-                if (reparacion.vaciadas > 0) mensajeInicial += `   ✓ ${reparacion.vaciadas} fechas inválidas vaciadas (van sin due date)\n`;
-                mensajeInicial += `\n`;
-            }
-            
-            mensajeInicial += `📋 Total: ${accionesParaSync.length}\n`;
-            mensajeInicial += `   📅 Con fecha: ${conFecha}\n`;
-            mensajeInicial += `   📋 Sin fecha (van sin due date): ${sinFecha}\n\n`;
-            mensajeInicial += `🆕 Nuevas (se crearán): ${nuevas}\n`;
-            mensajeInicial += `🔄 Existentes (se actualizarán): ${updates}\n\n`;
-            mensajeInicial += `Tiempo estimado: ${Math.ceil(accionesParaSync.length * 1.2 / 60)} minuto(s)\n\n`;
-            mensajeInicial += `¿Continuar?`;
-            
-            const confirmacion = confirm(mensajeInicial);
-            
-            if (!confirmacion) return;
-            
-            syncEnProgreso = true;
-            const btnSync = document.getElementById('btnSyncTasks');
-            const btnSyncText = document.getElementById('btnSyncTasksText');
-            const textoOriginal = btnSyncText.textContent;
-            btnSync.disabled = true;
-            
-            let exitos = 0;
-            let errores = 0;
-            let creadasNuevas = 0;
-            let actualizadas = 0;
-            const total = accionesParaSync.length;
-            
-            try {
-                for (let i = 0; i < accionesParaSync.length; i++) {
-                    const accion = accionesParaSync[i];
-                    btnSyncText.textContent = `Sincronizando ${i + 1}/${total}...`;
-                    
-                    try {
-                        const refExistente = obtenerRefDeAccion(accion.id);
-                        let esUpdate = !!(refExistente && refExistente.taskId);
-                        
-                        let payload = {
-                            action: esUpdate ? 'update' : 'create',
-                            ...construirPayloadAccion(accion),
-                            taskId: esUpdate ? refExistente.taskId : null,
-                            listaId: esUpdate ? refExistente.listaId : null
-                        };
-                        
-                        let response = await fetch(APPS_SCRIPT_URL, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                            redirect: 'follow',
-                            body: JSON.stringify(payload)
-                        });
-                        
-                        let resultado = await response.json();
-                        
-                        // Recuperación: update falla con "Missing task list"
-                        if (!resultado.success && esUpdate && resultado.error && /Missing task list|task list ID/i.test(resultado.error)) {
-                            console.log(`🔁 Acción ${accion.id}: taskId huérfano, reintentando como create...`);
-                            delete accionToTaskMap[accion.id];
-                            
-                            payload = {
-                                action: 'create',
-                                ...construirPayloadAccion(accion),
-                                taskId: null,
-                                listaId: null
-                            };
-                            
-                            response = await fetch(APPS_SCRIPT_URL, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                                redirect: 'follow',
-                                body: JSON.stringify(payload)
-                            });
-                            
-                            resultado = await response.json();
-                        }
-                        
-                        if (resultado.success && resultado.taskId) {
-                            // CRÍTICO v4.7: Detectar si el backend creó una task nueva en lugar de actualizar
-                            // Si esUpdate y el taskId recibido es DIFERENTE al enviado = backend creó duplicado
-                            const taskIdEnviado = esUpdate ? refExistente.taskId : null;
-                            const taskIdRecibido = resultado.taskId;
-                            const backendCreoNueva = esUpdate && taskIdEnviado !== taskIdRecibido;
-                            
-                            if (backendCreoNueva) {
-                                console.warn(`⚠️ Acción ${accion.id}: Backend creó task NUEVA en lugar de actualizar. taskId viejo: ${taskIdEnviado}, taskId nuevo: ${taskIdRecibido}. Actualizando ref local.`);
-                            }
-                            
-                            // SIEMPRE guardar el taskId+listaId que devuelve el backend
-                            // (es la fuente de verdad real de Google Tasks)
-                            guardarRefDeAccion(accion.id, resultado.taskId, resultado.listaId);
-                            
-                            exitos++;
-                            if (esUpdate && !backendCreoNueva) actualizadas++;
-                            else creadasNuevas++;
-                            
-                            console.log(`✅ ${i + 1}/${total} OK - Acción ${accion.id} -> Task ${resultado.taskId} (${esUpdate && !backendCreoNueva ? 'actualizada' : 'creada'})`);
-                        } else {
-                            errores++;
-                            console.warn(`❌ ${i + 1}/${total} falló - Acción ${accion.id}:`, resultado.error || 'sin detalle (backend devolvió success:false sin error)');
-                        }
-                    } catch (eAccion) {
-                        errores++;
-                        console.warn(`❌ ${i + 1}/${total} error de red - Acción ${accion.id}:`, eAccion.message);
-                    }
-                    
-                    // Guardado parcial cada 5 acciones
-                    if (i % 5 === 0) guardarDatos();
-                }
-                
-                guardarDatos();
-                
-                let mensaje = `✅ Sincronización completada\n\n`;
-                mensaje += `📋 Total procesadas: ${total}\n`;
-                mensaje += `✅ Exitosas: ${exitos}\n`;
-                if (creadasNuevas > 0) mensaje += `🆕 Creadas nuevas: ${creadasNuevas}\n`;
-                if (actualizadas > 0) mensaje += `🔄 Actualizadas: ${actualizadas}\n`;
-                if (errores > 0) mensaje += `❌ Con error: ${errores}\n`;
-                mensaje += `\n💾 IDs sincronizados en total: ${Object.keys(accionToTaskMap).length}`;
-                mensaje += `\n\nAbre Google Tasks para ver los resultados.`;
-                alert(mensaje);
-                
-            } catch (error) {
-                console.error('Error sync Tasks:', error);
-                guardarDatos();
-                alert('❌ Error al sincronizar:\n' + error.message + `\n\nProgreso parcial guardado: ${exitos} exitosas.`);
-            } finally {
-                syncEnProgreso = false;
-                btnSyncText.textContent = textoOriginal;
-                btnSync.disabled = false;
-            }
-            // ===== PULL BIDIRECCIONAL =====
-            try {
-                const resultadoPull = await pullCambiosDesdeBackend();
-
-                if (resultadoPull && resultadoPull.modificadas) {
-                    let cambiosAplicados = 0;
-                    let huerfanasImportadas = 0;
-
-                    if (resultadoPull.modificadas.length > 0) {
-                        const aprobados = await mostrarModalRevisionCambios(resultadoPull.modificadas);
-                        if (aprobados.length > 0) {
-                            cambiosAplicados = aplicarCambiosSeleccionados(aprobados);
-                        }
-                    }
-
-                    if (resultadoPull.nuevas && resultadoPull.nuevas.length > 0) {
-                        huerfanasImportadas = importarHuerfanasAutomatico(resultadoPull.nuevas);
-                    }
-
-                    if (cambiosAplicados > 0 || huerfanasImportadas > 0) {
-                        guardarDatos();
-                        renderProyectos();
-                        renderAcciones();
-                        renderDashboard();
-                        renderResponsables();
-                        renderAnalisis();
-                        actualizarFiltros();
-                        actualizarBadgeVencidas();
-
-                        let mensajeFinal = '✅ Sync completado:\n\n';
-                        if (cambiosAplicados > 0) mensajeFinal += `🔄 ${cambiosAplicados} cambios aplicados\n`;
-                        if (huerfanasImportadas > 0) mensajeFinal += `📥 ${huerfanasImportadas} acciones importadas\n`;
-                        alert(mensajeFinal);
-                    }
-                }
-            } catch (errorPull) {
-                console.warn('Pull bidireccional falló (no crítico):', errorPull.message);
-            }
-        }
-        
-        /**
-         * SYNC INDIVIDUAL - Crea o actualiza UNA task cuando se guarda una acción.
-         * BLINDADO ANTI-DUPLICACIÓN: 
-         * 1. Lock por acción para evitar dobles clicks
-         * 2. Si ya hay taskId en el map, manda 'update' (no 'create')
-         * 3. Captura el taskId de la respuesta y lo guarda inmediatamente
-         */
-        async function syncAccionIndividual(accion) {
-            // v4.6: ya no requiere fecha. Las acciones sin fecha también se sincronizan.
-            if (!APPS_SCRIPT_URL) return;
-            if (accion.estatus === 'Completada') return; // Las completadas no se sincronizan
-            
-            // Lock por acción individual
-            if (syncLocksIndividuales.has(accion.id)) {
-                console.log('Sync ya en curso para acción', accion.id);
-                return;
-            }
-            syncLocksIndividuales.add(accion.id);
-            
-            try {
-                // Extraer IDs existentes (compatible con formato viejo string y nuevo objeto)
-                const refExistente = obtenerRefDeAccion(accion.id);
-                const esUpdate = !!(refExistente && refExistente.taskId);
-                
-                const payload = {
-                    action: esUpdate ? 'update' : 'create',
-                    ...construirPayloadAccion(accion),
-                    taskId: esUpdate ? refExistente.taskId : null,
-                    listaId: esUpdate ? refExistente.listaId : null
-                };
-                
-                const response = await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    redirect: 'follow',
-                    body: JSON.stringify(payload)
-                });
-                
-                const resultado = await response.json();
-                
-                if (resultado.success && resultado.taskId) {
-                    // v4.7: Detectar si backend creó task nueva en lugar de actualizar
-                    const taskIdEnviado = esUpdate ? refExistente.taskId : null;
-                    const backendCreoNueva = esUpdate && taskIdEnviado !== resultado.taskId;
-                    if (backendCreoNueva) {
-                        console.warn(`⚠️ Acción ${accion.id}: Backend creó task NUEVA (${resultado.taskId}) en lugar de actualizar (${taskIdEnviado}). Ref local actualizada.`);
-                    }
-                    // SIEMPRE guardar el taskId+listaId que devuelve el backend (fuente de verdad)
-                    guardarRefDeAccion(accion.id, resultado.taskId, resultado.listaId || (refExistente && refExistente.listaId));
-                    guardarDatos();
-                    console.log(`✅ Sync ${esUpdate && !backendCreoNueva ? 'update' : 'create'} OK - Acción ${accion.id} -> Task ${resultado.taskId}`);
-                } else if (!resultado.success) {
-                    console.warn(`❌ Sync ${esUpdate ? 'update' : 'create'} falló:`, resultado.error || 'sin detalle');
-                    
-                    // RECUPERACIÓN: Si el update falla por "Missing task list ID",
-                    // significa que tenemos un taskId huérfano. Lo borramos del mapa
-                    // y reintentamos como create para no perder la sincronización.
-                    if (esUpdate && resultado.error && /Missing task list|task list ID/i.test(resultado.error)) {
-                        console.log('🔁 Detectado taskId huérfano, reintentando como create...');
-                        delete accionToTaskMap[accion.id];
-                        guardarDatos();
-                        syncLocksIndividuales.delete(accion.id);
-                        return syncAccionIndividual(accion); // Reintento limpio
-                    }
-                }
-            } catch (error) {
-                console.warn('Auto-sync error (no crítico):', error.message);
-            } finally {
-                syncLocksIndividuales.delete(accion.id);
-            }
-        }
-        
-        /**
-         * Eliminar la task remota de Google Tasks cuando se borra una acción local.
-         */
-        async function eliminarTaskRemoto(accionId) {
-            const ref = obtenerRefDeAccion(accionId);
-            if (!ref || !ref.taskId) return;
-            
-            try {
-                const payload = {
-                    action: 'delete',
-                    taskId: ref.taskId,
-                    listaId: ref.listaId || null,
-                    accionId: accionId
-                };
-                
-                await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    redirect: 'follow',
-                    body: JSON.stringify(payload)
-                });
-                
-                delete accionToTaskMap[accionId];
-                guardarDatos();
-            } catch (error) {
-                console.warn('Eliminación remota falló:', error.message);
-            }
-        }
-        
-        /**
-         * RESET SYNC MAP - Limpia el mapa local de sincronización.
-         * Usar SOLO después de borrar manualmente las listas en Google Tasks,
-         * para que el siguiente sync vuelva a crear todo desde cero.
-         */
-        function resetSyncMap() {
-            const totalActual = Object.keys(accionToTaskMap).length;
-            const mensaje = `⚠️ Reset Sync Map\n\n` +
-                `Esto borra el mapa local de IDs (accionId -> taskId).\n` +
-                `Actualmente tiene ${totalActual} mapeos.\n\n` +
-                `USAR SOLO si ya borraste las listas duplicadas en Google Tasks.\n` +
-                `El próximo sync creará todo desde cero.\n\n` +
-                `¿Continuar?`;
-            
-            if (!confirm(mensaje)) return;
-            
-            accionToTaskMap = {};
-            localStorage.removeItem('ccAccionToTaskMap');
-            guardarDatos();
-            
-            alert('✅ Sync Map reseteado. El próximo Sync creará todo limpio.');
-        }
-       // ==========================================
-        // SYNC BIDIRECCIONAL - Pull de cambios desde Google Tasks
+        // EXPORTACIÓN PDF CORPORATIVO - GRUPO GUÍA
         // ==========================================
 
-        /**
-         * Llama al backend pull_changes y devuelve el resultado.
-         */
-        async function pullCambiosDesdeBackend() {
-            const syncMapSimple = {};
-            for (const accionId in accionToTaskMap) {
-                const ref = obtenerRefDeAccion(accionId);
-                if (ref && ref.taskId) {
-                    syncMapSimple[accionId] = ref.taskId;
-                }
+        function construirHeaderPDF(doc, titulo, subtitulo) {
+            const pW = doc.internal.pageSize.getWidth();
+
+            // Banda superior oscura
+            doc.setFillColor(26, 29, 41); // --sidebar-bg
+            doc.rect(0, 0, pW, 22, 'F');
+
+            // Título empresa
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(13);
+            doc.text('GRUPO GUÍA — Control de Proyectos Macros', 12, 10);
+
+            // Sub-título en la misma banda
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(180, 190, 210);
+            doc.text('Macrolotes · Gestión Ejecutiva de Acciones', 12, 17);
+
+            // Fecha de generación (derecha)
+            const fechaStr = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+            doc.setFontSize(7.5);
+            doc.text(fechaStr, pW - 12, 10, { align: 'right' });
+            doc.text(new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }), pW - 12, 17, { align: 'right' });
+
+            // Banda azul secundaria con título del reporte
+            doc.setFillColor(59, 130, 246); // --primary
+            doc.rect(0, 22, pW, 9, 'F');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.setTextColor(255, 255, 255);
+            doc.text(titulo.toUpperCase(), 12, 28.5);
+
+            if (subtitulo) {
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7.5);
+                doc.text(subtitulo, pW - 12, 28.5, { align: 'right' });
             }
 
-            const dashboardSnapshot = acciones.map(a => ({
-                id: a.id,
-                accionEjecutiva: a.accionEjecutiva || '',
-                estatus: a.estatus || 'No iniciado',
-                avance: a.avance || 0,
-                fechaCompromiso: a.fechaCompromiso || null,
-                proyectoId: a.proyectoId
-            }));
-
-            const proyectosSnapshot = proyectos.map(p => ({
-                id: p.id,
-                nombre: p.nombre
-            }));
-
-            const response = await fetch(APPS_SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                redirect: 'follow',
-                body: JSON.stringify({
-                    action: 'pull_changes',
-                    syncMap: syncMapSimple,
-                    dashboardSnapshot: dashboardSnapshot,
-                    proyectos: proyectosSnapshot
-                })
-            });
-
-            return await response.json();
+            return 38; // Y inicial para el contenido
         }
 
-        /**
-         * Importa todas las tasks huérfanas como acciones nuevas en el dashboard.
-         */
-        function importarHuerfanasAutomatico(huerfanas) {
-            let importadas = 0;
-            const ahora = new Date().toISOString();
-
-            huerfanas.forEach(h => {
-                const proyecto = proyectos.find(p => String(p.id) === String(h.proyectoId));
-                if (!proyecto) {
-                    console.warn('Huérfana ignorada (proyecto no existe):', h.titulo);
-                    return;
-                }
-
-                const nuevaAccion = {
-                    id: Date.now() + Math.floor(Math.random() * 1000) + importadas,
-                    proyectoId: proyecto.id,
-                    tema: '',
-                    accionEjecutiva: h.titulo || '(Sin título)',
-                    responsable: '',
-                    area: '',
-                    prioridad: 'Media',
-                    estatus: h.status === 'completed' ? 'Completada' : 'No iniciado',
-                    avance: h.status === 'completed' ? 100 : 0,
-                    fechaCompromiso: h.fechaCompromiso || '',
-                    observaciones: h.notas || '',
-                    tipo: 'Estratégica',
-                    fechaCreacion: ahora,
-                    fechaModificacion: ahora
-                };
-
-                acciones.push(nuevaAccion);
-
-                accionToTaskMap[nuevaAccion.id] = {
-                    taskId: h.taskId,
-                    listaId: h.listaId
-                };
-
-                importadas++;
-            });
-
-            return importadas;
-        }
-
-        /**
-         * Muestra el modal de revisión de cambios con checkboxes.
-         */
-        function mostrarModalRevisionCambios(modificadas) {
-            return new Promise((resolve) => {
-                const modal = document.getElementById('modalRevisionCambios');
-                const lista = document.getElementById('listaRevisionCambios');
-
-                let html = '';
-                modificadas.forEach((mod, idx) => {
-                    const cambiosTexto = Object.entries(mod.cambios).map(([campo, valor]) => {
-                        return `<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;"><strong>${campo}:</strong> "${valor}"</div>`;
-                    }).join('');
-
-                    html += `
-                        <div style="background: var(--gray-50); padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid var(--primary);">
-                            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
-                                <input type="checkbox" class="check-revision" data-idx="${idx}" checked style="margin-top: 4px; width: 18px; height: 18px; cursor: pointer;">
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; color: var(--text-primary); font-size: 0.875rem;">${mod.tituloAccion || '(Sin título)'}</div>
-                                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">${mod.proyecto || ''}</div>
-                                    ${cambiosTexto}
-                                </div>
-                            </label>
-                        </div>
-                    `;
-                });
-
-                lista.innerHTML = html;
-                document.getElementById('contadorRevisionCambios').textContent = modificadas.length;
-                modal.classList.add('active');
-
-                document.getElementById('btnAplicarRevision').onclick = () => {
-                    const seleccionados = [];
-                    document.querySelectorAll('.check-revision:checked').forEach(check => {
-                        const idx = parseInt(check.getAttribute('data-idx'));
-                        seleccionados.push(modificadas[idx]);
-                    });
-                    modal.classList.remove('active');
-                    resolve(seleccionados);
-                };
-
-                document.getElementById('btnCancelarRevision').onclick = () => {
-                    modal.classList.remove('active');
-                    resolve([]);
-                };
-            });
-        }
-
-        /**
-         * Aplica los cambios seleccionados a las acciones del dashboard.
-         */
-        function aplicarCambiosSeleccionados(cambiosAprobados) {
-            let aplicados = 0;
-
-            cambiosAprobados.forEach(cambio => {
-                const idx = acciones.findIndex(a => String(a.id) === String(cambio.accionId));
-                if (idx === -1) return;
-
-                const accion = acciones[idx];
-
-                Object.entries(cambio.cambios).forEach(([campo, valor]) => {
-                    if (campo === 'accionEjecutiva' && valor) {
-                        accion.accionEjecutiva = valor;
-                    } else if (campo === 'estatus' && valor) {
-                        accion.estatus = valor;
-                    } else if (campo === 'avance' && typeof valor === 'number') {
-                        accion.avance = valor;
-                    } else if (campo === 'fechaCompromiso') {
-                        accion.fechaCompromiso = valor || '';
-                    }
-                });
-
-                accion.fechaModificacion = new Date().toISOString();
-                acciones[idx] = accion;
-                aplicados++;
-            });
-
-            return aplicados;
-        }
-
-        // ============================================
-        // CENTRO DE MANDO v5.0 - LÓGICA
-        // ============================================
-
-        function renderComando() {
-            actualizarFechaComando();
-            renderAccionDelDia();
-            renderCuadranteScore();
-            renderCuadranteHoy();
-            renderCuadranteMomentum();
-            renderCuadranteAlertas();
-            actualizarBadgeVencidasComando();
-        }
-
-        function actualizarFechaComando() {
-            const dias = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
-            const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-            const hoy = new Date();
-            const fechaStr = `${dias[hoy.getDay()]} ${hoy.getDate()} de ${meses[hoy.getMonth()]} ${hoy.getFullYear()}`;
-            const elFecha = document.getElementById('comandoFecha');
-            const elHoyFecha = document.getElementById('cuadranteHoyFecha');
-            if (elFecha) elFecha.textContent = fechaStr;
-            if (elHoyFecha) elHoyFecha.textContent = `Tu día — ${fechaStr}`;
-        }
-
-        function actualizarBadgeVencidasComando() {
-            const { vencidas } = calcularAlarmas();
-            const badge = document.getElementById('badgeVencidasComando');
-            if (!badge) return;
-            if (vencidas.length > 0) {
-                badge.textContent = vencidas.length;
-                badge.style.display = 'block';
-            } else {
-                badge.style.display = 'none';
-            }
-        }
-
-        // ===== ACCIÓN DEL DÍA =====
-        function calcularAccionDelDia() {
-            const hoy = new Date();
-            hoy.setHours(0, 0, 0, 0);
-            const candidatas = acciones.filter(a => 
-                a.estatus !== 'Completada' && 
-                a.fechaCompromiso &&
-                a.estatus !== 'Pausada'
-            );
-            if (candidatas.length === 0) return null;
-            const conScore = candidatas.map(a => {
-                const fecha = new Date(formatearFecha(a.fechaCompromiso));
-                const diasVencido = Math.ceil((hoy - fecha) / (1000*60*60*24));
-                let score = 0;
-                if (diasVencido > 0) score += diasVencido * 10;
-                else if (diasVencido === 0) score += 5;
-                if (a.prioridad === 'Alta') score += 20;
-                else if (a.prioridad === 'Media') score += 5;
-                if (a.estatus === 'Bloqueada') score += 15;
-                if (a.estatus === 'Retrasada') score += 10;
-                return { accion: a, score, diasVencido };
-            });
-            conScore.sort((a, b) => b.score - a.score);
-            return conScore[0];
-        }
-
-        function renderAccionDelDia() {
-            const banner = document.getElementById('accionDelDiaBanner');
-            if (!banner) return;
-            const top = calcularAccionDelDia();
-            if (!top) {
-                banner.innerHTML = `
-                    <div class="accion-del-dia empty">
-                        <div class="accion-del-dia-icon">✨</div>
-                        <div class="accion-del-dia-content">
-                            <div class="accion-del-dia-label">Sin acciones críticas</div>
-                            <div class="accion-del-dia-titulo">Todo está bajo control</div>
-                            <div class="accion-del-dia-meta">No tienes acciones vencidas o de alta prioridad pendientes</div>
-                        </div>
-                    </div>`;
-                return;
-            }
-            const a = top.accion;
-            const proyecto = proyectos.find(p => p.id === a.proyectoId);
-            const meta = [];
-            if (top.diasVencido > 0) meta.push(`Vencida hace ${top.diasVencido} día${top.diasVencido > 1 ? 's' : ''}`);
-            else if (top.diasVencido === 0) meta.push('Vence HOY');
-            if (a.prioridad) meta.push(`Prioridad ${a.prioridad}`);
-            if (proyecto) meta.push(proyecto.nombre);
-            if (a.responsable) meta.push(`→ ${a.responsable}`);
-            banner.innerHTML = `
-                <div class="accion-del-dia" onclick="abrirModalAccion(${a.id})" style="cursor: pointer;">
-                    <div class="accion-del-dia-icon">🎯</div>
-                    <div class="accion-del-dia-content">
-                        <div class="accion-del-dia-label">La acción del día</div>
-                        <div class="accion-del-dia-titulo">${(a.accionEjecutiva || 'Sin descripción').substring(0, 110)}${(a.accionEjecutiva || '').length > 110 ? '...' : ''}</div>
-                        <div class="accion-del-dia-meta">${meta.join(' · ')}</div>
-                    </div>
-                </div>`;
-        }
-
-        // ===== CUADRANTE 1: SCORE =====
-        function renderCuadranteScore() {
-            const cont = document.getElementById('cuadranteScore');
-            if (!cont) return;
-            const total = acciones.length;
-            const cumplidas = acciones.filter(a => a.estatus === 'Completada').length;
-            const enTiempo = acciones.filter(a => {
-                if (a.estatus === 'Completada') return false;
+        function resumenEstadisticasPDF(doc, accsList, yStart) {
+            const pW = doc.internal.pageSize.getWidth();
+            const total = accsList.length;
+            const alta = accsList.filter(a => a.prioridad === 'Alta').length;
+            const vencidas = accsList.filter(a => {
                 if (!a.fechaCompromiso) return false;
-                return new Date(formatearFecha(a.fechaCompromiso)) >= new Date();
-            }).length;
-            const vencidas = acciones.filter(a => {
-                if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
                 return new Date(formatearFecha(a.fechaCompromiso)) < new Date();
             }).length;
-            const pct = total > 0 ? Math.round((cumplidas / total) * 100) : 0;
-            const tendencia = calcularTendenciaSemanal();
-            let tendenciaHTML = '';
-            if (tendencia.cambio > 0) {
-                tendenciaHTML = `<div class="score-tendencia">↑ +${tendencia.cambio}% vs semana pasada</div>`;
-            } else if (tendencia.cambio < 0) {
-                tendenciaHTML = `<div class="score-tendencia down">↓ ${tendencia.cambio}% vs semana pasada</div>`;
-            } else {
-                tendenciaHTML = `<div class="score-tendencia neutral">→ Sin cambio vs semana pasada</div>`;
-            }
-            cont.innerHTML = `
-                <div class="score-numeros">
-                    <span class="score-cumplidos">${cumplidas}</span>
-                    <span class="score-total">/ ${total}</span>
-                    <span class="score-pct">${pct}%</span>
-                </div>
-                <div class="score-bar">
-                    <div class="score-bar-fill" style="width: ${pct}%"></div>
-                </div>
-                <div class="score-stats">
-                    <div class="score-stat">
-                        <div class="score-stat-num green">${cumplidas}</div>
-                        <div class="score-stat-label">Cumplidos</div>
-                    </div>
-                    <div class="score-stat">
-                        <div class="score-stat-num yellow">${enTiempo}</div>
-                        <div class="score-stat-label">En tiempo</div>
-                    </div>
-                    <div class="score-stat">
-                        <div class="score-stat-num red">${vencidas}</div>
-                        <div class="score-stat-label">Vencidos</div>
-                    </div>
-                </div>
-                ${tendenciaHTML}`;
-        }
-
-        function calcularTendenciaSemanal() {
-            const hoy = new Date();
-            const haceSemana = new Date();
-            haceSemana.setDate(hoy.getDate() - 7);
-            const haceDosSemanas = new Date();
-            haceDosSemanas.setDate(hoy.getDate() - 14);
-            const completadasUltimaSemana = acciones.filter(a => {
-                if (a.estatus !== 'Completada') return false;
-                const f = new Date(a.fechaModificacion || a.fechaCreacion);
-                return f >= haceSemana && f <= hoy;
-            }).length;
-            const completadasSemanaAnterior = acciones.filter(a => {
-                if (a.estatus !== 'Completada') return false;
-                const f = new Date(a.fechaModificacion || a.fechaCreacion);
-                return f >= haceDosSemanas && f < haceSemana;
-            }).length;
-            let cambio = 0;
-            if (completadasSemanaAnterior > 0) {
-                cambio = Math.round(((completadasUltimaSemana - completadasSemanaAnterior) / completadasSemanaAnterior) * 100);
-            } else if (completadasUltimaSemana > 0) {
-                cambio = 100;
-            }
-            return { cambio, ultimaSemana: completadasUltimaSemana, semanaAnterior: completadasSemanaAnterior };
-        }
-
-        // ===== CUADRANTE 2: HOY =====
-        function renderCuadranteHoy() {
-            const cont = document.getElementById('cuadranteHoy');
-            if (!cont) return;
             const hoy = new Date();
             hoy.setHours(0, 0, 0, 0);
-            const finSemana = new Date(hoy);
-            finSemana.setDate(finSemana.getDate() + 7);
-            const vencidas = acciones.filter(a => {
-                if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
-                return new Date(formatearFecha(a.fechaCompromiso)) < hoy;
-            }).sort((a, b) => new Date(formatearFecha(a.fechaCompromiso)) - new Date(formatearFecha(b.fechaCompromiso)));
-            const venceHoy = acciones.filter(a => {
-                if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
+            const proximas7 = accsList.filter(a => {
+                if (!a.fechaCompromiso) return false;
                 const f = new Date(formatearFecha(a.fechaCompromiso));
-                return f.getTime() === hoy.getTime();
-            });
-            const venceSemana = acciones.filter(a => {
-                if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
-                const f = new Date(formatearFecha(a.fechaCompromiso));
-                return f > hoy && f <= finSemana;
-            });
-            let html = '';
-            if (vencidas.length === 0 && venceHoy.length === 0 && venceSemana.length === 0) {
-                html = `<div class="hoy-vacio">✨ No tienes pendientes urgentes</div>`;
-            } else {
-                if (vencidas.length > 0) {
-                    html += `<div class="hoy-bloque vencidas">
-                        <div class="hoy-bloque-header">🔴 ${vencidas.length} vencida${vencidas.length > 1 ? 's' : ''} — atender ya</div>`;
-                    vencidas.slice(0, 3).forEach(a => {
-                        const proy = proyectos.find(p => p.id === a.proyectoId);
-                        const titulo = (a.accionEjecutiva || 'Sin descripción').substring(0, 55);
-                        html += `<div class="hoy-item" onclick="abrirModalAccion(${a.id})" style="cursor:pointer;">• ${titulo}${a.accionEjecutiva && a.accionEjecutiva.length > 55 ? '...' : ''} ${a.responsable ? `<span style="opacity:0.7">(${a.responsable})</span>` : ''}</div>`;
-                    });
-                    if (vencidas.length > 3) html += `<div class="hoy-item" style="opacity:0.7">+ ${vencidas.length - 3} más</div>`;
-                    html += '</div>';
-                }
-                if (venceHoy.length > 0) {
-                    html += `<div class="hoy-bloque hoy">
-                        <div class="hoy-bloque-header">⏰ ${venceHoy.length} vence${venceHoy.length > 1 ? 'n' : ''} hoy</div>`;
-                    venceHoy.slice(0, 3).forEach(a => {
-                        const titulo = (a.accionEjecutiva || 'Sin descripción').substring(0, 55);
-                        html += `<div class="hoy-item" onclick="abrirModalAccion(${a.id})" style="cursor:pointer;">• ${titulo}${a.accionEjecutiva && a.accionEjecutiva.length > 55 ? '...' : ''}</div>`;
-                    });
-                    if (venceHoy.length > 3) html += `<div class="hoy-item" style="opacity:0.7">+ ${venceHoy.length - 3} más</div>`;
-                    html += '</div>';
-                }
-                if (venceSemana.length > 0) {
-                    html += `<div class="hoy-bloque semana">
-                        <div class="hoy-bloque-header">📅 Esta semana: ${venceSemana.length} más</div>
-                    </div>`;
-                }
-            }
-            cont.innerHTML = html;
-        }
-
-        // ===== CUADRANTE 3: MOMENTUM =====
-        function renderCuadranteMomentum() {
-            const cont = document.getElementById('cuadranteMomentum');
-            if (!cont) return;
-            if (proyectos.length === 0) {
-                cont.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-secondary); font-size:0.875rem;">No hay proyectos para mostrar</div>`;
-                return;
-            }
-            const datos = proyectos.map(proy => {
-                const accs = acciones.filter(a => a.proyectoId === proy.id);
-                const total = accs.length;
-                if (total === 0) return null;
-                const completadas = accs.filter(a => a.estatus === 'Completada').length;
-                const pct = Math.round((completadas / total) * 100);
-                const tendencia = calcularTendenciaProyecto(proy.id);
-                return { proy, pct, total, completadas, tendencia };
-            }).filter(d => d !== null).sort((a, b) => b.pct - a.pct);
-            let html = '';
-            datos.forEach(d => {
-                let color = 'red';
-                if (d.pct >= 70) color = 'green';
-                else if (d.pct >= 40) color = 'yellow';
-                let flecha = '→';
-                if (d.tendencia > 0) flecha = '↑';
-                else if (d.tendencia < 0) flecha = '↓';
-                html += `<div class="momentum-item" onclick="filtrarPorProyecto(${d.proy.id})">
-                    <div class="momentum-item-header">
-                        <span class="momentum-nombre">${d.proy.nombre}</span>
-                        <span class="momentum-pct ${color}">${d.pct}% ${flecha}</span>
-                    </div>
-                    <div class="momentum-bar">
-                        <div class="momentum-bar-fill ${color}" style="width: ${d.pct}%"></div>
-                    </div>
-                </div>`;
-            });
-            if (html === '') {
-                html = `<div style="text-align:center; padding:20px; color:var(--text-secondary); font-size:0.875rem;">Aún no hay acciones registradas</div>`;
-            }
-            cont.innerHTML = html;
-        }
-
-        function calcularTendenciaProyecto(proyectoId) {
-            const hoy = new Date();
-            const haceSemana = new Date();
-            haceSemana.setDate(hoy.getDate() - 7);
-            const haceDosSemanas = new Date();
-            haceDosSemanas.setDate(hoy.getDate() - 14);
-            const accsProy = acciones.filter(a => a.proyectoId === proyectoId);
-            const ultimaSemana = accsProy.filter(a => {
-                if (a.estatus !== 'Completada') return false;
-                const f = new Date(a.fechaModificacion || a.fechaCreacion);
-                return f >= haceSemana;
+                const diff = Math.ceil((f - hoy) / (1000 * 60 * 60 * 24));
+                return diff >= 0 && diff <= 7;
             }).length;
-            const semanaAnterior = accsProy.filter(a => {
-                if (a.estatus !== 'Completada') return false;
-                const f = new Date(a.fechaModificacion || a.fechaCreacion);
-                return f >= haceDosSemanas && f < haceSemana;
-            }).length;
-            return ultimaSemana - semanaAnterior;
-        }
+            const bloqueadas = accsList.filter(a => a.estatus === 'Bloqueada').length;
 
-        function filtrarPorProyecto(proyectoId) {
-            const filtroAcciones = document.getElementById('accionesProyectoFilter');
-            if (filtroAcciones) filtroAcciones.value = proyectoId;
-            showView('acciones', null);
-            if (typeof renderAcciones === 'function') renderAcciones();
-        }
+            // Recuadro resumen
+            doc.setFillColor(245, 248, 255);
+            doc.setDrawColor(220, 226, 240);
+            doc.roundedRect(10, yStart, pW - 20, 14, 2, 2, 'FD');
 
-        // ===== CUADRANTE 4: ALERTAS IA =====
-        function renderCuadranteAlertas() {
-            const cont = document.getElementById('cuadranteAlertas');
-            if (!cont) return;
-            const alertas = generarAlertasInteligentes();
-            if (alertas.length === 0) {
-                cont.innerHTML = `<div class="sin-alertas">✨ Todo bajo control · sin alertas</div>`;
-                return;
-            }
-            let html = '';
-            alertas.slice(0, 5).forEach(a => {
-                html += `<div class="alerta-card ${a.tipo}">
-                    <div class="alerta-titulo">${a.titulo}</div>
-                    <div class="alerta-detalle">${a.detalle}</div>
-                </div>`;
+            const cols = [
+                { label: 'Total Activas', value: total, color: [59, 130, 246] },
+                { label: 'Prioridad Alta', value: alta, color: [245, 158, 11] },
+                { label: 'Vencidas', value: vencidas, color: [220, 38, 38] },
+                { label: 'Próx. 7 días', value: proximas7, color: [6, 182, 212] },
+                { label: 'Bloqueadas', value: bloqueadas, color: [139, 92, 246] }
+            ];
+
+            const colW = (pW - 20) / cols.length;
+            cols.forEach((col, i) => {
+                const cx = 10 + i * colW + colW / 2;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(...col.color);
+                doc.text(String(col.value), cx, yStart + 7, { align: 'center' });
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(6.5);
+                doc.setTextColor(100, 110, 130);
+                doc.text(col.label, cx, yStart + 12, { align: 'center' });
             });
-            cont.innerHTML = html;
+
+            return yStart + 20;
         }
 
-        function generarAlertasInteligentes() {
-            const alertas = [];
+        function calcularDiasRestantes(fechaStr) {
+            if (!fechaStr) return '-';
+            const fecha = new Date(formatearFecha(fechaStr));
             const hoy = new Date();
             hoy.setHours(0, 0, 0, 0);
-
-            // Alerta 1: Proyectos estancados (sin avance hace +5 días)
-            proyectos.forEach(proy => {
-                const accs = acciones.filter(a => a.proyectoId === proy.id && a.estatus !== 'Completada');
-                if (accs.length === 0) return;
-                const ultimaModif = accs.reduce((max, a) => {
-                    const f = new Date(a.fechaModificacion || a.fechaCreacion);
-                    return f > max ? f : max;
-                }, new Date(0));
-                const dias = Math.floor((hoy - ultimaModif) / (1000 * 60 * 60 * 24));
-                if (dias >= 5 && dias < 365) {
-                    alertas.push({
-                        tipo: 'peligro',
-                        titulo: `${proy.nombre} estancado`,
-                        detalle: `${dias} días sin avance · escalar`,
-                        prioridad: 100 - dias
-                    });
-                }
-            });
-
-            // Alerta 2: Sobrecarga de responsables
-            const cargaPorResp = {};
-            acciones.forEach(a => {
-                if (a.estatus === 'Completada') return;
-                const r = a.responsable || 'Sin asignar';
-                cargaPorResp[r] = (cargaPorResp[r] || 0) + 1;
-            });
-            Object.entries(cargaPorResp).forEach(([resp, count]) => {
-                if (count >= 12 && resp !== 'Sin asignar') {
-                    alertas.push({
-                        tipo: 'advertencia',
-                        titulo: `Sobrecarga: ${resp}`,
-                        detalle: `${count} acciones activas · redistribuir`,
-                        prioridad: count
-                    });
-                }
-            });
-
-            // Alerta 3: Acciones huérfanas (sin responsable)
-            const huerfanas = acciones.filter(a => 
-                a.estatus !== 'Completada' && 
-                (!a.responsable || a.responsable.trim() === '' || a.responsable === 'Sin asignar')
-            );
-            if (huerfanas.length > 0) {
-                alertas.push({
-                    tipo: 'advertencia',
-                    titulo: `${huerfanas.length} acción${huerfanas.length > 1 ? 'es' : ''} sin responsable`,
-                    detalle: 'Asignar responsable directo',
-                    prioridad: huerfanas.length * 5
-                });
-            }
-
-            // Alerta 4: Predicción de proyectos en riesgo (>50% vencidas)
-            proyectos.forEach(proy => {
-                const accs = acciones.filter(a => a.proyectoId === proy.id && a.estatus !== 'Completada');
-                if (accs.length < 3) return;
-                const vencidas = accs.filter(a => {
-                    if (!a.fechaCompromiso) return false;
-                    return new Date(formatearFecha(a.fechaCompromiso)) < hoy;
-                }).length;
-                const pctVencidas = Math.round((vencidas / accs.length) * 100);
-                if (pctVencidas >= 50) {
-                    alertas.push({
-                        tipo: 'peligro',
-                        titulo: `${proy.nombre} en riesgo`,
-                        detalle: `${pctVencidas}% de acciones activas vencidas`,
-                        prioridad: pctVencidas
-                    });
-                }
-            });
-
-            // Alerta 5: Bloqueadas críticas
-            const bloqueadas = acciones.filter(a => a.estatus === 'Bloqueada');
-            if (bloqueadas.length >= 3) {
-                alertas.push({
-                    tipo: 'advertencia',
-                    titulo: `${bloqueadas.length} acciones bloqueadas`,
-                    detalle: 'Revisar dependencias y desbloquear',
-                    prioridad: bloqueadas.length * 3
-                });
-            }
-
-            // Alerta 6: Velocidad cayendo
-            const tend = calcularTendenciaSemanal();
-            if (tend.cambio < -20 && tend.semanaAnterior >= 3) {
-                alertas.push({
-                    tipo: 'peligro',
-                    titulo: 'Velocidad cayendo',
-                    detalle: `${Math.abs(tend.cambio)}% menos cierres que semana pasada`,
-                    prioridad: Math.abs(tend.cambio)
-                });
-            } else if (tend.cambio > 30 && tend.ultimaSemana >= 3) {
-                alertas.push({
-                    tipo: 'info',
-                    titulo: 'Buen ritmo',
-                    detalle: `+${tend.cambio}% más cierres que semana pasada`,
-                    prioridad: 50
-                });
-            }
-
-            // Ordenar por prioridad descendente
-            alertas.sort((a, b) => b.prioridad - a.prioridad);
-            return alertas;
+            fecha.setHours(0, 0, 0, 0);
+            const dias = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24));
+            if (dias < 0) return `${dias}d`;
+            if (dias === 0) return 'Hoy';
+            return `+${dias}d`;
         }
 
-        // ===== MODO CEO =====
-        function activarModoCEO() {
-            document.body.classList.add('modo-ceo');
-            const docElem = document.documentElement;
-            if (docElem.requestFullscreen) docElem.requestFullscreen().catch(() => {});
-            else if (docElem.webkitRequestFullscreen) docElem.webkitRequestFullscreen();
-        }
-
-        function salirModoCEO() {
-            document.body.classList.remove('modo-ceo');
-            if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
-            else if (document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && document.body.classList.contains('modo-ceo')) {
-                salirModoCEO();
-            }
-        });
-
-        // ===== REPORTE PDF SEMANAL =====
-        function generarReporteSemanalPDF() {
-            if (typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
-                cargarLibreriasPDF(() => generarReporteSemanalPDFInterno());
-            } else {
-                generarReporteSemanalPDFInterno();
-            }
-        }
-
-        function cargarLibreriasPDF(callback) {
-            const s1 = document.createElement('script');
-            s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-            s1.onload = () => {
-                const s2 = document.createElement('script');
-                s2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js';
-                s2.onload = callback;
-                document.body.appendChild(s2);
+        function colorEstadoPDF(estatus) {
+            const mapa = {
+                'No iniciado':  [107, 114, 128],
+                'Pendiente':    [245, 158, 11],
+                'En progreso':  [59, 130, 246],
+                'Completada':   [16, 185, 129],
+                'Bloqueada':    [220, 38, 38],
+                'Retrasada':    [234, 88, 12],
+                'Pausada':      [139, 92, 246]
             };
-            document.body.appendChild(s1);
+            return mapa[estatus] || [80, 80, 80];
         }
 
-        function generarReporteSemanalPDFInterno() {
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                const total = acciones.length;
-                const cumplidas = acciones.filter(a => a.estatus === 'Completada').length;
-                const vencidas = acciones.filter(a => {
-                    if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
-                    return new Date(formatearFecha(a.fechaCompromiso)) < new Date();
-                }).length;
-                const pct = total > 0 ? Math.round((cumplidas / total) * 100) : 0;
-                const tend = calcularTendenciaSemanal();
-                const fechaStr = new Date().toLocaleDateString('es-MX', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+        function colorPrioridadPDF(prioridad) {
+            if (prioridad === 'Alta') return [220, 38, 38];
+            if (prioridad === 'Media') return [245, 158, 11];
+            return [16, 185, 129];
+        }
 
-                // Header
-                doc.setFillColor(31, 41, 55);
-                doc.rect(0, 0, 210, 35, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(18);
-                doc.setFont('helvetica', 'bold');
-                doc.text('REPORTE EJECUTIVO SEMANAL', 14, 16);
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Centro de Control Macros · Grupo Guía', 14, 24);
-                doc.setFontSize(9);
-                doc.text(fechaStr, 14, 30);
+        function construirTablaAccionesPDF(doc, accsList, yStart, mostrarResponsable = true) {
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
 
-                // Score box
-                doc.setTextColor(31, 41, 55);
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'bold');
-                doc.text('SCORE DE CUMPLIMIENTO', 14, 50);
-                doc.setFontSize(28);
-                doc.setTextColor(16, 185, 129);
-                doc.text(`${pct}%`, 14, 65);
-                doc.setFontSize(10);
-                doc.setTextColor(75, 85, 99);
-                doc.text(`${cumplidas} cumplidas de ${total} totales`, 14, 73);
-                let tendTexto = 'Sin cambio vs semana pasada';
-                if (tend.cambio > 0) tendTexto = `+${tend.cambio}% vs semana pasada`;
-                else if (tend.cambio < 0) tendTexto = `${tend.cambio}% vs semana pasada`;
-                doc.text(tendTexto, 14, 79);
+            const columnas = [];
+            const headers = [];
 
-                // Stats
-                doc.setFillColor(243, 244, 246);
-                doc.rect(120, 45, 75, 40, 'F');
-                doc.setTextColor(31, 41, 55);
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'bold');
-                doc.text('RESUMEN', 124, 52);
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(9);
-                doc.text(`Total acciones: ${total}`, 124, 60);
-                doc.text(`Cumplidas: ${cumplidas}`, 124, 66);
-                doc.text(`Vencidas: ${vencidas}`, 124, 72);
-                doc.text(`Bloqueadas: ${acciones.filter(a => a.estatus === 'Bloqueada').length}`, 124, 78);
+            if (mostrarResponsable) {
+                columnas.push({ key: 'proyecto', label: 'Proyecto', width: 22 });
+            }
+            columnas.push(
+                { key: 'tema',        label: 'Tema',        width: 18 },
+                { key: 'accion',      label: 'Acción',      width: mostrarResponsable ? 52 : 65 },
+                { key: 'resp',        label: 'Responsable', width: mostrarResponsable ? 22 : 0, hide: !mostrarResponsable },
+                { key: 'area',        label: 'Área',        width: 22 },
+                { key: 'prioridad',   label: 'Prior.',      width: 13 },
+                { key: 'estado',      label: 'Estado',      width: 20 },
+                { key: 'avance',      label: 'Av%',         width: 10 },
+                { key: 'deadline',    label: 'Deadline',    width: 18 },
+                { key: 'diasRest',    label: 'Días',        width: 11 },
+                { key: 'obs',         label: 'Obs.',        width: 22 }
+            );
 
-                // Estado por proyecto
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(31, 41, 55);
-                doc.text('AVANCE POR PROYECTO', 14, 100);
+            const colsFinal = columnas.filter(c => !c.hide);
+            const colStyles = {};
+            colsFinal.forEach((c, i) => {
+                colStyles[i] = { cellWidth: c.width };
+            });
 
-                const filasProy = proyectos.map(p => {
-                    const accs = acciones.filter(a => a.proyectoId === p.id);
-                    const t = accs.length;
-                    const c = accs.filter(a => a.estatus === 'Completada').length;
-                    const pp = t > 0 ? Math.round((c / t) * 100) : 0;
-                    const v = accs.filter(a => {
-                        if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
-                        return new Date(formatearFecha(a.fechaCompromiso)) < new Date();
-                    }).length;
-                    return [p.nombre, t.toString(), c.toString(), v.toString(), pp + '%'];
-                });
+            const body = accsList.map(a => {
+                const proyecto = proyectos.find(p => p.id === a.proyectoId);
+                const dias = calcularDiasRestantes(a.fechaCompromiso);
+                const esVencida = a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoy;
+                const estatusLimpio = (a.estatus || 'No iniciado').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                const prioridadLimpia = (a.prioridad || 'Media').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
 
-                doc.autoTable({
-                    startY: 105,
-                    head: [['Proyecto', 'Total', 'Cumplidas', 'Vencidas', 'Avance']],
-                    body: filasProy,
-                    theme: 'grid',
-                    headStyles: { fillColor: [31, 41, 55], textColor: [255, 255, 255], fontSize: 9 },
-                    styles: { fontSize: 9, cellPadding: 3 },
-                    columnStyles: {
-                        0: { cellWidth: 70 },
-                        1: { halign: 'center', cellWidth: 25 },
-                        2: { halign: 'center', cellWidth: 28 },
-                        3: { halign: 'center', cellWidth: 28 },
-                        4: { halign: 'center', cellWidth: 25, fontStyle: 'bold' }
+                const row = [];
+                if (mostrarResponsable) row.push(proyecto?.nombre || '-');
+                row.push(
+                    a.tema || '-',
+                    a.accionEjecutiva || '-',
+                    ...(mostrarResponsable ? [] : []),
+                    a.area || '-',
+                    prioridadLimpia,
+                    estatusLimpio,
+                    `${a.avance || 0}%`,
+                    formatearFecha(a.fechaCompromiso),
+                    dias,
+                    (a.observaciones || '').substring(0, 60)
+                );
+                if (!mostrarResponsable) {
+                    // Insertar responsable en posición correcta (ya excluido)
+                }
+                return row;
+            });
+
+            // Rebuild body con todas las columnas correctamente
+            const bodyFinal = accsList.map(a => {
+                const proyecto = proyectos.find(p => p.id === a.proyectoId);
+                const dias = calcularDiasRestantes(a.fechaCompromiso);
+                const hoyLocal = new Date(); hoyLocal.setHours(0,0,0,0);
+                const esVencida = a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoyLocal;
+                const estatusLimpio = (a.estatus || 'No iniciado').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                const prioridadLimpia = (a.prioridad || 'Media').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                const fmtFecha = formatearFecha(a.fechaCompromiso);
+
+                return colsFinal.map(c => {
+                    switch (c.key) {
+                        case 'proyecto':   return proyecto?.nombre || '-';
+                        case 'tema':       return a.tema || '-';
+                        case 'accion':     return a.accionEjecutiva || '-';
+                        case 'resp':       return a.responsable || '-';
+                        case 'area':       return a.area || '-';
+                        case 'prioridad':  return prioridadLimpia;
+                        case 'estado':     return estatusLimpio;
+                        case 'avance':     return `${a.avance || 0}%`;
+                        case 'deadline':   return fmtFecha !== '-' ? fmtFecha : '-';
+                        case 'diasRest':   return dias;
+                        case 'obs':        return (a.observaciones || '').substring(0, 55);
+                        default:           return '-';
                     }
                 });
+            });
 
-                // Alertas
-                let yPos = doc.lastAutoTable.finalY + 12;
-                if (yPos > 230) { doc.addPage(); yPos = 20; }
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(31, 41, 55);
-                doc.text('ALERTAS Y RIESGOS', 14, yPos);
-                yPos += 7;
-                const alertas = generarAlertasInteligentes();
-                if (alertas.length === 0) {
-                    doc.setFontSize(10);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(16, 185, 129);
-                    doc.text('Sin alertas críticas en este momento', 14, yPos);
-                } else {
-                    doc.setFontSize(9);
-                    doc.setFont('helvetica', 'normal');
-                    alertas.slice(0, 6).forEach(a => {
-                        if (yPos > 270) { doc.addPage(); yPos = 20; }
-                        const color = a.tipo === 'peligro' ? [220, 38, 38] : a.tipo === 'advertencia' ? [234, 88, 12] : [6, 182, 212];
-                        doc.setTextColor(...color);
+            doc.autoTable({
+                startY: yStart,
+                head: [colsFinal.map(c => c.label)],
+                body: bodyFinal,
+                margin: { left: 10, right: 10 },
+                styles: {
+                    fontSize: 6.5,
+                    cellPadding: 2,
+                    overflow: 'linebreak',
+                    valign: 'middle',
+                    lineColor: [220, 226, 240],
+                    lineWidth: 0.3,
+                    textColor: [30, 40, 60]
+                },
+                headStyles: {
+                    fillColor: [26, 29, 41],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold',
+                    fontSize: 6.5,
+                    cellPadding: 3,
+                    halign: 'center'
+                },
+                alternateRowStyles: {
+                    fillColor: [248, 250, 255]
+                },
+                columnStyles: colStyles,
+                didDrawCell: function(data) {
+                    if (data.section !== 'body') return;
+                    const col = colsFinal[data.column.index];
+                    if (!col) return;
+
+                    // Color de prioridad
+                    if (col.key === 'prioridad') {
+                        const val = data.cell.raw;
+                        const rgb = colorPrioridadPDF(val);
+                        doc.setFillColor(...rgb);
+                        doc.roundedRect(data.cell.x + 1, data.cell.y + 1, data.cell.width - 2, data.cell.height - 2, 1, 1, 'F');
+                        doc.setTextColor(255, 255, 255);
                         doc.setFont('helvetica', 'bold');
-                        doc.text('• ' + a.titulo, 14, yPos);
-                        yPos += 5;
-                        doc.setTextColor(75, 85, 99);
-                        doc.setFont('helvetica', 'normal');
-                        doc.text('   ' + a.detalle, 14, yPos);
-                        yPos += 7;
-                    });
-                }
+                        doc.setFontSize(6);
+                        doc.text(val, data.cell.x + data.cell.width / 2, data.cell.y + data.cell.height / 2 + 0.5, { align: 'center', baseline: 'middle' });
+                    }
 
-                // Top 5 vencidas
-                if (yPos > 240) { doc.addPage(); yPos = 20; }
-                else yPos += 8;
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(31, 41, 55);
-                doc.text('TOP ACCIONES VENCIDAS', 14, yPos);
-                const top5Vencidas = acciones.filter(a => {
-                    if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
-                    return new Date(formatearFecha(a.fechaCompromiso)) < new Date();
-                }).sort((a, b) => new Date(formatearFecha(a.fechaCompromiso)) - new Date(formatearFecha(b.fechaCompromiso))).slice(0, 5);
+                    // Color de estado
+                    if (col.key === 'estado') {
+                        const val = data.cell.raw;
+                        const rgb = colorEstadoPDF(val);
+                        doc.setFillColor(...rgb);
+                        doc.roundedRect(data.cell.x + 1, data.cell.y + 1, data.cell.width - 2, data.cell.height - 2, 1, 1, 'F');
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(6);
+                        const texto = val.length > 12 ? val.substring(0, 11) + '.' : val;
+                        doc.text(texto, data.cell.x + data.cell.width / 2, data.cell.y + data.cell.height / 2 + 0.5, { align: 'center', baseline: 'middle' });
+                    }
 
-                if (top5Vencidas.length === 0) {
-                    yPos += 7;
-                    doc.setFontSize(10);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(16, 185, 129);
-                    doc.text('Sin acciones vencidas', 14, yPos);
-                } else {
-                    const filas5 = top5Vencidas.map(a => {
-                        const proy = proyectos.find(p => p.id === a.proyectoId);
-                        const dias = Math.ceil((new Date() - new Date(formatearFecha(a.fechaCompromiso))) / (1000*60*60*24));
-                        return [
-                            (a.accionEjecutiva || '').substring(0, 60),
-                            proy ? proy.nombre.substring(0, 20) : '',
-                            a.responsable || '',
-                            `-${dias}d`
-                        ];
-                    });
-                    doc.autoTable({
-                        startY: yPos + 3,
-                        head: [['Acción', 'Proyecto', 'Responsable', 'Atraso']],
-                        body: filas5,
-                        theme: 'grid',
-                        headStyles: { fillColor: [220, 38, 38], textColor: [255, 255, 255], fontSize: 9 },
-                        styles: { fontSize: 8, cellPadding: 2.5 },
-                        columnStyles: {
-                            0: { cellWidth: 90 },
-                            1: { cellWidth: 35 },
-                            2: { cellWidth: 35 },
-                            3: { halign: 'center', cellWidth: 22, fontStyle: 'bold', textColor: [220, 38, 38] }
+                    // Color de días restantes
+                    if (col.key === 'diasRest') {
+                        const val = data.cell.raw;
+                        if (val && val !== '-') {
+                            const num = parseInt(val);
+                            let rgb;
+                            if (num < 0) rgb = [220, 38, 38];
+                            else if (num <= 7) rgb = [245, 158, 11];
+                            else rgb = [16, 185, 129];
+                            doc.setTextColor(...rgb);
+                            doc.setFont('helvetica', 'bold');
+                            doc.setFontSize(6.5);
+                            doc.text(val, data.cell.x + data.cell.width / 2, data.cell.y + data.cell.height / 2 + 0.5, { align: 'center', baseline: 'middle' });
                         }
-                    });
+                    }
+                },
+                willDrawCell: function(data) {
+                    if (data.section !== 'body') return;
+                    const col = colsFinal[data.column.index];
+                    if (col && (col.key === 'prioridad' || col.key === 'estado')) {
+                        data.cell.text = []; // El texto lo dibujamos en didDrawCell
+                    }
                 }
+            });
 
-                // Footer
-                const pageCount = doc.internal.getNumberOfPages();
-                for (let i = 1; i <= pageCount; i++) {
-                    doc.setPage(i);
-                    doc.setFontSize(8);
-                    doc.setTextColor(156, 163, 175);
-                    doc.text(`Página ${i} de ${pageCount}`, 105, 290, { align: 'center' });
-                    doc.text('Centro de Control Macros · Grupo Guía · Confidencial', 105, 294, { align: 'center' });
-                }
+            return doc.lastAutoTable.finalY;
+        }
 
-                const fecha = new Date().toISOString().split('T')[0];
-                doc.save(`Reporte_Ejecutivo_${fecha}.pdf`);
-            } catch (e) {
-                console.error('Error generando PDF:', e);
-                alert('Error al generar PDF: ' + e.message);
+        function agregarPiePagina(doc) {
+            const pW = doc.internal.pageSize.getWidth();
+            const pH = doc.internal.pageSize.getHeight();
+            const totalPags = doc.internal.getNumberOfPages();
+
+            for (let i = 1; i <= totalPags; i++) {
+                doc.setPage(i);
+                doc.setDrawColor(200, 210, 230);
+                doc.line(10, pH - 10, pW - 10, pH - 10);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(6.5);
+                doc.setTextColor(130, 140, 160);
+                doc.text('Grupo Guía — Macrolotes · Confidencial', 12, pH - 5);
+                doc.text(`Pág. ${i} / ${totalPags}`, pW - 12, pH - 5, { align: 'right' });
             }
         }
 
-        // Hook: render Comando cuando se cambia a esa vista o cuando hay cambios
-        const _showViewOriginal = showView;
-        showView = function(viewName, event) {
-            _showViewOriginal(viewName, event);
-            if (viewName === 'comando') renderComando();
-        };
+        // ── EXPORTAR ACCIONES (vista Acciones con filtros activos) ──
+        function exportarPDFAcciones() {
+            if (typeof window.jspdf === 'undefined') {
+                alert('⏳ Las librerías PDF aún están cargando. Espera un momento e intenta de nuevo.');
+                return;
+            }
 
-        // Render inicial al cargar
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => setTimeout(renderComando, 200));
-        } else {
-            setTimeout(renderComando, 200);
+            const { jsPDF } = window.jspdf;
+
+            // Obtener filtros actuales
+            const filtroProyecto = document.getElementById('accionesProyectoFilter').value;
+            const filtroEstado = document.getElementById('accionesEstadoFilter').value;
+            const filtroPrioridad = document.getElementById('accionesPrioridadFilter').value;
+            const filtroResponsable = document.getElementById('accionesResponsableFilter').value;
+            const searchTerm = document.getElementById('accionesSearch').value.toLowerCase();
+
+            // Solo acciones ACTIVAS (excluir Completadas)
+            let acsFiltradas = acciones.filter(a => a.estatus !== 'Completada');
+            if (filtroProyecto) acsFiltradas = acsFiltradas.filter(a => a.proyectoId == filtroProyecto);
+            if (filtroEstado) acsFiltradas = acsFiltradas.filter(a => {
+                const estatusLimpio = (a.estatus || '').replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g, '').trim();
+                return estatusLimpio === filtroEstado;
+            });
+            if (filtroPrioridad) acsFiltradas = acsFiltradas.filter(a => a.prioridad === filtroPrioridad);
+            if (filtroResponsable) acsFiltradas = acsFiltradas.filter(a => a.responsable === filtroResponsable);
+            if (searchTerm) acsFiltradas = acsFiltradas.filter(a =>
+                (a.tema || '').toLowerCase().includes(searchTerm) ||
+                (a.accionEjecutiva || '').toLowerCase().includes(searchTerm) ||
+                (a.responsable || '').toLowerCase().includes(searchTerm)
+            );
+
+            // Ordenar: vencidas primero
+            const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+            acsFiltradas.sort((a, b) => {
+                const aV = a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoy;
+                const bV = b.fechaCompromiso && new Date(formatearFecha(b.fechaCompromiso)) < hoy;
+                if (aV && !bV) return -1;
+                if (!aV && bV) return 1;
+                if (!a.fechaCompromiso) return 1;
+                if (!b.fechaCompromiso) return -1;
+                return new Date(formatearFecha(a.fechaCompromiso)) - new Date(formatearFecha(b.fechaCompromiso));
+            });
+
+            if (acsFiltradas.length === 0) {
+                alert('⚠️ No hay acciones activas con los filtros seleccionados');
+                return;
+            }
+
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+
+            // Construir subtítulo según filtros
+            let filtrosDesc = [];
+            if (filtroProyecto) {
+                const p = proyectos.find(pr => pr.id == filtroProyecto);
+                if (p) filtrosDesc.push(p.nombre);
+            } else {
+                filtrosDesc.push('Todos los proyectos');
+            }
+            if (filtroResponsable) filtrosDesc.push(filtroResponsable);
+            if (filtroPrioridad) filtrosDesc.push(`Prior. ${filtroPrioridad}`);
+
+            let y = construirHeaderPDF(doc, 'Reporte de Acciones Activas', filtrosDesc.join(' · '));
+            y = resumenEstadisticasPDF(doc, acsFiltradas, y);
+
+            construirTablaAccionesPDF(doc, acsFiltradas, y, true);
+            agregarPiePagina(doc);
+
+            const fecha = new Date().toISOString().split('T')[0];
+            const nombreFiltro = filtroResponsable ? `_${filtroResponsable.replace(/\s+/g, '_')}` : '';
+            doc.save(`Acciones_Activas${nombreFiltro}_${fecha}.pdf`);
+        }
+
+        // ── EXPORTAR RESPONSABLE (desde tarjeta en vista Responsables) ──
+        function exportarPDFResponsable(responsable, proyectoId) {
+            if (typeof window.jspdf === 'undefined') {
+                alert('⏳ Las librerías PDF aún están cargando. Espera un momento e intenta de nuevo.');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+
+            // Solo acciones ACTIVAS del responsable
+            let accs = acciones.filter(a => a.responsable === responsable && a.estatus !== 'Completada');
+            if (proyectoId) accs = accs.filter(a => a.proyectoId == proyectoId);
+
+            if (accs.length === 0) {
+                alert(`⚠️ ${responsable} no tiene acciones activas para exportar`);
+                return;
+            }
+
+            // Ordenar: vencidas primero
+            const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+            accs.sort((a, b) => {
+                const aV = a.fechaCompromiso && new Date(formatearFecha(a.fechaCompromiso)) < hoy;
+                const bV = b.fechaCompromiso && new Date(formatearFecha(b.fechaCompromiso)) < hoy;
+                if (aV && !bV) return -1;
+                if (!aV && bV) return 1;
+                if (!a.fechaCompromiso) return 1;
+                if (!b.fechaCompromiso) return -1;
+                return new Date(formatearFecha(a.fechaCompromiso)) - new Date(formatearFecha(b.fechaCompromiso));
+            });
+
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+
+            const proyectoLabel = proyectoId
+                ? (proyectos.find(p => p.id == proyectoId)?.nombre || 'Proyecto')
+                : 'Todos los proyectos';
+
+            let y = construirHeaderPDF(doc, `Acciones Activas — ${responsable}`, proyectoLabel);
+
+            // Info del responsable
+            doc.setFillColor(239, 246, 255);
+            doc.setDrawColor(59, 130, 246);
+            doc.roundedRect(10, y, doc.internal.pageSize.getWidth() - 20, 10, 2, 2, 'FD');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.setTextColor(26, 29, 41);
+            doc.text(`👤 ${responsable}`, 15, y + 7);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(80, 100, 130);
+            doc.text(`${accs.length} acciones activas · ${proyectoLabel}`, doc.internal.pageSize.getWidth() - 15, y + 7, { align: 'right' });
+            y += 15;
+
+            y = resumenEstadisticasPDF(doc, accs, y);
+            construirTablaAccionesPDF(doc, accs, y, true);
+            agregarPiePagina(doc);
+
+            const fecha = new Date().toISOString().split('T')[0];
+            const nombreResp = responsable.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+            doc.save(`Acciones_${nombreResp}_${fecha}.pdf`);
         }
     </script>
 </body>
