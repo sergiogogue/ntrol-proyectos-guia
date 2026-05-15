@@ -2214,7 +2214,16 @@
                 </button>
                 <input type="file" id="importBackupFile" accept=".json" style="display: none;" onchange="importarBackupCompleto(event)">
                 <button class="btn btn-danger" onclick="resetData()" style="width: 100%; margin-bottom: 12px;">🗑 Reset Data</button>
-                <div class="version-text">v5.2 + Reunión</div>
+                <button class="config-btn" onclick="backupManualGDrive()" style="background: rgba(16,185,129,0.2); border-color: var(--secondary);">
+                    <span>☁️</span>
+                    <span>Backup Drive</span>
+                </button>
+                <button class="config-btn" onclick="enviarResumenSemanal()" style="background: rgba(6,182,212,0.15); border-color: var(--info);">
+                    <span>📧</span>
+                    <span>Resumen Semanal</span>
+                </button>
+                <div id="indicadorBackup" style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:4px;"></div>
+                <div class="version-text">v5.3 + AutoSync</div>
             </div>
         </div>
 
@@ -2595,7 +2604,11 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label class="form-label">Responsable Directo *</label>
-                            <input type="text" class="form-input" id="accionResponsable" required>
+                            <input type="text" class="form-input" id="accionResponsable" required oninput="autocompletarEmail()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email del Responsable</label>
+                            <input type="email" class="form-input" id="accionEmailResponsable" placeholder="nombre@grupoguia.mx">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Área</label>
@@ -2650,6 +2663,7 @@
                         <label class="form-label">Observaciones</label>
                         <textarea class="form-textarea" id="accionObservaciones" style="min-height: 80px;" placeholder="Notas, comentarios o detalles adicionales..."></textarea>
                     </div>
+                    <div id="historialAccionContainer"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" onclick="eliminarAccion()" style="margin-right: auto;">Eliminar</button>
@@ -2992,6 +3006,21 @@
             renderAcciones();
             renderResponsables();
             renderAnalisis();
+            
+            // AUTO-SYNC al abrir (silencioso, no bloquea UI)
+            setTimeout(() => {
+                sincronizarConTasks(true); // true = silencioso
+            }, 2000);
+
+            // BACKUP AUTOMÁTICO cada 30 minutos
+            setInterval(() => {
+                backupAutomaticoGDrive();
+            }, 30 * 60 * 1000);
+
+            // Backup al cerrar la página
+            window.addEventListener('beforeunload', () => {
+                backupAutomaticoGDrive();
+            });
         };
 
         // NAVEGACIÓN
@@ -3363,10 +3392,13 @@
                 document.getElementById('accionAvance').value = accion.avance || 0;
                 document.getElementById('accionFechaCompromiso').value = accion.fechaCompromiso || '';
                 document.getElementById('accionObservaciones').value = accion.observaciones || '';
+                document.getElementById('accionEmailResponsable').value = accion.emailResponsable || '';
+                setTimeout(() => mostrarHistorialAccion(accion.id), 100);
             } else {
                 title.textContent = 'Nueva Acción';
                 document.getElementById('formAccion').reset();
                 document.getElementById('accionId').value = '';
+                document.getElementById('historialAccionContainer').innerHTML = '';
                 // Popular selector de proyectos nuevamente después del reset
                 selectProyecto.innerHTML = '<option value="">Selecciona un proyecto...</option>' + 
                     proyectos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
@@ -3400,6 +3432,7 @@
                 tema: document.getElementById('accionTema').value,
                 accionEjecutiva: document.getElementById('accionTexto').value,
                 responsable: document.getElementById('accionResponsable').value,
+                emailResponsable: document.getElementById('accionEmailResponsable').value,
                 area: document.getElementById('accionArea').value,
                 prioridad: prioridad,
                 estatus: estatus,
@@ -3408,7 +3441,26 @@
                 observaciones: document.getElementById('accionObservaciones').value,
                 tipo: 'Estratégica',
                 fechaModificacion: new Date().toISOString(),
-                fechaCreacion: id ? (acciones.find(a => a.id === parseInt(id))?.fechaCreacion || new Date().toISOString()) : new Date().toISOString()
+                fechaCreacion: id ? (acciones.find(a => a.id === parseInt(id))?.fechaCreacion || new Date().toISOString()) : new Date().toISOString(),
+                historial: (() => {
+                    const anterior = id ? acciones.find(a => a.id === parseInt(id)) : null;
+                    const historialPrevio = anterior?.historial || [];
+                    if (anterior) {
+                        const cambios = [];
+                        if (anterior.estatus !== estatus) cambios.push(`Estado: "${anterior.estatus}" → "${estatus}"`);
+                        if (anterior.prioridad !== prioridad) cambios.push(`Prioridad: "${anterior.prioridad}" → "${prioridad}"`);
+                        if (anterior.fechaCompromiso !== document.getElementById('accionFechaCompromiso').value) 
+                            cambios.push(`Deadline: "${anterior.fechaCompromiso||'sin fecha'}" → "${document.getElementById('accionFechaCompromiso').value||'sin fecha'}"`);
+                        if (anterior.responsable !== document.getElementById('accionResponsable').value)
+                            cambios.push(`Responsable: "${anterior.responsable}" → "${document.getElementById('accionResponsable').value}"`);
+                        if (anterior.avance !== parseInt(document.getElementById('accionAvance').value))
+                            cambios.push(`Avance: ${anterior.avance||0}% → ${document.getElementById('accionAvance').value}%`);
+                        if (cambios.length > 0) {
+                            historialPrevio.push({ fecha: new Date().toISOString(), cambios });
+                        }
+                    }
+                    return historialPrevio;
+                })()
             };
 
             if (id) {
@@ -5158,6 +5210,162 @@
                 const fecha = new Date().toISOString().split('T')[0];
                 doc.save(`Reunion_Ejecutiva_${fecha}.pdf`);
             });
+        }
+
+
+        // ==========================================
+        // AUTOCOMPLETE EMAIL RESPONSABLE
+        // ==========================================
+        function autocompletarEmail() {
+            const nombre = document.getElementById('accionResponsable').value.trim();
+            const emailField = document.getElementById('accionEmailResponsable');
+            if (!emailField.value && nombre.length > 2) {
+                // Buscar si ya existe ese responsable con email
+                const accionExistente = acciones.find(a => 
+                    a.responsable === nombre && a.emailResponsable
+                );
+                if (accionExistente) {
+                    emailField.value = accionExistente.emailResponsable;
+                } else {
+                    // Sugerir email basado en nombre (primer.apellido@grupoguia.mx)
+                    const partes = nombre.toLowerCase()
+                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                        .split(/\s+/);
+                    if (partes.length >= 2) {
+                        emailField.value = `${partes[0]}.${partes[partes.length-1]}@grupoguia.mx`;
+                    }
+                }
+            }
+        }
+
+        // ==========================================
+        // BACKUP AUTOMÁTICO A GOOGLE DRIVE
+        // ==========================================
+        async function backupAutomaticoGDrive() {
+            if (!APPS_SCRIPT_URL) return;
+            try {
+                const backup = {
+                    version: '5.2',
+                    fecha: new Date().toISOString(),
+                    proyectos,
+                    acciones,
+                    tema: localStorage.getItem('ccTema') || 'light'
+                };
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    redirect: 'follow',
+                    body: JSON.stringify({ action: 'backupDrive', data: backup })
+                });
+                // Actualizar timestamp del último backup
+                localStorage.setItem('ccUltimoBackup', new Date().toISOString());
+                actualizarIndicadorBackup();
+            } catch(e) {
+                console.log('Backup silencioso falló:', e.message);
+            }
+        }
+
+        function backupManualGDrive() {
+            const btn = event.target;
+            btn.textContent = '⏳ Guardando...';
+            btn.disabled = true;
+            backupAutomaticoGDrive().then(() => {
+                btn.textContent = '✅ Guardado';
+                setTimeout(() => {
+                    btn.textContent = '☁️ Backup Drive';
+                    btn.disabled = false;
+                }, 2000);
+            }).catch(() => {
+                btn.textContent = '❌ Error';
+                btn.disabled = false;
+            });
+        }
+
+        function actualizarIndicadorBackup() {
+            const ultimo = localStorage.getItem('ccUltimoBackup');
+            const el = document.getElementById('indicadorBackup');
+            if (el && ultimo) {
+                const fecha = new Date(ultimo);
+                el.textContent = `Backup: ${fecha.toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit'})}`;
+            }
+        }
+
+        // ==========================================
+        // HISTORIAL EN MODAL - mostrar al abrir
+        // ==========================================
+        function mostrarHistorialAccion(accionId) {
+            const accion = acciones.find(a => a.id === accionId);
+            if (!accion || !accion.historial || accion.historial.length === 0) return;
+            
+            const container = document.getElementById('historialAccionContainer');
+            if (!container) return;
+
+            let html = '<div style="margin-top:12px;border-top:1px solid var(--border-color);padding-top:12px;">';
+            html += '<div style="font-size:0.75rem;font-weight:700;color:var(--text-secondary);margin-bottom:8px;">📋 HISTORIAL DE CAMBIOS</div>';
+            
+            [...accion.historial].reverse().slice(0, 5).forEach(entry => {
+                const fecha = new Date(entry.fecha).toLocaleDateString('es-MX', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+                html += `<div style="font-size:0.75rem;padding:6px 8px;background:var(--gray-50);border-radius:4px;margin-bottom:4px;">`;
+                html += `<span style="color:var(--text-secondary)">${fecha}</span><br>`;
+                entry.cambios.forEach(c => {
+                    html += `<span style="color:var(--text-primary)">• ${c}</span><br>`;
+                });
+                html += '</div>';
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // CORREO SEMANAL VÍA APPS SCRIPT
+        // ==========================================
+        async function enviarResumenSemanal() {
+            if (!APPS_SCRIPT_URL) return;
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
+            
+            const vencidas = acciones.filter(a => 
+                a.estatus !== 'Completada' && a.fechaCompromiso && 
+                new Date(formatearFecha(a.fechaCompromiso)) < hoy
+            );
+            const proximas7 = acciones.filter(a => {
+                if (a.estatus === 'Completada' || !a.fechaCompromiso) return false;
+                const diff = Math.ceil((new Date(formatearFecha(a.fechaCompromiso)) - hoy) / 86400000);
+                return diff >= 0 && diff <= 7;
+            });
+
+            // Agrupar por responsable para emails individuales
+            const porResponsable = {};
+            [...vencidas, ...proximas7].forEach(a => {
+                if (!a.emailResponsable) return;
+                if (!porResponsable[a.emailResponsable]) porResponsable[a.emailResponsable] = { vencidas: [], proximas: [], nombre: a.responsable };
+                if (vencidas.includes(a)) porResponsable[a.emailResponsable].vencidas.push(a);
+                else porResponsable[a.emailResponsable].proximas.push(a);
+            });
+
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    redirect: 'follow',
+                    body: JSON.stringify({
+                        action: 'enviarResumenSemanal',
+                        emailDirector: 'sergio@grupoguia.mx',
+                        resumenDirector: {
+                            totalVencidas: vencidas.length,
+                            totalProximas: proximas7.length,
+                            proyectos: proyectos.map(p => ({
+                                nombre: p.nombre,
+                                activas: acciones.filter(a => a.proyectoId === p.id && a.estatus !== 'Completada').length,
+                                vencidas: vencidas.filter(a => a.proyectoId === p.id).length
+                            }))
+                        },
+                        emailsResponsables: porResponsable
+                    })
+                });
+                alert('✅ Resumen semanal enviado');
+            } catch(e) {
+                alert('❌ Error al enviar: ' + e.message);
+            }
         }
 
         function guardarDatos() {
